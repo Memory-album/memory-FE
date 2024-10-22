@@ -2,18 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer base {
+  :root {
+    --background: #fafcff;
+    --button: #4848f9;
+    --reply: #aba5ff;
+    --save-upload: #dae2ff;
+    --upload: #dae2ff;
+    --search: #7575ff;
+    --mic: #699bf7;
+    --album-down-bg: #e0edff;
   }
 }
 
-@layer base {
-  :root {
-    --radius: 0.5rem;
+@layer utilities {
+  .main-background {
+    background-color: var(--background);
+  }
+
+  .btn-background {
+    background-color: var(--button);
   }
 }
