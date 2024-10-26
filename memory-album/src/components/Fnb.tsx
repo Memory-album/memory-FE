@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { Album02Icon } from 'hugeicons-react';
@@ -8,6 +11,13 @@ import { FavouriteIcon } from 'hugeicons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Fnb = () => {
+  const pathname = usePathname();
+  const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
+
+  if (excludeLayoutRoutes.includes(pathname)) {
+    return null;
+  }
+
   return (
     <footer className="w-full h-[87px] fixed bottom-0 left-0 right-0 z-40">
       <div className="w-full h-16 fixed bottom-0 left-0 right-0 bg-[#DAE2FF] rounded-t-[14px]">

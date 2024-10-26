@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`main-background ${pretendard.className}`}>
         <Gnb />
-        {children}
+        <div className="mt-[102px]">{children}</div>
         <Fnb />
       </body>
     </html>

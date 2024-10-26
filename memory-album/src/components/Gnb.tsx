@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 import { Menu11Icon } from 'hugeicons-react';
 import { CgClose } from 'react-icons/cg';
@@ -18,6 +19,13 @@ import { Mail01Icon } from 'hugeicons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Gnb = () => {
+  const pathname = usePathname();
+  const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
+
+  if (excludeLayoutRoutes.includes(pathname)) {
+    return null;
+  }
+
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   const handleSideBarToggle = () => {
