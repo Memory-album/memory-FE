@@ -11,9 +11,11 @@ const buttonVariants = cva(
       variant: {
         default:
           'bg-[#4848f9] text-white rounded-[10px] font-bold text-[18px] hover:bg-[#3d3dcf]',
+        upload: 'bg-[#DAE2FF] text-lg text-white bold rounded-[10px]',
       },
       size: {
         default: 'w-[280px] h-[50px] px-4 py-2',
+        upload: 'w-[60px] h-10',
         mainPage: 'w-[328px] h-[52px] px-4 py-2',
       },
     },
