@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+
 import localFont from 'next/font/local';
+import Gnb from '@/components/Gnb';
+import Fnb from '@/components/Fnb';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,7 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={pretendard.className}>{children}</body>
+      <body className={`main-bg ${pretendard.className}`}>
+        <Gnb />
+        <div className="mt-[102px]">{children}</div>
+        <Fnb />
+      </body>
     </html>
   );
 }
