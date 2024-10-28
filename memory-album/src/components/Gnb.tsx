@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Gnb = () => {
   const pathname = usePathname();
+
   const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
 
   if (excludeLayoutRoutes.includes(pathname)) {
@@ -36,10 +37,34 @@ const Gnb = () => {
     setIsSideBarOpen(false);
   };
 
+  let currentPathName;
+  if (pathname === '/albums') {
+    currentPathName = '앨범';
+  } else if (pathname === '/likes') {
+    currentPathName = '좋아요';
+  } else if (pathname === '/collections') {
+    currentPathName = '컬렉션';
+  } else if (pathname === '/answers') {
+    currentPathName = '답변하기';
+  } else if (pathname === '/uploads/owners') {
+    currentPathName = '앨범 만들기';
+  } else if (pathname === '/uploads/members') {
+    currentPathName = '질문하기';
+  } else if (pathname === '/profile') {
+    currentPathName = '프로필';
+  } else if (pathname === '/questions') {
+    currentPathName = '질문';
+  } else if (pathname === '/groups') {
+    currentPathName = '내 그룹 보기';
+  }
+  console.log(currentPathName);
+
   return (
     <header className="w-full h-[102px] fixed top-0 left-0 right-0 bg-[#fafcffe5] z-50">
       <div className="w-full h-[78px] mt-6 flex justify-between items-center">
-        <div className="ml-4 font-bold text-lg text-[#8FB6FF]">앨범</div>
+        <div className="ml-4 font-bold text-lg text-[#8FB6FF]">
+          {currentPathName}
+        </div>
         <button
           className="mr-3 p-1 rounded-xl active:bg-[#E3EDFF]"
           onClick={handleSideBarToggle}
@@ -60,12 +85,13 @@ const Gnb = () => {
         <div className="mt-[52px] ml-4 mr-5">
           <div className="flex justify-end">
             <CgClose
-              className="w-5 h-5 color-[#6B6B6B]"
+              className="w-5 h-5"
+              color="#6B6B6B"
               onClick={closeSideBar}
             />
           </div>
           <div className="flex justify-between items-center mt-5">
-            <p className="font-semibold text-lg">사이트 이름</p>
+            <p className="font-semibold text-lg text-black">사이트 이름</p>
             <Avatar className="w-7 h-7 text-white">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>

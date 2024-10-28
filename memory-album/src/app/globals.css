@@ -16,11 +16,7 @@
 }
 
 @layer utilities {
-  .main-background {
+  .main-bg {
     background-color: var(--background);
-  }
-
-  .btn-background {
-    background-color: var(--button);
   }
 }
