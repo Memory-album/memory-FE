@@ -2,14 +2,15 @@ import { MdKeyboardVoice } from 'react-icons/md';
 import { Alert } from './alert';
 
 type Props = {
-  currentView: (view: string) => void;
+  onNextView: () => void;
+  message: string;
 };
 
-export const VoiceAnswer = ({ currentView }: Props) => {
+export const VoiceAnswer = ({ onNextView, message }: Props) => {
   return (
     <div className="flex flex-col items-center h-screen pb-[110px] overflow-hidden">
       <p className="w-[330px] py-5 bg-white rounded-[20px] text-[#4848F9] font-semibold text-2xl border-2 border-solid border-[#4848F9] text-center shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
-        질문에 답장을 남겨보세요!
+        {message}
       </p>
       <div className="flex flex-col items-center m-auto">
         <p className="size-[150px] mb-2">
@@ -19,7 +20,10 @@ export const VoiceAnswer = ({ currentView }: Props) => {
           음성 인식 중이에요...
         </p>
       </div>
-      <Alert currentView={currentView} />
+      <Alert
+        onNextView={onNextView}
+        description="ai가 음성을 추출하고 있어요. <br /> 답변을 요약해서 보여드릴게요."
+      />
     </div>
   );
 };

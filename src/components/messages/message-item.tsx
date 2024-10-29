@@ -8,7 +8,7 @@ type Props = {
   message: string;
 };
 
-export const AnswerMessage = ({ message }: Props) => {
+export const MessageItem = ({ message }: Props) => {
   const [toggleState, setToggleState] = useState(false);
   const [updateMessage, setUpdateMessage] = useState(message);
 

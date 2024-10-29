@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 
-export const SaveButton = () => {
+export const UploadButton = () => {
   return (
     <div className="flex justify-end mb-6">
       <Button size="upload" variant="upload" disabled={false}>

@@ -5,17 +5,17 @@ import { MdKeyboardVoice } from 'react-icons/md';
 import { IoIosSend } from 'react-icons/io';
 
 type Props = {
-  currentView: (view: string) => void;
-  onUploadMessage: (message: string[]) => void;
+  setCurrentView: (view: string) => void;
+  onUploadMessage: (messages: string[]) => void;
 };
 
-export const AnswerInput = ({ currentView, onUploadMessage }: Props) => {
+export const MessageInput = ({ setCurrentView, onUploadMessage }: Props) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 p-5 w-full sm:w-[500px] sm:m-auto flex items-center bg-white">
       <Button
         className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full"
         onClick={() => {
-          currentView('recording');
+          setCurrentView('recording');
         }}
       >
         <MdKeyboardVoice

@@ -11,25 +11,28 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { BsMenuButton } from 'react-icons/bs';
 
 type Props = {
-  currentView: (view: string) => void;
+  onNextView: () => void;
+  description: string;
+  buttonValue?: string;
 };
 
-export const Alert = ({ currentView }: Props) => {
+export const Alert = ({
+  onNextView,
+  description,
+  buttonValue = '확인',
+}: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
           variant="default"
           className=" text-white text-lg"
-          onClick={() => {
-            setTimeout(() => {
-              currentView('input');
-            }, 5000);
-          }}
+          onClick={onNextView}
         >
-          확인
+          {buttonValue}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[350px] rounded-[8px] bg-white">
@@ -38,7 +41,7 @@ export const Alert = ({ currentView }: Props) => {
             잠시만 기다려주세요!
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-400 text-center">
-            ai가 음성을 추출하고 있어요. <br /> 답변을 요약해서 보여드릴게요.
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>
