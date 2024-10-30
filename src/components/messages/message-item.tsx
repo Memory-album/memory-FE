@@ -4,13 +4,18 @@ import { useState } from 'react';
 import { UpdateInput } from './update-input';
 import { PiPencil } from 'react-icons/pi';
 
-type Props = {
-  message: string;
+type Message = {
+  id: number;
+  content: string;
 };
 
-export const MessageItem = ({ message }: Props) => {
+type Props = {
+  message: Message;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+};
+
+export const MessageItem = ({ message, setMessages }: Props) => {
   const [toggleState, setToggleState] = useState(false);
-  const [updateMessage, setUpdateMessage] = useState(message);
 
   const handleToggleState = () => {
     setToggleState(!toggleState);
@@ -19,9 +24,9 @@ export const MessageItem = ({ message }: Props) => {
   if (toggleState) {
     return (
       <UpdateInput
-        message={updateMessage}
+        message={message}
         setToggleState={setToggleState}
-        setUpdateMessage={setUpdateMessage}
+        setMessages={setMessages}
       />
     );
   }
@@ -33,7 +38,7 @@ export const MessageItem = ({ message }: Props) => {
         onClick={handleToggleState}
       />
       <p className="mb-1 py-3 px-[17px] max-w-[240px] bg-[#4848F9] rounded-[20px] rounded-tr-none text-white text-base">
-        {updateMessage}
+        {message.content}
       </p>
     </div>
   );

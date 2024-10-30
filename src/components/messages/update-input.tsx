@@ -2,21 +2,25 @@ import { Button } from '@/components/ui/button';
 import { ChangeEvent, useState } from 'react';
 import { MdKeyboardVoice } from 'react-icons/md';
 
+type Message = {
+  id: number;
+  content: string;
+};
+
 type Props = {
-  message: string;
+  message: Message;
   setToggleState: (state: boolean) => void;
-  setUpdateMessage: (input: string) => void;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 };
 
 export const UpdateInput = ({
   message,
+  setMessages,
   setToggleState,
-  setUpdateMessage,
 }: Props) => {
-  const [input, setInput] = useState(message);
+  const [input, setInput] = useState(message.content);
 
   const handleCancelUpdate = () => {
-    setUpdateMessage(message);
     setToggleState(false);
   };
 
@@ -25,7 +29,11 @@ export const UpdateInput = ({
   };
 
   const handleUpdate = () => {
-    setUpdateMessage(input);
+    setMessages((prevState) =>
+      prevState.map((state) =>
+        state.id === message.id ? { ...message, content: input } : { ...state },
+      ),
+    );
     setToggleState(false);
   };
 
@@ -34,7 +42,7 @@ export const UpdateInput = ({
       <textarea
         rows={3}
         className="no-scrollbar w-full bg-inherit focus-visible:outline-none text-white resize-none"
-        defaultValue={message}
+        defaultValue={message.content}
         onChange={(e) => handleChangeInput(e)}
       ></textarea>
       <div className="flex justify-end items-center gap-[4px] mt-3">

@@ -3,25 +3,34 @@ import { Input } from '@/components/ui/input';
 
 import { MdKeyboardVoice } from 'react-icons/md';
 import { IoIosSend } from 'react-icons/io';
+import { usePathname } from 'next/navigation';
+
+type Message = {
+  id: number;
+  content: string;
+};
 
 type Props = {
-  setCurrentView: (view: string) => void;
-  onUploadMessage: (messages: string[]) => void;
+  setCurrentView?: (view: string) => void;
+  onUploadMessage: (messages: Message[]) => void;
 };
 
 export const MessageInput = ({ setCurrentView, onUploadMessage }: Props) => {
+  const pathname = usePathname();
   return (
     <div className="fixed bottom-0 left-0 right-0 p-5 w-full sm:w-[500px] sm:m-auto flex items-center bg-white">
-      <Button
-        className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full"
-        onClick={() => {
-          setCurrentView('recording');
-        }}
-      >
-        <MdKeyboardVoice
-          style={{ width: '24px !important', height: '24px !important' }}
-        />
-      </Button>
+      {pathname !== '/uploads/member' && (
+        <Button
+          className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full"
+          onClick={() => {
+            setCurrentView && setCurrentView('recording');
+          }}
+        >
+          <MdKeyboardVoice
+            style={{ width: '24px !important', height: '24px !important' }}
+          />
+        </Button>
+      )}
       <div className="grow relative">
         <Input
           className="h-10 rounded-[20px] focus-visible:ring-transparent text-base"

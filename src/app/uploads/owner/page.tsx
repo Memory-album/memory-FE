@@ -1,13 +1,20 @@
 'use client';
 
 import { VoiceAnswer } from '@/components/messages/voice-answer';
-import { ImageUpload } from './_components/image-upload';
 import { useState } from 'react';
-import { AnswerUpload } from '@/components/messages/answer-upload';
+import { ImageUpload } from '../_components/image-upload';
+import { Alert } from '@/components/messages/alert';
+import { Upload } from './_components/upload';
+import { Result } from './_components/result';
+
+type Message = {
+  id: number;
+  content: string;
+};
 
 const Page = () => {
   const [currentView, setCurrentView] = useState('image-upload');
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const handleNextView = (view: string) => {
     setTimeout(() => {
@@ -16,15 +23,21 @@ const Page = () => {
   };
 
   return (
-    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full pl-[30px] pr-4">
+    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full">
       {currentView === 'image-upload' && (
-        <ImageUpload onNextView={() => handleNextView('input')} />
+        <div className="flex flex-col justify-center items-center">
+          <ImageUpload />
+          <Alert
+            onNextView={() => handleNextView('input')}
+            description="ai가 질문을 생각하고 있어요. <br /> 조금만 기다려주세요."
+            buttonValue="다음"
+          />
+        </div>
       )}
-      {(currentView === 'input' || currentView === 'result') && (
-        <AnswerUpload
+      {currentView === 'input' && (
+        <Upload
           messages={messages}
           setMessages={setMessages}
-          currentView={currentView}
           setCurrentView={setCurrentView}
         />
       )}
@@ -33,6 +46,9 @@ const Page = () => {
           onNextView={() => handleNextView('result')}
           message="질문에 답장을 남겨보세요!"
         />
+      )}
+      {currentView === 'result' && (
+        <Result messages={messages} setMessages={setMessages} />
       )}
     </div>
   );

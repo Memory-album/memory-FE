@@ -17,21 +17,19 @@ type Props = {
   onNextView: () => void;
   description: string;
   buttonValue?: string;
+  buttonClassName?: string;
 };
 
 export const Alert = ({
   onNextView,
   description,
   buttonValue = '확인',
+  buttonClassName,
 }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="default"
-          className=" text-white text-lg"
-          onClick={onNextView}
-        >
+        <Button className={buttonClassName} onClick={onNextView}>
           {buttonValue}
         </Button>
       </AlertDialogTrigger>

@@ -1,6 +1,6 @@
 export const ReceivedMessage = () => {
   return (
-    <div className="flex items-end mb-[25px]">
+    <div className="flex items-end mb-[25px] pl-[30px]">
       <div className="mr-5 w-[50px] h-[50px] rounded-full">
         <img
           className="rounded-full w-full h-full object-cover block"

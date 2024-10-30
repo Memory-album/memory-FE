@@ -1,13 +1,26 @@
 import { MessageItem } from './message-item';
 
-type Props = {
-  messages: string[];
+type Message = {
+  id: number;
+  content: string;
 };
 
-export const SentMessage = ({ messages }: Props) => {
+type Props = {
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+};
+
+export const SentMessage = ({ messages, setMessages }: Props) => {
   return (
-    <div className="flex flex-col items-end">
-      {messages && messages.map((message) => <MessageItem message={message} />)}
+    <div className="flex flex-col items-end pr-4">
+      {messages &&
+        messages.map((message) => (
+          <MessageItem
+            key={message.id}
+            message={message}
+            setMessages={setMessages}
+          />
+        ))}
     </div>
   );
 };
