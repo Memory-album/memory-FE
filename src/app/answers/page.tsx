@@ -1,5 +1,5 @@
 import { AnswerList } from './_components/answer-list';
-import { SearchForm } from './_components/search-form';
+import { SearchForm } from '@/components/common/search-form';
 
 const Page = () => {
   return (

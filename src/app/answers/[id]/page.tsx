@@ -1,8 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { VoiceAnswer } from '@/components/messages/voice-answer';
-import { AnswerUpload } from './_components/answer-upload';
-import { Result } from './_components/result';
+import { Upload } from '@/components/messages/upload';
 
 type Message = {
   id: number;
@@ -18,14 +17,14 @@ const Page = () => {
 
   const handleNextView = () => {
     setTimeout(() => {
-      setCurrentView('result');
+      setCurrentView('input');
     }, 5000);
   };
 
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full">
       {currentView === 'input' && (
-        <AnswerUpload
+        <Upload
           messages={messages}
           setMessages={setMessages}
           setCurrentView={setCurrentView}
@@ -36,9 +35,6 @@ const Page = () => {
           onNextView={handleNextView}
           message="질문에 답장을 남겨보세요!"
         />
-      )}
-      {currentView === 'result' && (
-        <Result messages={messages} setMessages={setMessages} />
       )}
     </div>
   );

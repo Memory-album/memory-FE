@@ -4,8 +4,7 @@ import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { useState } from 'react';
 import { ImageUpload } from '../_components/image-upload';
 import { Alert } from '@/components/messages/alert';
-import { Upload } from './_components/upload';
-import { Result } from './_components/result';
+import { Upload } from '@/components/messages/upload';
 
 type Message = {
   id: number;
@@ -29,7 +28,7 @@ const Page = () => {
           <ImageUpload />
           <Alert
             onNextView={() => handleNextView('input')}
-            description="ai가 질문을 생각하고 있어요. <br /> 조금만 기다려주세요."
+            description="ai가 질문을 생각하고 있어요.<br />조금만 기다려주세요."
             buttonValue="다음"
           />
         </div>
@@ -43,12 +42,9 @@ const Page = () => {
       )}
       {currentView === 'recording' && (
         <VoiceAnswer
-          onNextView={() => handleNextView('result')}
+          onNextView={() => handleNextView('input')}
           message="질문에 답장을 남겨보세요!"
         />
-      )}
-      {currentView === 'result' && (
-        <Result messages={messages} setMessages={setMessages} />
       )}
     </div>
   );

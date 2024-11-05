@@ -21,14 +21,12 @@ export const MessageInput = ({ setCurrentView, onUploadMessage }: Props) => {
     <div className="fixed bottom-0 left-0 right-0 p-5 w-full sm:w-[500px] sm:m-auto flex items-center bg-white">
       {pathname !== '/uploads/member' && (
         <Button
-          className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full"
+          className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full [&_svg]:size-6"
           onClick={() => {
             setCurrentView && setCurrentView('recording');
           }}
         >
-          <MdKeyboardVoice
-            style={{ width: '24px !important', height: '24px !important' }}
-          />
+          <MdKeyboardVoice />
         </Button>
       )}
       <div className="grow relative">
@@ -37,10 +35,8 @@ export const MessageInput = ({ setCurrentView, onUploadMessage }: Props) => {
           placeholder="답장 보내기..."
         />
         {/* TODO: 텍스트를 입력할 때만 전송 버튼 보이게 */}
-        <Button className="absolute top-1 right-2 w-11 h-8 rounded-[20px] bg-[#4848F9] text-white">
-          <IoIosSend
-            style={{ width: '20px !important', height: '20px !important' }}
-          />
+        <Button className="absolute top-1 right-2 w-11 h-8 rounded-[20px] bg-[#4848F9] text-white [&_svg]:size-5">
+          <IoIosSend />
         </Button>
       </div>
     </div>
