@@ -24,10 +24,10 @@ export const AlertLeaveGroup = () => {
       <AlertDialogContent className="pb-[10px] w-[330px] h-[150px] rounded-[10px]">
         <AlertDialogHeader>
           <AlertDialogTitle className="mb-0 font-semibold">
-            정말로 그룹에서 나가시겠어요?
+            미니언즈 모임
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-400">
-            더이상 그룹의 앨범을 볼 수 없어요
+            그룹에서 나가시겠어요?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

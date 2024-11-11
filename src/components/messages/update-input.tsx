@@ -41,7 +41,7 @@ export const UpdateInput = ({
     <div className="py-[14px] px-[17px] mb-1 w-full bg-[#7878FF] rounded-[20px]">
       <textarea
         rows={3}
-        className="no-scrollbar w-full bg-inherit focus-visible:outline-none text-white resize-none"
+        className="w-full bg-inherit focus-visible:outline-none text-white resize-none"
         defaultValue={message.content}
         onChange={(e) => handleChangeInput(e)}
       ></textarea>
