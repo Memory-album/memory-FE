@@ -24,7 +24,6 @@
   .ForGnbmarginTop {
     margin-top: var(--ForGnbmarginTop);
   }
-=======
 }
 
 body::-webkit-scrollbar {
@@ -36,5 +35,6 @@ body::-webkit-scrollbar {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
