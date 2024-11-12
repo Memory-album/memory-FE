@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    --ForGnbmarginTop: 102px;
     --background: #fafcff;
     --button: #4848f9;
     --reply: #aba5ff;
@@ -19,6 +20,11 @@
   .main-bg {
     background-color: var(--background);
   }
+
+  .ForGnbmarginTop {
+    margin-top: var(--ForGnbmarginTop);
+  }
+=======
 }
 
 body::-webkit-scrollbar {

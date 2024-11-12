@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 
@@ -6,7 +7,7 @@ const WelcomePage = () => {
   return (
     <main>
       <div className="w-[280px] h-[84px] mx-auto mb-[16px]">
-        <img src="/images/mini.svg" alt="logo" className="w-[180px] h-[84px]" />
+        <Image src="/images/민니로고2.png" alt="logo" width={180} height={84} />
       </div>
       <div className="flex flex-col items-center">
         <div className="w-[280px]">

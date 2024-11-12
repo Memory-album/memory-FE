@@ -37,7 +37,7 @@ const Fnb = () => {
             <p className="mt-[2px]">메인</p>
           </Link>
           <Link
-            href="/like"
+            href="/likes"
             className="flex flex-col text-[10px] font-medium text-[#4848f9] justify-center items-center"
             style={{ width: 'calc(100vw / 8.7)' }}
           >

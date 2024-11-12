@@ -21,7 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const Gnb = () => {
   const pathname = usePathname();
 
-  const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
+  const excludeLayoutRoutes = ['/', , '/home', '/login', '/signup', '/invite'];
 
   if (excludeLayoutRoutes.includes(pathname)) {
     return null;
@@ -42,7 +42,7 @@ const Gnb = () => {
     currentPathName = '앨범';
   } else if (pathname === '/likes') {
     currentPathName = '좋아요';
-  } else if (pathname === '/collections') {
+  } else if (pathname === '/collection') {
     currentPathName = '컬렉션';
   } else if (pathname === '/answers') {
     currentPathName = '답변하기';
