@@ -18,7 +18,7 @@ export const EditProfile = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <FiEdit className="relative text-[25px] top-[-2px]" />
+        <FiEdit className="relative text-[25px] top-[-2px] cursor-pointer" />
       </AlertDialogTrigger>
       <AlertDialogContent className="pb-[10px] w-[330px] rounded-[10px]">
         <AlertDialogHeader>

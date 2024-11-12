@@ -15,7 +15,7 @@ export const ProfileNav = () => {
           </Link>
         </li>
         <li className="mb-5">
-          <Link href="#" className="flex items-center">
+          <Link href="/groups/id/members" className="flex items-center">
             <BiGroup className="mr-[15px] text-[28px]" />
             <span>내 그룹 멤버 보기</span>
           </Link>

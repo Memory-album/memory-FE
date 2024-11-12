@@ -24,7 +24,7 @@ export const AlertKickoutMember = ({ image, name }: Props) => {
         <Item
           name={name}
           image={image}
-          classNames="size-[103px] sm:size-[150px]"
+          classNames="size-[103px] sm:size-[150px] cursor-pointer"
         />
       </AlertDialogTrigger>
       <AlertDialogContent className="py-[18px] w-[330px] h-[150px] rounded-[10px]">
