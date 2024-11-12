@@ -26,7 +26,7 @@ const FormInput = ({
       <label htmlFor={id}>
         <div className="w-[315px] text-[20px] font-semibold relative group">
           <input
-            className="w-[315px] border-b-[1px] border-[#5F5F5F] pl-[2px] leading-9 placeholder:text-[#C2C2C2] focus:outline-none peer"
+            className="w-[315px] border-b-[1px] border-[#5F5F5F] pl-[2px] leading-9 placeholder:text-[#C2C2C2] focus:outline-none peer main-bg"
             type={type}
             id={id}
             placeholder={placeholder}
