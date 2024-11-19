@@ -27,7 +27,7 @@ const login = () => {
 
   return (
     <div>
-      {/* <LoginHeader /> */}
+      <LoginHeader />
       <div className="w-[315px] mx-auto">
         <div>
           <p className="font-bold text-[32px] text-[#4E76D6]">
@@ -70,7 +70,10 @@ const login = () => {
                 비밀번호를 잊으셨나요?
               </Link>
             </div>
-            <Button className="mb-[18px] bg-[#FEE500] text-[#191919] rounded-[12px]">
+            <Button
+              variant={'loginBtn'}
+              className="mb-[18px] bg-[#FEE500] text-[#191919] rounded-[12px]"
+            >
               <img
                 src="/images/kakao.svg"
                 alt="kakao"
@@ -78,7 +81,10 @@ const login = () => {
               />
               카카오로 시작하기
             </Button>
-            <Button className="mb-[18px] bg-[#03C75A] text-[#FFFFFF] rounded-[12px]">
+            <Button
+              variant={'loginBtn'}
+              className="mb-[18px] bg-[#03C75A] text-[#FFFFFF] rounded-[12px]"
+            >
               <img
                 src="/images/naver.svg"
                 alt="kakao"

@@ -12,9 +12,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Fnb = () => {
   const pathname = usePathname();
-  const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
+  const excludeLayoutRoutes = [
+    '/',
+    '/login',
+    '/signup',
+    '/invite',
+    '/answers/',
+    // '/uploads/owner',
+    // '/uploads/member',
+  ];
+  const dynamicRoutePatterns = [/^\/answers\/.+$/];
 
-  if (excludeLayoutRoutes.includes(pathname)) {
+  if (
+    excludeLayoutRoutes.includes(pathname) ||
+    dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
+  ) {
     return null;
   }
 

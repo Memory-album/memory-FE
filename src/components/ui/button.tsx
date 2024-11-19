@@ -12,6 +12,7 @@ const buttonVariants = cva(
         default:
           'bg-[#4848f9] text-white rounded-[10px] font-bold text-[18px] hover:bg-[#3d3dcf]',
         prevBtn: 'text-[#6E6E6E]',
+        loginBtn: 'text-white rounded-[10px] font-bold text-[18px]',
       },
       size: {
         default: 'w-[280px] h-[50px] px-4 py-2',
