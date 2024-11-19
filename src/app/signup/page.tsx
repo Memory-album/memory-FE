@@ -19,9 +19,12 @@ import {
   PrevButton,
   NextButton,
   usePrevNextButtons,
-} from './_components/EmblaCarouselButtons';
-import { DotButton, useDotButton } from './_components/EmblaCarouselDotButton';
-import '../signup/embla.css';
+} from '../../components/embla/EmblaCarouselButtons';
+import {
+  DotButton,
+  useDotButton,
+} from '../../components/embla/EmblaCarouselDotButton';
+import '../../components/embla/embla.css';
 
 type PropType = {
   slides: number[];
@@ -93,7 +96,7 @@ const signup = ({ slides, options }: PropType) => {
   }, []);
 
   return (
-    <div>
+    <main>
       <TermsOfUse isOpen={terms} onClose={popupTerms}></TermsOfUse>
       <LoginHeader></LoginHeader>
       <div
@@ -109,11 +112,11 @@ const signup = ({ slides, options }: PropType) => {
           />
         ))}
       </div>
-      <div
+      <article
         className="max-w-md mx-auto"
         style={{ height: `calc(100vh - var(--ForGnbmarginTop) - 114px)` }}
       >
-        <div ref={emblaRef} className="overflow-hidden h-full">
+        <section ref={emblaRef} className="overflow-hidden h-full">
           <div className="flex h-full">
             <div className="min-w-full p-4 flex flex-col items-center" key={0}>
               <Image src="/images/mini.svg" alt="" width={210} height={83} />
@@ -246,70 +249,11 @@ const signup = ({ slides, options }: PropType) => {
                 초대코드를 <br></br> 받으셨나요?
               </h2>
               <div className="fixed bottom-[8%]">
-                <NextButton
-                  onClick={onNextButtonClick}
-                  disabled={nextBtnDisabled}
-                  className="mb-[33px]"
-                >
-                  계속하기
-                </NextButton>
+                <Button asChild className="mb-[33px]">
+                  <Link href={'/invite'}>네</Link>
+                </Button>
                 <Button asChild>
                   <Link href={'/home'}>아니요 바로 시작할래요</Link>
-                </Button>
-              </div>
-            </div>
-
-            {/* 그룹참여 단계 */}
-            <div className="min-w-full p-4 flex flex-col items-center" key={5}>
-              <div className="fixed top-[14%]">
-                <h2 className="text-[30px] font-bold mb-[6px] text-center">
-                  그룹에 참여하기
-                </h2>
-                <p className="font-medium text-[16px] text-[#858585] text-center mb-[34px]">
-                  아래에 코드를 입력해주세요
-                </p>
-                <VerificationInput
-                  classNames={{
-                    container: 'container',
-                    character: 'character',
-                    characterInactive: 'character--inactive',
-                    characterSelected: 'character--selected',
-                    characterFilled: 'character--filled',
-                  }}
-                />
-              </div>
-
-              <div className="fixed bottom-[10%]">
-                <NextButton
-                  onClick={onNextButtonClick}
-                  disabled={nextBtnDisabled}
-                >
-                  계속하기
-                </NextButton>
-              </div>
-            </div>
-
-            {/* 관계입력 단계 */}
-            <div className="min-w-full p-4 flex flex-col items-center" key={6}>
-              <div className="fixed top-[14%]">
-                <h2 className="text-[30px] font-bold mb-[6px] text-center">
-                  관계를 입력해주세요
-                </h2>
-                <p className="font-medium text-[16px] text-[#858585] text-center mb-[34px]">
-                  상대방과의 관계를 알려주세요{' '}
-                </p>
-                <FormInput
-                  type="string"
-                  placeholder="관계를 알려주세요"
-                  action=""
-                  method=""
-                  errorMessage="관계를 알려주세요"
-                  id="retlation"
-                ></FormInput>
-              </div>
-              <div className="fixed bottom-[10%]">
-                <Button asChild>
-                  <Link href={'/home'}>시작하기</Link>
                 </Button>
               </div>
             </div>
@@ -323,9 +267,9 @@ const signup = ({ slides, options }: PropType) => {
               <FaArrowLeft className="w-[34px] h-[34px]" />
             </PrevButton>
           </div>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </main>
   );
 };
 

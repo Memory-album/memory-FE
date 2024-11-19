@@ -26,16 +26,16 @@ const login = () => {
   }, []);
 
   return (
-    <div>
-      {/* <LoginHeader /> */}
-      <div className="w-[315px] mx-auto">
+    <main>
+      <LoginHeader />
+      <article className="w-[315px] mx-auto ForGnbmarginTop">
         <div>
           <p className="font-bold text-[32px] text-[#4E76D6]">
             다 함께 <br /> 추억을 쌓아볼까요?
           </p>
         </div>
 
-        <div className="mt-[83px]">
+        <section className="mt-[83px]">
           <p className="font-semibold text-[14px] text-[#8D8D8D] mb-[25px]">
             먼저 로그인이 필요해요 :)
           </p>
@@ -70,7 +70,10 @@ const login = () => {
                 비밀번호를 잊으셨나요?
               </Link>
             </div>
-            <Button className="mb-[18px] bg-[#FEE500] text-[#191919] rounded-[12px]">
+            <Button
+              variant={'loginBtn'}
+              className="mb-[18px] bg-[#FEE500] text-[#191919] rounded-[12px]"
+            >
               <img
                 src="/images/kakao.svg"
                 alt="kakao"
@@ -78,7 +81,10 @@ const login = () => {
               />
               카카오로 시작하기
             </Button>
-            <Button className="mb-[18px] bg-[#03C75A] text-[#FFFFFF] rounded-[12px]">
+            <Button
+              variant={'loginBtn'}
+              className="mb-[18px] bg-[#03C75A] text-[#FFFFFF] rounded-[12px]"
+            >
               <img
                 src="/images/naver.svg"
                 alt="kakao"
@@ -87,9 +93,9 @@ const login = () => {
               네이버로 시작하기
             </Button>
           </div>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </main>
   );
 };
 

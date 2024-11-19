@@ -12,9 +12,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Fnb = () => {
   const pathname = usePathname();
-  const excludeLayoutRoutes = ['/', '/login', '/signup', '/invite'];
+  const excludeLayoutRoutes = [
+    '/',
+    '/login',
+    '/signup',
+    '/invite',
+    '/answers/',
+    // '/uploads/owner',
+    // '/uploads/member',
+  ];
+  const dynamicRoutePatterns = [/^\/answers\/.+$/];
 
-  if (excludeLayoutRoutes.includes(pathname)) {
+  if (
+    excludeLayoutRoutes.includes(pathname) ||
+    dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
+  ) {
     return null;
   }
 
@@ -33,7 +45,9 @@ const Fnb = () => {
             className="flex flex-col text-[10px] font-medium text-[#4848f9] justify-center items-center"
             style={{ width: 'calc(100vw / 8.7)' }}
           >
-            <Home11Icon className="w-8 h-8 text-white" />
+            <Home11Icon
+              className={`w-8 h-8 ${pathname === '/home' ? 'text-[#4848F9]' : 'text-white'}`}
+            />
             <p className="mt-[2px]">메인</p>
           </Link>
           <Link
@@ -41,7 +55,9 @@ const Fnb = () => {
             className="flex flex-col text-[10px] font-medium text-[#4848f9] justify-center items-center"
             style={{ width: 'calc(100vw / 8.7)' }}
           >
-            <FavouriteIcon className="w-8 h-8 text-white" />
+            <FavouriteIcon
+              className={`w-8 h-8 ${pathname === '/likes' ? 'text-[#4848F9]' : 'text-white'}`}
+            />
             <p className="mt-[2px]">좋아요</p>
           </Link>
           <div
@@ -53,7 +69,9 @@ const Fnb = () => {
             className="flex flex-col text-[10px] font-medium text-[#4848f9] justify-center items-center"
             style={{ width: 'calc(100vw / 8.7)' }}
           >
-            <Album02Icon className="w-8 h-8 text-white" />
+            <Album02Icon
+              className={`w-8 h-8 ${pathname === '/collection' ? 'text-[#4848F9]' : 'text-white'}`}
+            />
             <p className="mt-[2px]">컬렉션</p>
           </Link>
           <Link

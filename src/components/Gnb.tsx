@@ -60,7 +60,7 @@ const Gnb = () => {
   console.log(currentPathName);
 
   return (
-    <header className="w-full h-[102px] fixed top-0 left-0 right-0 bg-[#fafcffe5] z-50">
+    <header className="w-full h-[102px] fixed bg-[#fafcffe5] z-50">
       <div className="w-full h-[78px] mt-6 flex justify-between items-center">
         <div className="ml-4 font-bold text-lg text-[#8FB6FF]">
           {currentPathName}

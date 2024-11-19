@@ -8,10 +8,10 @@ const LoginHeader = () => {
   const router = useRouter();
   let headerPathName;
 
-  if (pathname === '/login') {
-    headerPathName = '로그인';
-  } else {
+  if (pathname === '/signup') {
     headerPathName = '회원가입';
+  } else if (pathname === '/invite') {
+    headerPathName = '그룹 코드';
   }
 
   return (
