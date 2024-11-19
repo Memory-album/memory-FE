@@ -19,9 +19,12 @@ import {
   PrevButton,
   NextButton,
   usePrevNextButtons,
-} from './_components/EmblaCarouselButtons';
-import { DotButton, useDotButton } from './_components/EmblaCarouselDotButton';
-import '../signup/embla.css';
+} from '../../components/embla/EmblaCarouselButtons';
+import {
+  DotButton,
+  useDotButton,
+} from '../../components/embla/EmblaCarouselDotButton';
+import '../../components/embla/embla.css';
 
 type PropType = {
   slides: number[];
@@ -93,7 +96,7 @@ const signup = ({ slides, options }: PropType) => {
   }, []);
 
   return (
-    <div>
+    <main>
       <TermsOfUse isOpen={terms} onClose={popupTerms}></TermsOfUse>
       <LoginHeader></LoginHeader>
       <div
@@ -109,11 +112,11 @@ const signup = ({ slides, options }: PropType) => {
           />
         ))}
       </div>
-      <div
+      <article
         className="max-w-md mx-auto"
         style={{ height: `calc(100vh - var(--ForGnbmarginTop) - 114px)` }}
       >
-        <div ref={emblaRef} className="overflow-hidden h-full">
+        <section ref={emblaRef} className="overflow-hidden h-full">
           <div className="flex h-full">
             <div className="min-w-full p-4 flex flex-col items-center" key={0}>
               <Image src="/images/mini.svg" alt="" width={210} height={83} />
@@ -264,9 +267,9 @@ const signup = ({ slides, options }: PropType) => {
               <FaArrowLeft className="w-[34px] h-[34px]" />
             </PrevButton>
           </div>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </main>
   );
 };
 

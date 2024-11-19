@@ -22,8 +22,8 @@
 /* optionally hide placeholder (in case it overlaps the cursor) */
 .character--selected:not(.character--filled) {
   color: transparent;
-  background-color: #ffffff;
-  outline: 1.5px solid rgb(206, 203, 255);
+  background-color: #f6f8ff;
+  outline: 1.5px solid rgb(181, 177, 255);
 }
 
 .character--filled {

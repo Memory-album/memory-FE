@@ -16,12 +16,12 @@ import {
   PrevButton,
   NextButton,
   usePrevNextButtons,
-} from '../signup/_components/EmblaCarouselButtons';
+} from '../../components/embla/EmblaCarouselButtons';
 import {
   DotButton,
   useDotButton,
-} from '../signup/_components/EmblaCarouselDotButton';
-import '../signup/embla.css';
+} from '../../components/embla/EmblaCarouselDotButton';
+import '../../components/embla/embla.css';
 import { useEffect } from 'react';
 
 type PropType = {
@@ -43,7 +43,7 @@ const invite = ({ slides, options }: PropType) => {
   } = usePrevNextButtons(emblaApi);
 
   return (
-    <div>
+    <main>
       <LoginHeader></LoginHeader>
       <div
         className="embla__dots mb-[42px]"
@@ -58,7 +58,7 @@ const invite = ({ slides, options }: PropType) => {
           />
         ))}
       </div>
-      <div
+      <article
         className="max-w-md mx-auto"
         style={{ height: `calc(100vh - var(--ForGnbmarginTop) - 114px)` }}
       >
@@ -133,8 +133,8 @@ const invite = ({ slides, options }: PropType) => {
             </PrevButton>
           </div>
         </div>
-      </div>
-    </div>
+      </article>
+    </main>
   );
 };
 

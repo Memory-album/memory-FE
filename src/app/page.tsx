@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 const WelcomePage = () => {
   return (
     <main>
-      <div className="w-[280px] h-[84px] mx-auto mb-[16px]">
+      <div className="w-[280px] h-[84px] mx-auto mb-[16px] ForGnbmarginTop">
         <Image src="/images/민니로고2.png" alt="logo" width={180} height={84} />
       </div>
       <div className="flex flex-col items-center">

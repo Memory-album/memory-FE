@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
         <Gnb />
-        <div className="ForGnbmarginTop">{children}</div>
+        <div>{children}</div>
         <Fnb />
       </body>
     </html>
