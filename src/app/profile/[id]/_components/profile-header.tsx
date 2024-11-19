@@ -12,7 +12,7 @@ export const ProfileHeader = () => {
       </div>
       <div className="flex justify-center items-center mb-2">
         <strong className="font-bold text-[22px] mr-[9px]">이양장님</strong>
-        <EditProfile />
+        <EditProfile name="이양장" role="딸" />
       </div>
       <div className="mb-5 inline-flex justify-center items-center w-[60px] h-[30px] bg-[#4848F9] text-white rounded-[20px]">
         나

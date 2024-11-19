@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`main-bg ${pretendard.className}`}>
         <Gnb />
         <div>{children}</div>
-        <Fnb />
+        {/* <Fnb /> */}
       </body>
     </html>
   );

@@ -16,11 +16,11 @@ export const InviteMember = () => {
         <p className="text-base text-[#4C4B4B] text-center">멤버 초대하기</p>
       </DialogTrigger>
       <DialogContent className="w-[330px] rounded-[10px]">
-        <DialogHeader>
+        <DialogHeader className="m-auto">
           <DialogTitle className="mt-2">
             앨범을 공유할 가족을 초대해보세요!
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-center">
             아래 코드로 멤버를 초대할 수 있어요
           </DialogDescription>
         </DialogHeader>

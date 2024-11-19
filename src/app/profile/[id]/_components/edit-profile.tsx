@@ -1,10 +1,8 @@
-import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -14,7 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FiEdit } from 'react-icons/fi';
 
-export const EditProfile = () => {
+type Props = {
+  name: string;
+  role: string;
+};
+
+export const EditProfile = ({ name, role }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
