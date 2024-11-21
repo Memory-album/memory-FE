@@ -12,7 +12,7 @@ type Props = {
 
 export const SentMessage = ({ messages, setMessages }: Props) => {
   return (
-    <div className="flex flex-col items-end pr-4">
+    <div className="flex flex-col items-end">
       {messages &&
         messages.map((message) => (
           <MessageItem

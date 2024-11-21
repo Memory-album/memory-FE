@@ -32,7 +32,7 @@ export const MessageItem = ({ message, setMessages }: Props) => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex mr-4">
       <PiPencil
         className="text-[#85B6FF] text-[17px] cursor-pointer"
         onClick={handleToggleState}

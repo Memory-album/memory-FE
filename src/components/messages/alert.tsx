@@ -11,13 +11,13 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { BsMenuButton } from 'react-icons/bs';
 
 type Props = {
   onNextView: () => void;
   description: string;
   buttonValue?: string;
   buttonClassName?: string;
+  disabled?: boolean;
 };
 
 export const Alert = ({
@@ -25,12 +25,17 @@ export const Alert = ({
   description,
   buttonValue = '확인',
   buttonClassName,
+  disabled,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className={buttonClassName} onClick={onNextView}>
+        <Button
+          className={buttonClassName}
+          onClick={onNextView}
+          disabled={disabled}
+        >
           {buttonValue}
         </Button>
       </AlertDialogTrigger>

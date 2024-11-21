@@ -18,8 +18,8 @@ const Fnb = () => {
     '/signup',
     '/invite',
     '/answers/',
-    // '/uploads/owner',
-    // '/uploads/member',
+    '/uploads/owner',
+    '/uploads/member',
   ];
   const dynamicRoutePatterns = [/^\/answers\/.+$/];
 

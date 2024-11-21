@@ -12,14 +12,15 @@ type Message = {
 type Props = {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  imageSrc: string;
 };
 
-export const SelfUpload = ({ messages, setMessages }: Props) => {
+export const SelfUpload = ({ messages, setMessages, imageSrc }: Props) => {
   return (
     <>
       <UploadButton />
       <div className="overflow-y-auto mb-24">
-        <Image />
+        <Image imageSrc={imageSrc} />
         <SentMessage messages={messages} setMessages={setMessages} />
       </div>
       <MessageInput onUploadMessage={setMessages} />

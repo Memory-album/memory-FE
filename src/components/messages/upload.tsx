@@ -13,14 +13,20 @@ type Props = {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setCurrentView: (view: string) => void;
+  imageSrc: string;
 };
 
-export const Upload = ({ messages, setMessages, setCurrentView }: Props) => {
+export const Upload = ({
+  messages,
+  setMessages,
+  setCurrentView,
+  imageSrc,
+}: Props) => {
   return (
     <>
       <UploadButton />
       <div className="overflow-y-auto mb-24">
-        <Image />
+        <Image imageSrc={imageSrc} />
         <ReceivedMessage />
         <SentMessage messages={messages} setMessages={setMessages} />
       </div>

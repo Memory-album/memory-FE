@@ -16,7 +16,7 @@ const pretendard = localFont({
   variable: '--font-pretendard',
   weight: 'normal',
 });
-
+// TODO : FNB, layout 되돌리기
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
         <Gnb />
-        <div>{children}</div>
+        <div className="pt-[110px]">{children}</div>
         <Fnb />
       </body>
     </html>

@@ -15,12 +15,15 @@ const buttonVariants = cva(
         loginBtn: 'text-white rounded-[10px] font-bold text-[18px]',
         homeBtn:
           'text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf]',
+        uploadBtn:
+          'text-lg bg-[#4848f9] disabled:bg-[#DAE2FF] text-white font-bold rounded-[10px] hover:bg-[#3d3dcf]',
       },
       size: {
         default: 'w-[280px] h-[50px] px-4 py-2',
         mainPage: 'w-[328px] h-[52px] px-4 py-2',
         prevBtn: 'w-[34px] h-[34px]',
         homeBtn: 'w-[328px] h-[52px]',
+        uploadBtn: 'w-[60px] h-[40px]',
       },
     },
     defaultVariants: {
