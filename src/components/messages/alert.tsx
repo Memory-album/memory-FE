@@ -1,39 +1,47 @@
 import {
   AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { useViewStore } from '@/store/useViewStore';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
 type Props = {
-  onNextView: () => void;
+  nextView: string;
   description: string;
+  question?: Dispatch<SetStateAction<string>>;
   buttonValue?: string;
   buttonClassName?: string;
   disabled?: boolean;
 };
 
 export const Alert = ({
-  onNextView,
+  nextView,
   description,
+  question,
   buttonValue = '확인',
   buttonClassName,
   disabled,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
+  const { setView } = useViewStore();
+
+  const handleSetView = useCallback(() => {
+    setTimeout(() => {
+      setView(nextView);
+    }, 5000);
+  }, []);
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
           className={buttonClassName}
-          onClick={onNextView}
+          onClick={handleSetView}
           disabled={disabled}
         >
           {buttonValue}

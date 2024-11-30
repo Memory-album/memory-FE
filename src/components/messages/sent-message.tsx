@@ -1,26 +1,28 @@
+import { useMessageStore } from '@/store/useMessageStore';
 import { MessageItem } from './message-item';
-
-type Message = {
-  id: number;
-  content: string;
-};
+import { useEffect, useRef } from 'react';
 
 type Props = {
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  roomId: string;
 };
+export const SentMessage = ({ roomId }: Props) => {
+  const { getMessages } = useMessageStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const messages = getMessages(roomId);
 
-export const SentMessage = ({ messages, setMessages }: Props) => {
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
-    <div className="flex flex-col items-end">
+    <div className="flex mb-24 flex-col items-end">
       {messages &&
         messages.map((message) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            setMessages={setMessages}
-          />
+          <MessageItem key={message.id} roomId={roomId} message={message} />
         ))}
+      <div ref={scrollRef}></div>
     </div>
   );
 };

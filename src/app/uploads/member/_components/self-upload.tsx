@@ -1,29 +1,31 @@
 import { UploadButton } from '@/components/messages/upload-button';
 import { MessageInput } from '@/components/messages/message-input';
 import { Image } from '@/components/messages/image';
-import { ReceivedMessage } from '@/components/messages/received-message';
 import { SentMessage } from '@/components/messages/sent-message';
-
-type Message = {
-  id: number;
-  content: string;
-};
+import { useHasMessage } from '@/lib/messages/useHasMessage';
+import { useRouter } from 'next/navigation';
+import { useMessageStore } from '@/store/useMessageStore';
 
 type Props = {
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  roomId: string;
   imageSrc: string;
 };
 
-export const SelfUpload = ({ messages, setMessages, imageSrc }: Props) => {
+export const SelfUpload = ({ roomId, imageSrc }: Props) => {
+  const { hasMessage, checkMessages } = useHasMessage(roomId);
+  const router = useRouter();
+  const { deleteRoom } = useMessageStore();
+
+  const handleUpload = () => {
+    router.replace('/home');
+    deleteRoom(roomId);
+  };
   return (
     <>
-      <UploadButton />
-      <div className="overflow-y-auto mb-24">
-        <Image imageSrc={imageSrc} />
-        <SentMessage messages={messages} setMessages={setMessages} />
-      </div>
-      <MessageInput onUploadMessage={setMessages} />
+      <UploadButton disabled={!hasMessage} onUpload={handleUpload} />
+      <Image imageSrc={imageSrc} />
+      <SentMessage roomId={roomId} />
+      <MessageInput roomId={roomId} onSendMessage={checkMessages} />
     </>
   );
 };
