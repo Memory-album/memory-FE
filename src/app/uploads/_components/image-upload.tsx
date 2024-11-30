@@ -1,5 +1,6 @@
 'use client';
 import { Input } from '@/components/ui/input';
+import { handleFileUpload } from '@/lib/image/handleFileUpload';
 import { ChangeEventHandler, useRef, useState } from 'react';
 import { MdOutlineCameraAlt } from 'react-icons/md';
 
@@ -14,18 +15,7 @@ export const ImageUpload = ({ preview, setPreview }: Props) => {
   };
 
   const onUpload: ChangeEventHandler<HTMLInputElement> = (e) => {
-    e.preventDefault();
-    const file = (e.target.files as FileList)[0];
-    console.log(file);
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-
-      reader.readAsDataURL(file);
-    }
+    handleFileUpload(e, (result) => setPreview(result));
   };
 
   return (
@@ -36,7 +26,6 @@ export const ImageUpload = ({ preview, setPreview }: Props) => {
         ref={imageRef}
         className="hidden"
         onChange={onUpload}
-        aria-hidden={true}
       />
       <div
         onClick={handleUploadImage}
