@@ -38,11 +38,11 @@ const Gnb = () => {
   };
 
   let currentPathName;
-  if (pathname === '/albums') {
+  if (pathname.includes('albums')) {
     currentPathName = '앨범';
-  } else if (pathname === '/likes') {
+  } else if (pathname.includes('likes')) {
     currentPathName = '좋아요';
-  } else if (pathname === '/collection') {
+  } else if (pathname.includes('collection')) {
     currentPathName = '컬렉션';
   } else if (pathname === '/answers') {
     currentPathName = '답변하기';
@@ -50,7 +50,7 @@ const Gnb = () => {
     currentPathName = '앨범 만들기';
   } else if (pathname === '/uploads/members') {
     currentPathName = '질문하기';
-  } else if (pathname === '/profile') {
+  } else if (pathname.includes('profile')) {
     currentPathName = '프로필';
   } else if (pathname === '/questions') {
     currentPathName = '질문';
@@ -60,7 +60,7 @@ const Gnb = () => {
   console.log(currentPathName);
 
   return (
-    <header className="w-full h-[102px] fixed bg-[#fafcffe5] z-50">
+    <header className="w-full h-[102px] fixed bg-[#fdfdfd] z-50">
       <div className="w-full h-[78px] mt-6 flex justify-between items-center">
         <div className="ml-4 font-bold text-lg text-[#8FB6FF]">
           {currentPathName}
