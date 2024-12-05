@@ -40,7 +40,7 @@ const PhotosInAlbum = () => {
   };
 
   return (
-    <div className="ForGnbpaddingTop ForFnbmarginBottom mx-4">
+    <div className="ForFnbmarginBottom mx-4">
       <ResponsiveMasonry
         columnsCountBreakPoints={{ 500: 2, 600: 3, 1200: 4, 1400: 5 }}
       >

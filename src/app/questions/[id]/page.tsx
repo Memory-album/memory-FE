@@ -3,7 +3,7 @@ import { ReceivedMessage } from './_components/received-message';
 
 const Page = () => {
   return (
-    <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
+    <div className="px-4 pt-6 sm:w-[500px] sm:m-auto ForGnbpaddingTop">
       <div className="mb-[35px] flex items-end">
         <Image />
         <ul className="text-xs sm:text-sm">

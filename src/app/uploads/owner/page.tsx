@@ -13,7 +13,7 @@ const Page = () => {
   const [image, setImage] = useState<string>('');
 
   return (
-    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto">
+    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
       {view === '' && (
         <div className="flex flex-col justify-center items-center">
           <ImageUpload preview={image} setPreview={setImage} />

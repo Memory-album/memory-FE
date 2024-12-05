@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
         <Gnb />
-        <div className="pt-[110px]">{children}</div>
+        <div className="">{children}</div>
         <Fnb />
       </body>
     </html>

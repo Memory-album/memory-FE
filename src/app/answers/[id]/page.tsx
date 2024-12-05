@@ -18,7 +18,7 @@ const Page = () => {
   ];
 
   return (
-    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full">
+    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full ForGnbpaddingTop">
       {view === '' && (
         <Upload
           roomId={roomId}

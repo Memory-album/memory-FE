@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const Page = () => {
   return (
-    <div className="m-auto w-full sm:w-[500px] h-screen">
+    <div className="m-auto w-full sm:w-[500px] h-screen ForGnbpaddingTop">
       <Link href="/groups/1/edit">
         <PiPencilDuotone className="text-[28px] text-[#85B6FF] ml-auto" />
       </Link>

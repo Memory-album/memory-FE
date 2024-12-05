@@ -9,8 +9,7 @@ export const ReceivedMessage = () => {
         }}
       ></div>
       <div className="p-5 rounded-[20px] bg-[#F3F4FF] text-lg">
-        이건 언젠데 토끼랑 토끼가 둘이 앉아있고 뭐라고 하는데 새벽이고 하늘이
-        예쁘고 블라블라
+        아직 답변을 하지 않았어요
       </div>
     </div>
   );

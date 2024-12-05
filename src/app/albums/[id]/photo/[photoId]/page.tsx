@@ -6,7 +6,6 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaOptionsType } from 'embla-carousel';
 import '@/components/embla/embla.css';
 import { ReceivedMessageInAlbums } from './_components/received-message-albums';
-import { ReceivedMessage } from '@/components/messages/received-message';
 import { GoHeartFill } from 'react-icons/go';
 import { CgClose } from 'react-icons/cg';
 import { DownloadSquare02Icon } from 'hugeicons-react';
@@ -92,7 +91,7 @@ const PhotosInAlbum = ({ params }: PropType) => {
   };
 
   return (
-    <main className="pt-[102px]">
+    <main className="">
       {/* 다운로드 */}
       <div
         ref={downloadRef}
@@ -145,15 +144,22 @@ const PhotosInAlbum = ({ params }: PropType) => {
           style={{ left: 'calc(50% - 181px' }}
         >
           <div className="mt-5 h-[498px] overflow-scroll">
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
-            <ReceivedMessage />
+            {/* 여기 컴포넌트화 */}
+            <div className="flex justify-start items-end mb-[25px] pl-[30px]">
+              <div className="mr-4 w-[50px] h-[50px] shrink-0">
+                <img
+                  className="block w-full h-full object-cover rounded-full"
+                  src="/images/profile.png"
+                  alt="프로필 이미지"
+                />
+              </div>
+
+              <div className="flex flex-col items-start">
+                <p className="py-3 px-[17px] mb-1 max-w-[240px] bg-[#ABA5FF] rounded-[20px] rounded-bl-none text-white text-base">
+                  답장예시
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

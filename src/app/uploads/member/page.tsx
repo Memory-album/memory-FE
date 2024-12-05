@@ -12,7 +12,7 @@ const Page = () => {
   const [image, setImage] = useState<string>('');
 
   return (
-    <div className="relative mb-24 w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full">
+    <div className="relative mb-24 w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full ForGnbpaddingTop">
       {view === '' && (
         <>
           <ImageUpload preview={image} setPreview={setImage} />

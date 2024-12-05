@@ -5,7 +5,7 @@ const albums = () => {
   return (
     <div>
       <main className="w-full">
-        <section className="flex flex-col mx-auto w-fit pt-[102px]">
+        <section className="flex flex-col mx-auto w-fit">
           <Link href="/albums/123">
             <div className="w-fit mb-[31px] cursor-pointer">
               <p className="font-semibold text-[24px] w-fit">앨범</p>
