@@ -10,6 +10,7 @@
 
 @layer base {
   :root {
+    --ForGnbpaddingTop: 102px;
     --ForGnbmarginTop: 102px;
     --background: #fafcff;
     --button: #4848f9;
@@ -19,6 +20,7 @@
     --search: #7575ff;
     --mic: #699bf7;
     --album-down-bg: #e0edff;
+    --ForFnbmarginBottom: 131px;
   }
 }
 
@@ -27,8 +29,14 @@
     background-color: var(--background);
   }
 
+  .ForGnbpaddingTop {
+    padding-top: var(--ForGnbpaddingTop);
+  }
   .ForGnbmarginTop {
     margin-top: var(--ForGnbmarginTop);
+  }
+  .ForFnbmarginBottom {
+    margin-bottom: var(--ForFnbmarginBottom);
   }
 }
 
