@@ -1,9 +1,19 @@
 import { Button } from '@/components/ui/button';
 
-export const UploadButton = () => {
+type Props = {
+  disabled?: boolean;
+  onUpload: () => void;
+};
+
+export const UploadButton = ({ disabled = true, onUpload }: Props) => {
   return (
     <div className="flex justify-end mb-6">
-      <Button size="upload" variant="upload" disabled={false}>
+      <Button
+        variant="uploadBtn"
+        size="uploadBtn"
+        disabled={disabled}
+        onClick={() => onUpload()}
+      >
         저장
       </Button>
     </div>

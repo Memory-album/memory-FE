@@ -1,40 +1,33 @@
 'use client';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useViewStore } from '@/store/useViewStore';
+
 import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { Upload } from '@/components/messages/upload';
-
-type Message = {
-  id: number;
-  content: string;
-};
+import { usePathname } from 'next/navigation';
 
 const Page = () => {
-  const [currentView, setCurrentView] = useState('input');
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, content: '모르겠는데' },
-    { id: 2, content: '반찬 보내게 주소나 불러' },
-  ]);
+  const { view } = useViewStore();
+  const roomId = usePathname();
+  const id = usePathname();
 
-  const handleNextView = () => {
-    setTimeout(() => {
-      setCurrentView('input');
-    }, 5000);
-  };
+  // id로 질문 가져오기
+  const questions = [
+    '엄마 여기 기억나?\n 여기 짜장면 집 있잖아 무도 정형돈 두루미편?',
+    '티비 보면서 먹고 싶다고 했는데 엄마가 바로 데려가 줬잖아ㅎㅎ\n나 그때 진짜 감동이었어ㅠ\n그때 먹었던 짜장면이제일 맛있었어',
+  ];
 
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full">
-      {currentView === 'input' && (
+      {view === '' && (
         <Upload
-          messages={messages}
-          setMessages={setMessages}
-          setCurrentView={setCurrentView}
+          roomId={roomId}
+          imageSrc="/images/example2.png"
+          questions={questions}
         />
       )}
-      {currentView === 'recording' && (
-        <VoiceAnswer
-          onNextView={handleNextView}
-          message="질문에 답장을 남겨보세요!"
-        />
+      {view === 'recording' && (
+        <VoiceAnswer message="질문에 답장을 남겨보세요!" nextView="" />
       )}
     </div>
   );

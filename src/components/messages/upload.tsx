@@ -1,33 +1,41 @@
+import { useEffect } from 'react';
+
 import { UploadButton } from '@/components/messages/upload-button';
 import { MessageInput } from '@/components/messages/message-input';
 import { Image } from '@/components/messages/image';
 import { ReceivedMessage } from '@/components/messages/received-message';
 import { SentMessage } from '@/components/messages/sent-message';
-
-type Message = {
-  id: number;
-  content: string;
-};
+import { useHasMessage } from '@/lib/messages/useHasMessage';
+import { useMessageStore } from '@/store/useMessageStore';
+import { useRouter } from 'next/navigation';
 
 type Props = {
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  setCurrentView: (view: string) => void;
+  roomId: string;
+  imageSrc: string;
+  questions: string[];
 };
 
-export const Upload = ({ messages, setMessages, setCurrentView }: Props) => {
+export const Upload = ({ imageSrc, roomId, questions }: Props) => {
+  const { hasMessage, checkMessages } = useHasMessage(roomId);
+  const { deleteRoom } = useMessageStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    checkMessages();
+  }, []);
+
+  const handleUpload = () => {
+    router.replace('/home');
+    deleteRoom(roomId);
+  };
+
   return (
     <>
-      <UploadButton />
-      <div className="overflow-y-auto mb-24">
-        <Image />
-        <ReceivedMessage />
-        <SentMessage messages={messages} setMessages={setMessages} />
-      </div>
-      <MessageInput
-        setCurrentView={setCurrentView}
-        onUploadMessage={setMessages}
-      />
+      <UploadButton disabled={!hasMessage} onUpload={handleUpload} />
+      <Image imageSrc={imageSrc} />
+      <ReceivedMessage questions={questions} />
+      <SentMessage roomId={roomId} />
+      <MessageInput roomId={roomId} onSendMessage={checkMessages} />
     </>
   );
 };

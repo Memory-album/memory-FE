@@ -10,7 +10,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useForm, useWatch } from 'react-hook-form';
-import { useState } from 'react';
+import { ChangeEventHandler, useRef, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { MdOutlineCameraAlt } from 'react-icons/md';
+import { handleFileUpload } from '@/lib/image/handleFileUpload';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   groupname: string;
@@ -19,10 +23,22 @@ type FormData = {
 
 type Props = {
   flow: 'create' | 'edit';
+  id?: number;
 };
 
-export function GroupForm({ flow }: Props) {
+export function GroupForm({ flow, id }: Props) {
   const [focus, setFocus] = useState(false);
+  const [preview, setPreview] = useState<string>('');
+  const imageRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
+  const handleInputRef = () => {
+    imageRef.current?.click();
+  };
+
+  const onUpload: ChangeEventHandler<HTMLInputElement> = (e) => {
+    handleFileUpload(e, (result) => setPreview(result));
+  };
+
   const form = useForm<FormData>({
     defaultValues: {
       groupname: '',
@@ -46,6 +62,11 @@ export function GroupForm({ flow }: Props) {
 
     // console.log('FormData:', Array.from(formData.entries()));
     console.log(values);
+    if (flow === 'create') {
+      router.replace('/home');
+    } else {
+      router.replace(`/groups/${id}/members`);
+    }
   };
 
   return (
@@ -61,15 +82,37 @@ export function GroupForm({ flow }: Props) {
                   그룹 대표 사진
                 </FormLabel>
                 <FormControl>
-                  <input
+                  <Input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => field.onChange(e.target.files)}
+                    hidden
+                    ref={imageRef}
+                    className="hidden"
+                    onChange={onUpload}
                   />
                 </FormControl>
               </FormItem>
             )}
           />
+          <div
+            onClick={handleInputRef}
+            className="mt-2 size-24 rounded-[10px] overflow-hidden"
+          >
+            {!preview && (
+              <div className="flex justify-center items-center size-full border-[4px] border-solid border-[#dae2ff] rounded-[10px] ">
+                <MdOutlineCameraAlt className="size-[50px] text-[#dae2ff]" />
+              </div>
+            )}
+            {preview && (
+              <div className="size-24 rounded-[10px] overflow-hidden">
+                <img
+                  src={preview}
+                  alt="미리보기"
+                  className="block size-full object-cover"
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div className="mb-[60px] h-[106px]">
           <FormField
@@ -77,7 +120,7 @@ export function GroupForm({ flow }: Props) {
             name="groupname"
             render={({ field }: { field: any }) => (
               <FormItem>
-                <FormLabel className="mb-[9px] text-[22px] after:content-['*'] after:ml-0.5 after:text-[#4848f9] font-semibold">
+                <FormLabel className="mb-[9px] text-[22px] after:content-['*'] after:ml-0.5 after:text-pink-600 font-semibold">
                   그룹 이름
                 </FormLabel>
                 <FormControl>
@@ -89,7 +132,7 @@ export function GroupForm({ flow }: Props) {
                   />
                 </FormControl>
                 {!groupnameValue && focus && (
-                  <FormMessage className="text-[#4848f9] text-sm font-semibold">
+                  <FormMessage className="text-pink-600 text-sm font-semibold">
                     그룹 이름은 필수값입니다.
                   </FormMessage>
                 )}
