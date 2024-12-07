@@ -4,8 +4,8 @@ type PropType = {
   params: { id: string; photoId: string };
 };
 
-const AlbumsPhoto = ({ params }: PropType) => {
+const LikesPhoto = ({ params }: PropType) => {
   return <PhotoDetail params={params} />;
 };
 
-export default AlbumsPhoto;
+export default LikesPhoto;

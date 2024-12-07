@@ -1,7 +1,7 @@
 import PhotosInAlbum from '@/components/albums/PhotosInAlbums';
 
-const Albums = () => {
+const Likes = () => {
   return <PhotosInAlbum />;
 };
 
-export default Albums;
+export default Likes;

@@ -14,7 +14,7 @@ const buttonVariants = cva(
         prevBtn: 'text-[#6E6E6E]',
         loginBtn: 'text-white rounded-[10px] font-bold text-[18px]',
         homeBtn:
-          'text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf]',
+          'text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf] shadow-[0_0_10px_1px_rgba(141,146,255,0.42)]',
         uploadBtn:
           'text-lg bg-[#4848f9] disabled:bg-[#DAE2FF] text-white font-bold rounded-[10px] hover:bg-[#3d3dcf]',
       },
