@@ -15,7 +15,7 @@ const PhotoArrangement = ({ id, title, bgImages }: PhotoArrangementProps) => {
     ],
     2: [
       'w-[139px] h-[139px] rounded-[10px] absolute top-[67px]',
-      'w-[209px] h-[123px] rounded-[10px] absolute right-0 bottom-0',
+      'w-[209px] h-[123px] rounded-[10px] absolute right-0 bottom-0 outline outline-[10px] outline-[#fafcff]',
       'w-[130px] h-[130px] rounded-[10px] absolute left-[91px] outline outline-[10px] outline-[#fafcff]',
       'w-[99px] h-[46px] rounded-[10px] absolute top-[38px] right-0',
     ],
@@ -35,11 +35,12 @@ const PhotoArrangement = ({ id, title, bgImages }: PhotoArrangementProps) => {
     ],
   };
 
-  const layout = layouts[id] || [];
+  const randomLayout = Math.floor(Math.random() * 4);
+  const layout = layouts[randomLayout] || [];
 
   return (
     <div className="mb-[50px]">
-      <h3 className="text-[28px] text-[#5f81ff] font-semibold ml-8 mb-4 drop-shadow-md shadow-red-600">
+      <h3 className="text-[28px] text-[#5f81ff] font-semibold ml-8 mb-4 drop-shadow-md">
         {title}
       </h3>
       <div className="mx-auto w-[329px] h-[219px] relative">

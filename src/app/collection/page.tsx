@@ -22,6 +22,7 @@ const Collection = () => {
         './images/2.png',
         './images/1.png',
         './images/4.png',
+        './images/5.png',
       ],
     },
     {
@@ -38,6 +39,17 @@ const Collection = () => {
     {
       id: 4,
       title: '음식',
+      bgImages: [
+        './images/3.png',
+        './images/2.png',
+        './images/4.png',
+        './images/5.png',
+        './images/1.png',
+      ],
+    },
+    {
+      id: 5,
+      title: '여행',
       bgImages: [
         './images/3.png',
         './images/2.png',
