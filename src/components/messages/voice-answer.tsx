@@ -1,9 +1,9 @@
 import { MdKeyboardVoice } from 'react-icons/md';
 import { Alert } from './alert';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { useViewStore } from '@/store/useViewStore';
+import { useFileProcessing } from '@/lib/upload/useFileProcessing';
 
 type Props = {
   message: string;
@@ -12,11 +12,9 @@ type Props = {
 
 export const VoiceAnswer = ({ message, nextView }: Props) => {
   const [media, setMedia] = useState<MediaRecorder | null>(null);
-  let chunks: Blob[] = [];
+  const [chunks, setChunks] = useState<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<Blob>();
-  const [isLoading, setIsLoading] = useState(false);
-  const { setView } = useViewStore();
+  const { handleFileProcessing } = useFileProcessing(nextView);
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -25,7 +23,7 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
         const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
 
         recorder.ondataavailable = (e) => {
-          chunks.push(e.data);
+          setChunks((prevChunks) => [...prevChunks, e.data]);
         };
 
         recorder.start();
@@ -39,35 +37,15 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
 
   const handleOffRecord = () => {
     if (media) {
-      media.ondataavailable = function (e) {
-        chunks.push(e.data);
-        setAudioUrl(e.data);
-      };
       media.stop();
       setIsRecording(false);
-      setIsLoading(true);
+      console.log(chunks);
     }
-    console.log(chunks);
   };
 
-  // const onSubmitAudioFile = useCallback(() => {
-  //   const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-
-  //   const formData = new FormData();
-  //   formData.append('audio', audioBlob, 'recording.webm');
-  //   setIsLoading(true);
-
-  //   if (audioUrl) {
-  //     const audio = new Audio(URL.createObjectURL(audioUrl));
-  //     audio.play();
-  //   }
-  // }, [audioUrl]);
-
   const handleSubmitAudioFile = () => {
-    setTimeout(() => {
-      setIsLoading(false);
-      setView(nextView);
-    }, 7000);
+    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+    handleFileProcessing(audioBlob, 'audio');
   };
 
   return (
@@ -95,12 +73,10 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
       ) : (
         <RecordingButton onClick={handleOffRecord} buttonValue="그만하기" />
       )}
-      {/* <Button onClick={onSubmitAudioFile}>결과 확인</Button> */}
       <Alert
-        nextView={nextView}
-        isLoading={isLoading}
         onClick={handleSubmitAudioFile}
         description="ai가 음성을 추출하고 있어요. <br /> 답변을 요약해서 보여드릴게요."
+        disabled={chunks.length === 0 || isRecording}
       />
     </div>
   );

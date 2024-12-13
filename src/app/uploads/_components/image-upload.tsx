@@ -5,11 +5,13 @@ import { ChangeEventHandler, useRef, useState } from 'react';
 import { MdOutlineCameraAlt } from 'react-icons/md';
 
 type Props = {
-  preview: string | null;
-  setPreview: (preview: string) => void;
+  preview: { dataUrl: string; file: File } | null;
+  setPreview: (image: { dataUrl: string; file: File }) => void;
 };
+
 export const ImageUpload = ({ preview, setPreview }: Props) => {
   const imageRef = useRef<HTMLInputElement | null>(null);
+
   const handleUploadImage = () => {
     imageRef.current?.click();
   };
@@ -40,7 +42,7 @@ export const ImageUpload = ({ preview, setPreview }: Props) => {
         {preview && (
           <div className="w-[290px] my-auto rounded-[20px] overflow-hidden">
             <img
-              src={preview}
+              src={preview.dataUrl}
               alt="미리보기"
               className="size-full aspect-auto"
             />

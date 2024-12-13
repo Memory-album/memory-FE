@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 
-type OnUploadCallback = (preview: string) => void;
+type OnUploadCallback = (preview: { dataUrl: string; file: File }) => void;
 
 export const handleFileUpload = (
   e: ChangeEvent<HTMLInputElement>,
@@ -12,7 +12,10 @@ export const handleFileUpload = (
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      callback(reader.result as string);
+      callback({
+        dataUrl: reader.result as string, // 이미지의 dataUrl
+        file, // 파일 자체
+      });
     };
 
     reader.readAsDataURL(file);

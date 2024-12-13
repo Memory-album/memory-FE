@@ -7,14 +7,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useViewStore } from '@/store/useViewStore';
-import { Dispatch, SetStateAction, useCallback } from 'react';
 
 type Props = {
-  nextView: string;
   description: string;
-  isLoading: boolean;
-  question?: Dispatch<SetStateAction<string>>;
   buttonValue?: string;
   buttonClassName?: string;
   disabled?: boolean;
@@ -22,18 +17,13 @@ type Props = {
 };
 
 export const Alert = ({
-  nextView,
   description,
-  isLoading,
-  question,
   buttonValue = '다음',
   buttonClassName,
   disabled,
   onClick,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
-
-  if (!isLoading) return null;
 
   return (
     <AlertDialog>
