@@ -3,12 +3,14 @@ import Link from 'next/link';
 
 const albums = () => {
   return (
-    <div>
+    <div className="ForGnbpaddingTop">
       <main className="w-full">
         <section className="flex flex-col mx-auto w-fit">
           <Link href="/albums/123">
             <div className="w-fit mb-[31px] cursor-pointer">
-              <p className="font-semibold text-[24px] w-fit">앨범</p>
+              <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+                앨범
+              </p>
               <div className="w-[359px] h-[260px] relative">
                 <Image
                   src="/images/example.png"
@@ -21,7 +23,9 @@ const albums = () => {
             </div>
           </Link>
           <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit">앨범</p>
+            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+              앨범
+            </p>
             <div className="w-[359px] h-[260px] relative">
               <Image
                 src="/images/example.png"
@@ -33,7 +37,9 @@ const albums = () => {
             </div>
           </div>
           <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit">앨범</p>
+            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+              앨범
+            </p>
             <div className="w-[359px] h-[260px] relative">
               <Image
                 src="/images/example.png"
@@ -45,7 +51,9 @@ const albums = () => {
             </div>
           </div>
           <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit">앨범</p>
+            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+              앨범
+            </p>
             <div className="w-[359px] h-[260px] relative">
               <Image
                 src="/images/example.png"
@@ -57,7 +65,9 @@ const albums = () => {
             </div>
           </div>
           <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit">앨범</p>
+            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+              앨범
+            </p>
             <div className="w-[359px] h-[260px] relative">
               <Image
                 src="/images/example.png"
@@ -69,7 +79,9 @@ const albums = () => {
             </div>
           </div>
           <div className="w-fit mb-[131px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit">앨범</p>
+            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
+              앨범
+            </p>
             <div className="w-[359px] h-[260px] relative">
               <Image
                 src="/images/example.png"

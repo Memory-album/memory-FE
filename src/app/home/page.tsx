@@ -49,7 +49,7 @@ const home = () => {
       <main className="ml-[28px]">
         <article>
           <div className="mt-[47px] ml-[3px] mb-[21px] flex flex-row w-[92%] justify-between items-end">
-            <p className="font-bold text-[28px]">당신의 앨범</p>
+            <p className="font-bold text-[28px] drop-shadow-md">당신의 앨범</p>
             <Link
               href="/albums"
               className="font-semibold text-[10px] text-[#676767] mb-[5px]"
