@@ -26,19 +26,12 @@ export const Alert = ({
   description,
   isLoading,
   question,
-  buttonValue = '확인',
+  buttonValue = '다음',
   buttonClassName,
   disabled,
   onClick,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
-  const { setView } = useViewStore();
-
-  const handleSetView = useCallback(() => {
-    // setTimeout(() => {
-    //   setView(nextView);
-    // }, 5000);
-  }, []);
 
   if (!isLoading) return null;
 

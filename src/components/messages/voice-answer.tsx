@@ -3,6 +3,7 @@ import { Alert } from './alert';
 import { useCallback, useState } from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { useViewStore } from '@/store/useViewStore';
 
 type Props = {
   message: string;
@@ -15,8 +16,9 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<Blob>();
   const [isLoading, setIsLoading] = useState(false);
+  const { setView } = useViewStore();
 
-  const startRecording = () => {
+  const handleStartRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
@@ -48,22 +50,23 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
     console.log(chunks);
   };
 
-  const onSubmitAudioFile = useCallback(() => {
-    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+  // const onSubmitAudioFile = useCallback(() => {
+  //   const audioBlob = new Blob(chunks, { type: 'audio/webm' });
 
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'recording.webm');
-    setIsLoading(true);
+  //   const formData = new FormData();
+  //   formData.append('audio', audioBlob, 'recording.webm');
+  //   setIsLoading(true);
 
-    if (audioUrl) {
-      const audio = new Audio(URL.createObjectURL(audioUrl));
-      audio.play();
-    }
-  }, [audioUrl]);
+  //   if (audioUrl) {
+  //     const audio = new Audio(URL.createObjectURL(audioUrl));
+  //     audio.play();
+  //   }
+  // }, [audioUrl]);
 
   const handleSubmitAudioFile = () => {
     setTimeout(() => {
       setIsLoading(false);
+      setView(nextView);
     }, 7000);
   };
 
@@ -78,17 +81,19 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
         </p>
         <p
           className={cn(
-            'font-semibold text-3xl text-center text-slate-200 ',
+            'font-semibold text-3xl text-center text-gray-400 ',
             isRecording ? 'animate-pulse' : undefined,
           )}
         >
-          {isRecording ? '음성 인식 중이에요...' : '녹음을 시작하세요'}
+          {isRecording
+            ? '음성 인식 중이에요..'
+            : '시작 버튼을 누르고 말해보세요'}
         </p>
       </div>
       {!isRecording ? (
-        <Button onClick={startRecording}>녹음 시작</Button>
+        <RecordingButton onClick={handleStartRecording} buttonValue="시작" />
       ) : (
-        <Button onClick={handleOffRecord}>녹음 종료</Button>
+        <RecordingButton onClick={handleOffRecord} buttonValue="그만하기" />
       )}
       {/* <Button onClick={onSubmitAudioFile}>결과 확인</Button> */}
       <Alert
@@ -98,5 +103,21 @@ export const VoiceAnswer = ({ message, nextView }: Props) => {
         description="ai가 음성을 추출하고 있어요. <br /> 답변을 요약해서 보여드릴게요."
       />
     </div>
+  );
+};
+
+type ButtonProps = {
+  onClick: () => void;
+  buttonValue: string;
+};
+
+const RecordingButton = ({ onClick, buttonValue }: ButtonProps) => {
+  return (
+    <Button
+      onClick={onClick}
+      className="mb-3 border-[2px] border-slid border-[#4848F9] bg-white hover:bg-white text-[#4848F9]"
+    >
+      {buttonValue}
+    </Button>
   );
 };
