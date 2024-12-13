@@ -13,35 +13,41 @@ import { Dispatch, SetStateAction, useCallback } from 'react';
 type Props = {
   nextView: string;
   description: string;
+  isLoading: boolean;
   question?: Dispatch<SetStateAction<string>>;
   buttonValue?: string;
   buttonClassName?: string;
   disabled?: boolean;
+  onClick: () => void;
 };
 
 export const Alert = ({
   nextView,
   description,
+  isLoading,
   question,
   buttonValue = '확인',
   buttonClassName,
   disabled,
+  onClick,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
   const { setView } = useViewStore();
 
   const handleSetView = useCallback(() => {
-    setTimeout(() => {
-      setView(nextView);
-    }, 5000);
+    // setTimeout(() => {
+    //   setView(nextView);
+    // }, 5000);
   }, []);
+
+  if (!isLoading) return null;
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
           className={buttonClassName}
-          onClick={handleSetView}
+          onClick={onClick}
           disabled={disabled}
         >
           {buttonValue}
