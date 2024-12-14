@@ -21,6 +21,16 @@ const Page = () => {
   const handleSubmitImageFile = () => {
     const files = image.map((item) => item.file);
     handleFileProcessing(files, 'image');
+
+    // TODO: AI 질문 결과 받아서 전달
+  };
+
+  const [chunks, setChunks] = useState<Blob[]>([]);
+  const handleSubmitAudioFile = () => {
+    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+    handleFileProcessing(audioBlob, 'audio');
+
+    // TODO: AI 음성 결과 받아서 전달
   };
 
   return (
@@ -43,7 +53,12 @@ const Page = () => {
         <Upload images={images} roomId="owner" questions={['질문 데이터']} />
       )}
       {view === 'recording' && (
-        <VoiceAnswer message="질문에 답장을 남겨보세요!" nextView="input" />
+        <VoiceAnswer
+          message="질문에 답장을 남겨보세요!"
+          chunks={chunks}
+          setChunks={setChunks}
+          onSubmitAudioFile={handleSubmitAudioFile}
+        />
       )}
     </div>
   );
