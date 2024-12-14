@@ -1,23 +1,26 @@
 import { ChangeEvent } from 'react';
 
-type OnUploadCallback = (preview: { dataUrl: string; file: File }) => void;
+type OnUploadCallback = React.Dispatch<
+  React.SetStateAction<{ dataUrl: string; file: File }[]>
+>;
 
 export const handleFileUpload = (
   e: ChangeEvent<HTMLInputElement>,
   callback: OnUploadCallback,
 ) => {
   e.preventDefault();
-  const file = (e.target.files as FileList)[0];
-  if (file) {
-    const reader = new FileReader();
+  const files = e.target.files as FileList;
 
-    reader.onloadend = () => {
-      callback({
-        dataUrl: reader.result as string, // 이미지의 dataUrl
-        file, // 파일 자체
-      });
-    };
-
-    reader.readAsDataURL(file);
+  if (files) {
+    Array.from(files).forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        callback((prevPreview) => [
+          ...prevPreview,
+          { dataUrl: reader.result as string, file },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 };

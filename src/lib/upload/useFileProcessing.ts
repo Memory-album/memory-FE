@@ -6,15 +6,19 @@ export const useFileProcessing = (nextView: string) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileProcessing = (
-    file: File | Blob,
+    file: File[] | Blob,
     fileType: 'image' | 'audio',
   ) => {
     const formData = new FormData();
 
     if (fileType === 'image') {
-      formData.append('image', file);
+      if (Array.isArray(file)) {
+        file.forEach((f: File) => {
+          f && formData.append('images', f);
+        });
+      }
     } else if (fileType === 'audio') {
-      formData.append('audio', file, 'recording.webm');
+      formData.append('audio', file as Blob, 'recording.webm');
     }
 
     setIsLoading(true);

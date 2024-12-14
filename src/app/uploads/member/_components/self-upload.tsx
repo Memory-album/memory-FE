@@ -8,10 +8,10 @@ import { useMessageStore } from '@/store/useMessageStore';
 
 type Props = {
   roomId: string;
-  imageSrc: string;
+  images: string[];
 };
 
-export const SelfUpload = ({ roomId, imageSrc }: Props) => {
+export const SelfUpload = ({ roomId, images }: Props) => {
   const { hasMessage, checkMessages } = useHasMessage(roomId);
   const router = useRouter();
   const { deleteRoom } = useMessageStore();
@@ -20,10 +20,13 @@ export const SelfUpload = ({ roomId, imageSrc }: Props) => {
     router.replace('/home');
     deleteRoom(roomId);
   };
+
   return (
     <>
       <UploadButton disabled={!hasMessage} onUpload={handleUpload} />
-      <Image imageSrc={imageSrc} />
+      {images.map((image, index) => (
+        <Image key={index} imageSrc={image} />
+      ))}
       <SentMessage roomId={roomId} />
       <MessageInput roomId={roomId} onSendMessage={checkMessages} />
     </>

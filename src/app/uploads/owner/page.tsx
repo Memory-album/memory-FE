@@ -10,37 +10,37 @@ import { useFileProcessing } from '@/lib/upload/useFileProcessing';
 
 const Page = () => {
   const { view } = useViewStore();
-  const [image, setImage] = useState<{
-    dataUrl: string;
-    file: File;
-  } | null>(null);
-
+  const [image, setImage] = useState<{ dataUrl: string; file: File }[]>([]);
   const { handleFileProcessing } = useFileProcessing('input');
+  const images = [
+    '/images/example.png',
+    '/images/example2.png',
+    '/images/3.png',
+  ];
 
   const handleSubmitImageFile = () => {
-    handleFileProcessing(image!.file, 'image');
+    const files = image.map((item) => item.file);
+    handleFileProcessing(files, 'image');
   };
 
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
       {view === '' && (
-        <div className="flex flex-col justify-center items-center">
+        <>
           <ImageUpload preview={image} setPreview={setImage} />
-          <Alert
-            description="ai가 질문을 생각하고 있어요.<br />조금만 기다려주세요."
-            buttonValue="다음"
-            buttonClassName="disabled:bg-[#DAE2FF]"
-            disabled={image == null}
-            onClick={handleSubmitImageFile}
-          />
-        </div>
+          <div className="flex justify-center">
+            <Alert
+              description="ai가 질문을 생각하고 있어요.<br />조금만 기다려주세요."
+              buttonValue="다음"
+              buttonClassName="disabled:bg-[#DAE2FF]"
+              disabled={image.length === 0}
+              onClick={handleSubmitImageFile}
+            />
+          </div>
+        </>
       )}
       {view === 'input' && (
-        <Upload
-          imageSrc={image?.dataUrl as string}
-          roomId="owner"
-          questions={['질문 데이터']}
-        />
+        <Upload images={images} roomId="owner" questions={['질문 데이터']} />
       )}
       {view === 'recording' && (
         <VoiceAnswer message="질문에 답장을 남겨보세요!" nextView="input" />

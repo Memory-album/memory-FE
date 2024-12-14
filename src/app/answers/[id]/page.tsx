@@ -10,6 +10,11 @@ const Page = () => {
   const { view } = useViewStore();
   const roomId = usePathname();
   const id = usePathname();
+  const images = [
+    '/images/example.png',
+    '/images/example2.png',
+    '/images/3.png',
+  ];
 
   // id로 질문 가져오기
   const questions = [
@@ -20,11 +25,7 @@ const Page = () => {
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full ForGnbpaddingTop">
       {view === '' && (
-        <Upload
-          roomId={roomId}
-          imageSrc="/images/example2.png"
-          questions={questions}
-        />
+        <Upload roomId={roomId} images={images} questions={questions} />
       )}
       {view === 'recording' && (
         <VoiceAnswer message="질문에 답장을 남겨보세요!" nextView="" />
