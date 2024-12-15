@@ -1,6 +1,6 @@
 'use client';
 import { Input } from '@/components/ui/input';
-import { handleFileUpload } from '@/lib/image/handleFileUpload';
+import { handlePreviewFiles } from '@/lib/image/handlePreviewFiles';
 import { ChangeEventHandler, useRef } from 'react';
 import { MdOutlineCameraAlt } from 'react-icons/md';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export const ImageUpload = ({ preview, setPreview }: Props) => {
       }
     }
 
-    handleFileUpload(e, (result) => setPreview(result));
+    handlePreviewFiles(e, (result) => setPreview(result));
   };
 
   const handleDeleteImage = (index: number) => {

@@ -13,8 +13,8 @@ import { useForm, useWatch } from 'react-hook-form';
 import { ChangeEventHandler, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { MdOutlineCameraAlt } from 'react-icons/md';
-import { handleFileUpload } from '@/lib/image/handleFileUpload';
 import { useRouter } from 'next/navigation';
+import { usePreviewFile } from '@/lib/image/usePreviewFile';
 
 type FormData = {
   groupname: string;
@@ -28,15 +28,31 @@ type Props = {
 
 export function GroupForm({ flow, id }: Props) {
   const [focus, setFocus] = useState(false);
-  const [preview, setPreview] = useState<string>('');
   const imageRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const { preview, handlePreviewFile } = usePreviewFile();
+
   const handleInputRef = () => {
     imageRef.current?.click();
   };
 
   const onUpload: ChangeEventHandler<HTMLInputElement> = (e) => {
-    handleFileUpload(e, (result) => setPreview(result));
+    e.preventDefault();
+
+    if (e.target.files === null) {
+      return;
+    }
+
+    const file = e.target.files[0];
+    if (file.size > 1024 * 1024) {
+      alert(
+        Math.round(file.size / 1024 / 1024) +
+          'MB(1MB까지만 업로드 가능합니다.)',
+      );
+      return;
+    }
+
+    handlePreviewFile(file);
   };
 
   const form = useForm<FormData>({
@@ -106,7 +122,7 @@ export function GroupForm({ flow, id }: Props) {
             {preview && (
               <div className="size-24 rounded-[10px] overflow-hidden">
                 <img
-                  src={preview}
+                  src={preview.dataUrl}
                   alt="미리보기"
                   className="block size-full object-cover"
                 />

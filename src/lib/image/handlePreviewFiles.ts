@@ -4,7 +4,7 @@ type OnUploadCallback = React.Dispatch<
   React.SetStateAction<{ dataUrl: string; file: File }[]>
 >;
 
-export const handleFileUpload = (
+export const handlePreviewFiles = (
   e: ChangeEvent<HTMLInputElement>,
   callback: OnUploadCallback,
 ) => {

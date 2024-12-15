@@ -11,27 +11,26 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ChangeEvent, useRef, useState } from 'react';
+import { usePreviewFile } from '@/lib/image/usePreviewFile';
+import { ChangeEvent, useRef } from 'react';
 import { FaCamera } from 'react-icons/fa6';
 
 export const EditImage = () => {
   const imageRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<{
-    dataUrl: string;
-    file: File;
-  } | null>(null);
+  const { preview, setPreview, handlePreviewFile } = usePreviewFile();
 
   const handleClickInput = () => {
     imageRef.current?.click();
   };
 
   const handleUploadImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
+    e.preventDefault();
+
+    if (e.target.files === null) {
       return;
     }
 
     const file = e.target.files[0];
-
     if (file.size > 1024 * 1024) {
       alert(
         Math.round(file.size / 1024 / 1024) +
@@ -39,12 +38,8 @@ export const EditImage = () => {
       );
       return;
     }
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
 
-    reader.onloadend = () => {
-      setPreview({ dataUrl: reader.result as string, file });
-    };
+    handlePreviewFile(file);
   };
 
   return (
