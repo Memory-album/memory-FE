@@ -250,10 +250,10 @@ const signup = ({ slides, options }: PropType) => {
               </h2>
               <div className="fixed bottom-[8%]">
                 <Button asChild className="mb-[33px]">
-                  <Link href={'/invite'}>네</Link>
+                  <Link href={'/signup/invite'}>네, 받았어요</Link>
                 </Button>
                 <Button asChild>
-                  <Link href={'/home'}>아니요 바로 시작할래요</Link>
+                  <Link href={'/signup/group/create'}>아니요! 없어요</Link>
                 </Button>
               </div>
             </div>

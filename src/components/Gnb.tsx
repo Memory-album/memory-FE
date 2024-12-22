@@ -21,7 +21,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const Gnb = () => {
   const pathname = usePathname();
 
-  const excludeLayoutRoutes = ['/', , '/home', '/login', '/signup', '/invite'];
+  const excludeLayoutRoutes = [
+    '/',
+    ,
+    '/home',
+    '/login',
+    '/signup',
+    '/signup/join',
+    '/signup/group/create',
+  ];
 
   if (excludeLayoutRoutes.includes(pathname)) {
     return null;
