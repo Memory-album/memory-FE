@@ -12,7 +12,6 @@ import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
 import TermsOfUse from './_components/TermsOfUse';
 
-import VerificationInput from 'react-verification-input';
 import '../signup/verifyInputStyle.css';
 
 import {
@@ -26,6 +25,8 @@ import {
 } from '../../components/embla/EmblaCarouselDotButton';
 import '../../components/embla/embla.css';
 
+import { registerUser, sendVerifyCode, verifyEmailCode } from '@/services/auth';
+
 type PropType = {
   slides: number[];
   options?: EmblaOptionsType;
@@ -35,8 +36,9 @@ const signup = ({ slides, options }: PropType) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [emailVerify, setEmailVerify] = useState(false);
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [profileImg, setProfileImg] = useState<string | null>(null);
 
   const [terms, setTerms] = useState(false);
@@ -50,11 +52,25 @@ const signup = ({ slides, options }: PropType) => {
   const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
   const [isProfileUploaded, setIsProfileUploaded] = useState(false);
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handleVerifyCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailVerificationCode(e.target.value);
+  };
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setProfileImg(URL.createObjectURL(file));
       setIsProfileUploaded(true);
+      console.log(profileImg);
     }
   };
 
@@ -94,6 +110,50 @@ const signup = ({ slides, options }: PropType) => {
     passwordInput.addEventListener('input', validateForm);
     verifyPasswordInput.addEventListener('input', validateForm);
   }, []);
+
+  const handleSignup = async () => {
+    try {
+      const userData = {
+        email,
+        password,
+        name,
+        profileImgUrl: profileImg || '',
+      };
+
+      const response = await registerUser(userData);
+      console.log('Signsup success', userData, response);
+    } catch (error) {
+      console.error('Signup failed', error);
+      alert('회원가입 실패');
+    }
+  };
+  const handleSendVerificationCode = async () => {
+    try {
+      const userData = {
+        email,
+      };
+
+      const response = await sendVerifyCode(userData);
+      console.log('Send API Response:', response);
+    } catch (error) {
+      console.error('Signup failed', error);
+      alert('이메일을 전송하지 못 했습니다.');
+    }
+  };
+  const handleVerifyEmailCode = async () => {
+    try {
+      const userData = {
+        emailVerificationCode,
+      };
+
+      const response = await verifyEmailCode(userData);
+      setEmailVerify(true);
+      console.log('Signsup success', userData, response);
+    } catch (error) {
+      console.error('Signup failed', error);
+      alert('코드가 유효하지 않습니다.');
+    }
+  };
 
   return (
     <main>
@@ -156,23 +216,62 @@ const signup = ({ slides, options }: PropType) => {
                 action=""
                 method=""
                 errorMessage="이름을 입력해주세요"
+                onChange={handleNameChange}
               ></FormInput>
 
-              <h2 className="text-[22px] font-bold mb-[21px] w-[92%]">
+              <h2 className="text-[22px] font-bold mb-[18px] w-[92%] mt-2">
                 이메일을 입력해주세요
               </h2>
-              <FormInput
-                type="email"
-                placeholder="이메일을 입력해주세요"
-                action=""
-                method=""
-                errorMessage="정확한 이메일을 입력해주세요"
-                id="email"
-              ></FormInput>
+              <div className="flex">
+                <FormInput
+                  type="email"
+                  placeholder="이메일을 입력해주세요"
+                  action=""
+                  method=""
+                  errorMessage="정확한 이메일을 입력해주세요"
+                  id="email"
+                  onChange={handleEmailChange}
+                  Inputwidth="243px"
+                  disabled={emailVerify}
+                ></FormInput>
+
+                <Button
+                  size={'verify'}
+                  className="ml-[17px]"
+                  onClick={handleSendVerificationCode}
+                  disabled={emailVerify}
+                >
+                  전송
+                </Button>
+              </div>
+
+              <div className="flex">
+                <FormInput
+                  type="text"
+                  placeholder="인증코드를 입력해주세요"
+                  action=""
+                  method=""
+                  errorMessage="~자리로 입력해주세요"
+                  id="verifyEmail"
+                  onChange={handleVerifyCodeChange}
+                  Inputwidth="243px"
+                  disabled={emailVerify}
+                ></FormInput>
+
+                <Button
+                  size={'verify'}
+                  className="ml-[17px]"
+                  onClick={handleVerifyEmailCode}
+                  disabled={emailVerify}
+                >
+                  인증
+                </Button>
+              </div>
+
               <div className="fixed bottom-[10%]">
                 <NextButton
                   onClick={onNextButtonClick}
-                  disabled={nextBtnDisabled || !isEmailBtnEnabled}
+                  disabled={nextBtnDisabled || !emailVerify}
                 >
                   계속하기
                 </NextButton>
@@ -192,6 +291,7 @@ const signup = ({ slides, options }: PropType) => {
                 errorMessage="8자리 이상으로 입력해주세요"
                 minLength={8}
                 id="password"
+                onChange={handlePasswordChange}
               ></FormInput>
               <h2 className="text-[22px] font-bold mb-[21px] w-[92%]">
                 비밀번호를 확인해주세요
@@ -236,7 +336,7 @@ const signup = ({ slides, options }: PropType) => {
               <div className="fixed bottom-[10%]">
                 <NextButton
                   onClick={onNextButtonClick}
-                  disabled={nextBtnDisabled || !isProfileUploaded}
+                  // disabled={nextBtnDisabled || !isProfileUploaded}
                 >
                   계속하기
                 </NextButton>
@@ -249,11 +349,11 @@ const signup = ({ slides, options }: PropType) => {
                 초대코드를 <br></br> 받으셨나요?
               </h2>
               <div className="fixed bottom-[8%]">
-                <Button asChild className="mb-[33px]">
-                  <Link href={'/invite'}>네</Link>
+                <Button asChild className="mb-[33px]" onClick={handleSignup}>
+                  <Link href={'/signup/join'}>네, 받았어요</Link>
                 </Button>
-                <Button asChild>
-                  <Link href={'/home'}>아니요 바로 시작할래요</Link>
+                <Button asChild onClick={handleSignup}>
+                  <Link href={'/signup/group/create'}>아니요! 없어요</Link>
                 </Button>
               </div>
             </div>

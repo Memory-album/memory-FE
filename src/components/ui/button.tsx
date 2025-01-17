@@ -24,6 +24,7 @@ const buttonVariants = cva(
         prevBtn: 'w-[34px] h-[34px]',
         homeBtn: 'w-[328px] h-[52px]',
         uploadBtn: 'w-[60px] h-[40px]',
+        verify: 'w-[54px] h-[45px]',
       },
     },
     defaultVariants: {

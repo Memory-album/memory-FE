@@ -1,101 +1,95 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import PhotoArrangement from './_components/PhotoArrangement';
+import useAlbumStore from '@/store/useAlbumStore';
 
-const albums = () => {
+const Collection = () => {
+  const { albums, fetchAlbums } = useAlbumStore();
+
+  useEffect(() => {
+    fetchAlbums();
+  }, [fetchAlbums]);
+
+  const collections = [
+    {
+      id: 1,
+      title: '풍경',
+      bgImages: [
+        './images/1.png',
+        './images/2.png',
+        './images/3.png',
+        './images/4.png',
+        './images/5.png',
+      ],
+    },
+    {
+      id: 2,
+      title: '가족',
+      bgImages: [
+        './images/3.png',
+        './images/2.png',
+        './images/1.png',
+        './images/4.png',
+        './images/5.png',
+      ],
+    },
+    {
+      id: 3,
+      title: '반려동물',
+      bgImages: [
+        './images/5.png',
+        './images/3.png',
+        './images/2.png',
+        './images/4.png',
+        './images/1.png',
+      ],
+    },
+    {
+      id: 4,
+      title: '음식',
+      bgImages: [
+        './images/3.png',
+        './images/2.png',
+        './images/4.png',
+        './images/5.png',
+        './images/1.png',
+      ],
+    },
+    {
+      id: 5,
+      title: '여행',
+      bgImages: [
+        './images/3.png',
+        './images/2.png',
+        './images/4.png',
+        './images/5.png',
+        './images/1.png',
+      ],
+    },
+  ];
+
   return (
-    <div className="ForGnbpaddingTop">
-      <main className="w-full">
-        <section className="flex flex-col mx-auto w-fit">
-          <Link href="/albums/123">
-            <div className="w-fit mb-[31px] cursor-pointer">
-              <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-                앨범
-              </p>
-              <div className="w-[359px] h-[260px] relative">
-                <Image
-                  src="/images/example.png"
-                  alt="앨범"
-                  fill={true}
-                  style={{ objectFit: 'fill' }}
-                  className="rounded-[10px]"
-                />
-              </div>
-            </div>
-          </Link>
-          <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-              앨범
-            </p>
-            <div className="w-[359px] h-[260px] relative">
-              <Image
-                src="/images/example.png"
-                alt="앨범"
-                fill={true}
-                style={{ objectFit: 'fill' }}
-                className="rounded-[10px]"
-              />
-            </div>
-          </div>
-          <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-              앨범
-            </p>
-            <div className="w-[359px] h-[260px] relative">
-              <Image
-                src="/images/example.png"
-                alt="앨범"
-                fill={true}
-                style={{ objectFit: 'fill' }}
-                className="rounded-[10px]"
-              />
-            </div>
-          </div>
-          <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-              앨범
-            </p>
-            <div className="w-[359px] h-[260px] relative">
-              <Image
-                src="/images/example.png"
-                alt="앨범"
-                fill={true}
-                style={{ objectFit: 'fill' }}
-                className="rounded-[10px]"
-              />
-            </div>
-          </div>
-          <div className="w-fit mb-[31px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-              앨범
-            </p>
-            <div className="w-[359px] h-[260px] relative">
-              <Image
-                src="/images/example.png"
-                alt="앨범"
-                fill={true}
-                style={{ objectFit: 'fill' }}
-                className="rounded-[10px]"
-              />
-            </div>
-          </div>
-          <div className="w-fit mb-[131px] cursor-pointer">
-            <p className="font-semibold text-[24px] w-fit drop-shadow-md">
-              앨범
-            </p>
-            <div className="w-[359px] h-[260px] relative">
-              <Image
-                src="/images/example.png"
-                alt="앨범"
-                fill={true}
-                style={{ objectFit: 'fill' }}
-                className="rounded-[10px]"
-              />
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+    <main className="ForGnbpaddingTop ForFnbmarginBottom">
+      {collections.map((collection) => (
+        <Link key={collection.id} href={`/albums/${collection.title}`}>
+          <PhotoArrangement
+            id={collection.id}
+            title={collection.title}
+            bgImages={collection.bgImages}
+          />
+        </Link>
+      ))}
+      {albums.map((collection) => (
+        <Link key={collection.id} href={`/albums/${collection.title}`}>
+          <PhotoArrangement
+            id={collection.id}
+            title={collection.title}
+            bgImages={collection.thumbnailUrl}
+          />
+        </Link>
+      ))}
+    </main>
   );
 };
 
-export default albums;
+export default Collection;

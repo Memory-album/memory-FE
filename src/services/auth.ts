@@ -1,0 +1,87 @@
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:8080'; // 백엔드 URL 설정
+
+// 인증번호 요청 함수
+export const sendVerifyCode = async (userData: { email: string }) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/register/send-verification-code`,
+      userData,
+      {
+        withCredentials: true, // 쿠키 사용 설정 <<< 여기다가 설정 해야지 사용됨!!!!!!!!!!
+      },
+    );
+    return response.data; // 성공 시 반환되는 데이터를 리턴
+  } catch (error: any) {
+    console.error(
+      'Error during registration:',
+      error.response?.data || error.message,
+    );
+    throw error.response?.data || error.message; // 에러 처리
+  }
+};
+
+// 인증번호 확인함수
+export const verifyEmailCode = async (userData: {
+  emailVerificationCode: string;
+}) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/register/verify-email`,
+      userData,
+      {
+        withCredentials: true, // 쿠키 사용 설정
+      },
+    );
+    return response.data; // 성공 시 반환되는 데이터를 리턴
+  } catch (error: any) {
+    console.error(
+      'Error during registration:',
+      error.response?.data || error.message,
+    );
+    throw error.response?.data || error.message; // 에러 처리
+  }
+};
+
+// 회원가입 요청 함수
+export const registerUser = async (userData: {
+  email: string;
+  password: string;
+  name: string;
+  profileImgUrl?: string; // 선택적으로 프로필 이미지를 포함
+}) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/register/complete-register`,
+      userData,
+      {
+        withCredentials: true, // 쿠키 사용 설정
+      },
+    );
+    return response.data; // 성공 시 반환되는 데이터를 리턴
+  } catch (error: any) {
+    console.error(
+      'Error during registration:',
+      error.response?.data || error.message,
+    );
+    throw error.response?.data || error.message; // 에러 처리
+  }
+};
+
+// 로그인
+export const userLogin = async (userData: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, userData);
+    return response.data; // 성공 시 반환되는 데이터를 리턴
+  } catch (error: any) {
+    console.error(
+      'Error during registration:',
+      error.response?.data || error.message,
+    );
+    throw error.response?.data || error.message; // 에러 처리
+  }
+};
