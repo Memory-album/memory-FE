@@ -14,6 +14,8 @@ interface InputFieldProps {
   errorMessageSize?: string;
   InputTextSize?: string;
   InputLineHeight?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 }
 
 const FormInput = ({
@@ -30,23 +32,30 @@ const FormInput = ({
   errorMessageSize = '14px',
   InputTextSize = '20px',
   InputLineHeight = '36px',
+  onChange,
+  disabled = false,
 }: InputFieldProps) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
   return (
-    <form action={action} method={method}>
+    <form action={action} method={method} onSubmit={handleSubmit}>
       <label htmlFor={id}>
         <div
-          className="w-[315px] text-[20px] font-semibold relative group"
+          className="text-[20px] font-semibold relative group"
           style={{ width: Inputwidth, fontSize: InputTextSize }}
         >
           <input
-            className="w-[315px] border-b-[1px] border-[#5F5F5F] pl-[2px] leading-9 placeholder:text-[#C2C2C2] focus:outline-none peer main-bg"
+            className="border-b-[1px] border-[#5F5F5F] pl-[2px] leading-9 placeholder:text-[#C2C2C2] focus:outline-none peer main-bg"
             type={type}
             id={id}
             placeholder={placeholder}
             minLength={minLength}
             value={value}
+            onChange={onChange}
             required
-            style={{ lineHeight: InputLineHeight }}
+            style={{ lineHeight: InputLineHeight, width: Inputwidth }}
+            disabled={disabled}
           />
           <span className="block absolute bottom-[27px] left-0 bg-[#8FB6FF] w-0 h-[2px] transition-all duration-500 group-focus-within:w-full"></span>
           <p

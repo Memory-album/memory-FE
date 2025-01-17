@@ -1,7 +1,15 @@
 import Link from 'next/link';
+import { useEffect } from 'react';
 import PhotoArrangement from './_components/PhotoArrangement';
+import useAlbumStore from '@/store/useAlbumStore';
 
 const Collection = () => {
+  const { albums, fetchAlbums } = useAlbumStore();
+
+  useEffect(() => {
+    fetchAlbums();
+  }, [fetchAlbums]);
+
   const collections = [
     {
       id: 1,
@@ -68,6 +76,15 @@ const Collection = () => {
             id={collection.id}
             title={collection.title}
             bgImages={collection.bgImages}
+          />
+        </Link>
+      ))}
+      {albums.map((collection) => (
+        <Link key={collection.id} href={`/albums/${collection.title}`}>
+          <PhotoArrangement
+            id={collection.id}
+            title={collection.title}
+            bgImages={collection.thumbnailUrl}
           />
         </Link>
       ))}

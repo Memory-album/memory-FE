@@ -7,8 +7,12 @@ import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/FormInput';
 
+import { userLogin } from '@/services/auth';
+
 const login = () => {
   const [isBtnEnabled, setIsBtnEnabled] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -24,6 +28,20 @@ const login = () => {
     emailInput.addEventListener('input', validateForm);
     passwordInput.addEventListener('input', validateForm);
   }, []);
+
+  const handleLogin = async () => {
+    try {
+      const userData = {
+        email,
+        password,
+      };
+      const response = await userLogin(userData);
+      console.log('Signsup success', userData, response);
+    } catch (error) {
+      console.error('Signup failed', error);
+      alert('로그인 실패');
+    }
+  };
 
   return (
     <main>
@@ -47,6 +65,7 @@ const login = () => {
               errorMessage="정확한 이메일을 입력해주세요"
               action=""
               method=""
+              onChange={(e) => setEmail(e.target.value)}
             ></FormInput>
 
             <FormInput
@@ -57,10 +76,15 @@ const login = () => {
               minLength={8}
               action=""
               method=""
+              onChange={(e) => setPassword(e.target.value)}
             ></FormInput>
 
-            <Button className="mt-[40px] mb-[13px]" disabled={!isBtnEnabled}>
-              <Link href="/home">계속하기</Link>
+            <Button
+              className="mt-[40px] mb-[13px]"
+              disabled={!isBtnEnabled}
+              onClick={handleLogin}
+            >
+              로그인
             </Button>
             <div className="w-[132px] border-b-[1px] border-[#8D8D8D] mb-[67px]">
               <Link
