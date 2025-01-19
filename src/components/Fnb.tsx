@@ -21,6 +21,7 @@ const Fnb = () => {
     '/answers/',
     '/uploads/owner',
     '/uploads/member',
+    '/groups/create',
   ];
   const dynamicRoutePatterns = [/^\/answers\/.+$/];
 
