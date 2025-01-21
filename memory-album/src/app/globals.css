@@ -2,18 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 @layer base {
   :root {
-    --radius: 0.5rem;
+    --ForGnbpaddingTop: 102px;
+    --ForGnbmarginTop: 102px;
+    --background: #fafcff;
+    --button: #4848f9;
+    --reply: #aba5ff;
+    --save-upload: #dae2ff;
+    --upload: #dae2ff;
+    --search: #7575ff;
+    --mic: #699bf7;
+    --album-down-bg: #e0edff;
+    --ForFnbmarginBottom: 131px;
   }
+}
+
+@layer utilities {
+  .main-bg {
+    background-color: var(--background);
+  }
+
+  .ForGnbpaddingTop {
+    padding-top: var(--ForGnbpaddingTop);
+  }
+  .ForGnbmarginTop {
+    margin-top: var(--ForGnbmarginTop);
+  }
+  .ForFnbmarginBottom {
+    margin-bottom: var(--ForFnbmarginBottom);
+  }
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.text-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }

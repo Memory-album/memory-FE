@@ -1,0 +1,40 @@
+.container {
+  gap: 17px;
+  height: 63px;
+}
+
+.character {
+  border: none;
+  outline: 1.5px solid #d5d5d5;
+  font-size: 28px;
+  border-radius: 10px;
+  width: 44px;
+  height: 63px;
+  line-height: 60px;
+  color: #000000;
+  background-color: #e5edff;
+}
+
+.character--selected {
+  position: relative;
+}
+
+/* optionally hide placeholder (in case it overlaps the cursor) */
+.character--selected:not(.character--filled) {
+  color: transparent;
+  background-color: #f6f8ff;
+  outline: 1.5px solid rgb(181, 177, 255);
+}
+
+.character--filled {
+  background-color: #ffffff;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
