@@ -20,7 +20,9 @@ export const EditProfile = ({ name }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <FiEdit className="relative text-[25px] top-[-2px] cursor-pointer" />
+        <button>
+          <FiEdit className="relative text-[25px] top-[-2px] cursor-pointer" />
+        </button>
       </AlertDialogTrigger>
       <AlertDialogContent className="pb-[10px] w-[330px] rounded-[10px]">
         <AlertDialogHeader>
@@ -30,8 +32,9 @@ export const EditProfile = ({ name }: Props) => {
           <div>
             <Input
               id="username"
-              placeholder="이름"
+              placeholder="이름을 입력해주세요."
               className="mt-1 mb-2 rounded-[10px] shadow-none"
+              defaultValue={name}
             />
           </div>
         </div>

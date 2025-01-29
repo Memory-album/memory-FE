@@ -4,6 +4,7 @@ import './globals.css';
 import localFont from 'next/font/local';
 import Gnb from '@/components/Gnb';
 import Fnb from '@/components/Fnb';
+import RQProvider from './_component/RQProvider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -25,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
-        <Gnb />
-        <div className="">{children}</div>
-        <Fnb />
+        <RQProvider>
+          <Gnb />
+          <div className="">{children}</div>
+          <Fnb />
+        </RQProvider>
       </body>
     </html>
   );
