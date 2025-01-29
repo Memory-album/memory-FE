@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 
 import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
-import FormInput from '@/components/FormInput';
 
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
@@ -37,7 +36,10 @@ export const CreateGroup = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const router = useRouter();
 
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{
+    dataUrl: string;
+    file: File;
+  } | null>(null);
   const imageRef = useRef<HTMLInputElement | null>(null);
 
   const { control, watch } = useForm();
@@ -56,7 +58,7 @@ export const CreateGroup = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        setPreview({ dataUrl: reader.result as string, file });
       };
       reader.readAsDataURL(file);
     }
@@ -69,15 +71,14 @@ export const CreateGroup = () => {
     }
   };
 
-  const onSubmit = async (values: FormInputs) => {
-    console.log(values);
+  const onSubmit = async () => {
     const formData = new FormData();
-    formData.append('name', values.groupname);
+    formData.append('name', groupnameValue);
     if (preview) {
-      formData.append('groupImageUrl', preview);
+      formData.append('groupImageUrl', preview.file);
     }
+    // TODO: 앨범 테마 구체화 & 상의하기
     formData.append('groupDescription', 'senior-care');
-
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups`,
@@ -89,7 +90,12 @@ export const CreateGroup = () => {
       );
 
       if (response.status === 200) {
+        // TODO: toast 성공 알림창
         router.replace('/home');
+      } else {
+        console.error('Error:', response.status, response.statusText);
+        const errorData = await response.json();
+        console.error('Error details:', errorData);
       }
     } catch (error) {
       console.error(error);
@@ -146,7 +152,7 @@ export const CreateGroup = () => {
                 >
                   {preview && (
                     <img
-                      src={preview}
+                      src={preview.dataUrl}
                       className="block size-full object-cover"
                     />
                   )}
