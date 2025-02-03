@@ -1,18 +1,27 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/FormInput';
+import useUserStore from '@/store/useUserInfo';
 
 import { userLogin } from '@/services/auth';
+import axios from 'axios';
 
 const login = () => {
+  const router = useRouter();
   const [isBtnEnabled, setIsBtnEnabled] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleRemember = () => {
+    setRememberMe((prev) => !prev);
+  };
 
   useEffect(() => {
     const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -29,17 +38,86 @@ const login = () => {
     passwordInput.addEventListener('input', validateForm);
   }, []);
 
-  const handleLogin = async () => {
+  const { fetchUserInfo } = useUserStore();
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       const userData = {
-        email,
-        password,
+        email: email.trim(),
+        password: password,
+        rememberMe: rememberMe,
       };
-      const response = await userLogin(userData);
-      console.log('Signsup success', userData, response);
-    } catch (error) {
-      console.error('Signup failed', error);
-      alert('로그인 실패');
+
+      console.log('Login request data:', userData);
+      const result = await userLogin(userData);
+      fetchUserInfo();
+      console.log('Login success:', result);
+
+      if (result.status === 'warning') {
+        alert(result.message); // 계정 비활성화 등의 경고 메시지
+      } else if (result.status === 'success') {
+        try {
+          // /user/home 엔드포인트 요청
+          const homeResponse = await axios.get(
+            'http://localhost:8080/user/home',
+            {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+
+          if (homeResponse.status === 200) {
+            console.log('Home response:', homeResponse.data);
+            router.push('/home');
+          }
+        } catch (homeError: any) {
+          console.error('Home redirect failed:', {
+            status: homeError.response?.status,
+            data: homeError.response?.data,
+            error: homeError,
+          });
+          if (homeError.response?.status === 401) {
+            alert('로그인이 필요한 서비스입니다. 다시 로그인해주세요.');
+          } else {
+            alert(
+              homeError.response?.data?.message ||
+                '홈 페이지로 이동하는 중 오류가 발생했습니다.',
+            );
+          }
+        }
+      }
+    } catch (error: any) {
+      console.error('Login failed:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        error: error,
+      });
+
+      // 서버에서 전달하는 에러 메시지 처리
+      let errorMessage = '로그인에 실패했습니다.';
+
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (typeof error.response?.data === 'string') {
+        errorMessage = error.response.data;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
+
+      // 입력 필드 초기화 여부 결정
+      if (errorMessage.includes('없는 이메일')) {
+        setEmail('');
+        setPassword('');
+      } else if (errorMessage.includes('비밀번호가 틀렸습니다')) {
+        setPassword('');
+      }
     }
   };
 
@@ -79,8 +157,40 @@ const login = () => {
               onChange={(e) => setPassword(e.target.value)}
             ></FormInput>
 
+            <div className="flex relative">
+              <input
+                type="checkbox"
+                id="remember"
+                checked={rememberMe}
+                onChange={handleRemember}
+                className="absolute w-[1px] h-[1px] p-0 border-0 overflow-hidden m-[-1px] clip-[rect(0,0,0,0)]"
+              />{' '}
+              <div className="relative">
+                <span
+                  className={`absolute w-[1.4em] h-[1.4em] rounded-full bg-white border border-gray-400 left-0 top-1/2 -translate-y-1/2 ${
+                    rememberMe ? 'border-green-500' : 'border-gray-400 bg-white'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <span
+                    className={`absolute w-[30%] h-[55%] mt-[0.5px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-[70%] rotate-[40deg] ${
+                      rememberMe
+                        ? 'border-r-2 border-b-2 border-green-500'
+                        : 'hidden'
+                    }`}
+                  />
+                </span>
+                <label
+                  htmlFor="remember"
+                  className="pl-[2.2em] relative cursor-pointer"
+                >
+                  로그인 상태유지
+                </label>
+              </div>
+            </div>
+
             <Button
-              className="mt-[40px] mb-[13px]"
+              className="mt-[20px] mb-[13px]"
               disabled={!isBtnEnabled}
               onClick={handleLogin}
             >

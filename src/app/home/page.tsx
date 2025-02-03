@@ -4,12 +4,14 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import useUserStore from '@/store/useUserInfo';
 import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaOptionsType } from 'embla-carousel';
 
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
+  const { userInfo } = useUserStore();
 
   return (
     <div className="mb-[103px]">
@@ -23,7 +25,9 @@ const home = () => {
             className="pt-8"
           ></Image>
           <div className="mt-3 font-semibold">
-            <p className="text-[12px]">반가워요 user님!</p>
+            <p className="text-[12px]">
+              반가워요 {userInfo?.name || 'User'}님!
+            </p>
             <p className="text-[20px]">오늘도 좋은 하루 보내세요!</p>
           </div>
           <div className="mt-[18px] w-fit">
@@ -40,7 +44,9 @@ const home = () => {
         </div>
         <div className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer">
           <Avatar className="w-10 h-10 text-white">
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage
+              src={userInfo?.profileImgUrl || 'https://github.com/shadcn.png'}
+            />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <p className="mt-[6px] font-regular text-[10px]">그룹 이름</p>
@@ -49,13 +55,9 @@ const home = () => {
       <main className="ml-[28px]">
         <article>
           <div className="mt-[47px] ml-[3px] mb-[21px] flex flex-row w-[92%] justify-between items-end">
-            <p className="font-bold text-[28px] drop-shadow-md">당신의 앨범</p>
-            <Link
-              href="/albums"
-              className="font-semibold text-[10px] text-[#676767] mb-[5px]"
-            >
-              전체보기{'>'}
-            </Link>
+            <p className="font-bold text-[28px] drop-shadow-md">
+              {userInfo?.name || 'User'}의 앨범
+            </p>
           </div>
           <article className="w-fit mx-auto">
             <Link href="/albums">

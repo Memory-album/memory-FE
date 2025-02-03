@@ -44,44 +44,115 @@ export const verifyEmailCode = async (userData: {
   }
 };
 
-// 회원가입 요청 함수
+// // 회원가입 요청 함수
+// export const registerUser = async (userData: {
+//   email: string;
+//   password: string;
+//   name: string;
+//   profileImgUrl?: File; // 선택적으로 프로필 이미지를 포함
+// }) => {
+//   try {
+//     const response = await axios.post(
+//       `${API_BASE_URL}/register/complete-register`,
+//       userData,
+//       {
+//         withCredentials: true, // 쿠키 사용 설정
+//       },
+//     );
+//     return response.data; // 성공 시 반환되는 데이터를 리턴
+//   } catch (error: any) {
+//     console.error(
+//       'Error during registration:',
+//       error.response?.data || error.message,
+//     );
+//     throw error.response?.data || error.message; // 에러 처리
+//   }
+// };
 export const registerUser = async (userData: {
   email: string;
   password: string;
   name: string;
-  profileImgUrl?: string; // 선택적으로 프로필 이미지를 포함
+  profileImage?: File; // File 타입으로 변경
 }) => {
   try {
+    // FormData 객체 생성
+    const formData = new FormData();
+    
+    // userRegisterDto JSON 문자열 생성
+    const userRegisterDto = {
+      email: userData.email,
+      password: userData.password,
+      name: userData.name
+    };
+    
+    // FormData에 데이터 추가
+    formData.append('userRegisterDto', JSON.stringify(userRegisterDto));
+    
+    // 프로필 이미지가 있는 경우 추가
+    if (userData.profileImage) {
+      formData.append('profileImage', userData.profileImage);
+    }
+
     const response = await axios.post(
       `${API_BASE_URL}/register/complete-register`,
-      userData,
+      formData,
       {
-        withCredentials: true, // 쿠키 사용 설정
-      },
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
-    return response.data; // 성공 시 반환되는 데이터를 리턴
+    return response.data;
   } catch (error: any) {
     console.error(
       'Error during registration:',
       error.response?.data || error.message,
     );
-    throw error.response?.data || error.message; // 에러 처리
+    throw error.response?.data || error.message;
   }
-};
+}
+
+// // 로그인
+// export const userLogin = async (userData: {
+//   email: string;
+//   password: string;
+// }) => {
+//   try {
+//     const response = await axios.post(`${API_BASE_URL}/auth/login`, userData);
+//     return response.data; // 성공 시 반환되는 데이터를 리턴
+//   } catch (error: any) {
+//     console.error(
+//       'Error during registration:',
+//       error.response?.data || error.message,
+//     );
+//     throw error.response?.data || error.message; // 에러 처리
+//   }
+// };
 
 // 로그인
 export const userLogin = async (userData: {
   email: string;
   password: string;
+  rememberMe?: boolean; // 자동 로그인 옵션 추가
 }) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/login`, userData);
-    return response.data; // 성공 시 반환되는 데이터를 리턴
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/login`, 
+      userData,
+      {
+        withCredentials: true, // 쿠키를 받기 위해 필수
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
   } catch (error: any) {
     console.error(
-      'Error during registration:',
+      'Login error:',
       error.response?.data || error.message,
     );
-    throw error.response?.data || error.message; // 에러 처리
+    throw error.response?.data || error.message;
   }
 };

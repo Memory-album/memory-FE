@@ -40,6 +40,7 @@ const signup = ({ slides, options }: PropType) => {
   const [emailVerificationCode, setEmailVerificationCode] = useState('');
   const [password, setPassword] = useState('');
   const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
 
   const [terms, setTerms] = useState(false);
 
@@ -68,9 +69,10 @@ const signup = ({ slides, options }: PropType) => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setProfileImgFile(file);
       setProfileImg(URL.createObjectURL(file));
       setIsProfileUploaded(true);
-      console.log(profileImg);
+      console.log('Selected file:', file);
     }
   };
 
@@ -117,14 +119,24 @@ const signup = ({ slides, options }: PropType) => {
         email,
         password,
         name,
-        profileImgUrl: profileImg || '',
+        profileImage: profileImgFile
       };
 
-      const response = await registerUser(userData);
-      console.log('Signsup success', userData, response);
-    } catch (error) {
-      console.error('Signup failed', error);
-      alert('회원가입 실패');
+      const response = await registerUser({
+        email,
+        password,
+        name,
+        profileImage: profileImgFile || undefined
+      });
+      console.log('Signup success:', response);
+      
+      if (response.status === 'success') {
+        console.log('회원가입이 완료되었습니다.');
+      }
+    } catch (error: any) {
+      console.error('Signup failed:', error);
+      const errorMessage = error.response?.data?.message || '회원가입에 실패했습니다.';
+      alert(errorMessage);
     }
   };
   const handleSendVerificationCode = async () => {
