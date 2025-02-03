@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
+import useUserStore from '@/store/useUserInfo';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { Album02Icon } from 'hugeicons-react';
 import { Home11Icon } from 'hugeicons-react';
@@ -21,6 +21,7 @@ const Fnb = () => {
     '/answers/',
     '/uploads/owner',
     '/uploads/member',
+    '/groups/create',
   ];
   const dynamicRoutePatterns = [/^\/answers\/.+$/];
 
@@ -30,6 +31,7 @@ const Fnb = () => {
   ) {
     return null;
   }
+  const { userInfo } = useUserStore();
 
   return (
     <footer className="w-full h-[87px] fixed bottom-0 left-0 right-0 z-40">
@@ -81,10 +83,12 @@ const Fnb = () => {
             style={{ width: 'calc(100vw / 8.7)' }}
           >
             <Avatar className="w-8 h-8 text-white">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage
+                src={userInfo?.profileImgUrl || 'https://github.com/shadcn.png'}
+              />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <p className="mt-[2px]">김덕철</p>
+            <p className="mt-[2px]">{userInfo?.name || 'User'}</p>
           </Link>
         </div>
       </div>

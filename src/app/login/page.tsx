@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/FormInput';
-import { Checkbox } from '@/components/ui/checkbox';
+import useUserStore from '@/store/useUserInfo';
 
 import { userLogin } from '@/services/auth';
 import axios from 'axios';
@@ -38,6 +38,7 @@ const login = () => {
     passwordInput.addEventListener('input', validateForm);
   }, []);
 
+  const { fetchUserInfo } = useUserStore();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -49,6 +50,7 @@ const login = () => {
 
       console.log('Login request data:', userData);
       const result = await userLogin(userData);
+      fetchUserInfo();
       console.log('Login success:', result);
 
       if (result.status === 'warning') {
