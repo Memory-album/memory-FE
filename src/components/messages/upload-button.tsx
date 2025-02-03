@@ -7,7 +7,7 @@ type Props = {
 
 export const UploadButton = ({ disabled = true, onUpload }: Props) => {
   return (
-    <div className="flex justify-end mb-6">
+    <div className="sticky top-[110px] right-3 flex justify-end mb-6">
       <Button
         variant="uploadBtn"
         size="uploadBtn"

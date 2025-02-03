@@ -7,41 +7,30 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useViewStore } from '@/store/useViewStore';
-import { Dispatch, SetStateAction, useCallback } from 'react';
 
 type Props = {
-  nextView: string;
   description: string;
-  question?: Dispatch<SetStateAction<string>>;
   buttonValue?: string;
   buttonClassName?: string;
   disabled?: boolean;
+  onClick: () => void;
 };
 
 export const Alert = ({
-  nextView,
   description,
-  question,
-  buttonValue = '확인',
+  buttonValue = '다음',
   buttonClassName,
   disabled,
+  onClick,
 }: Props) => {
   const [line1, line2] = description.split('<br />');
-  const { setView } = useViewStore();
-
-  const handleSetView = useCallback(() => {
-    setTimeout(() => {
-      setView(nextView);
-    }, 5000);
-  }, []);
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
           className={buttonClassName}
-          onClick={handleSetView}
+          onClick={onClick}
           disabled={disabled}
         >
           {buttonValue}

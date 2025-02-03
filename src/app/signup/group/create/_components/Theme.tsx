@@ -15,11 +15,11 @@ const TWEEN_FACTOR_BASE = 0.52;
 const numberWithinRange = (number: number, min: number, max: number): number =>
   Math.min(Math.max(number, min), max);
 
-const ThemeName = ['테마1', '테마2', '테마3'];
+const ThemeName = ['시니어 테마', '자녀 성장 테마', '커플 테마'];
 const ThemeInfo = [
-  '1은 이거고 저거고 이러저거 어쩌구저쩌구',
-  '2는 이거랑 저러랑 모시깽이',
-  '3은 뭐라하지 음 그냥 머 그런거거',
+  '가족과 함께하는 소중한 순간들을 기록하고 공유하세요. 어르신들의 일상과 특별한 순간들을 담아내는 공간입니다',
+  '아이의 성장과정을 기록하고 가족들과 공유하세요. 첫 걸음마부터 특별한 순간까지, 모든 소중한 기억을 담을 수 있습니다.',
+  '연인과의 특별한 순간들을 기록하고 공유하세요. 데이트, 기념일 등 둘만의 소중한 이야기를 담는 공간입니다.',
 ];
 
 type PropType = {
