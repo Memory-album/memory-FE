@@ -1,11 +1,14 @@
 import Image from 'next/image';
-import { AddGroup } from './add-group';
+import { GroupActionDrawer } from './group-action-drawer';
 
 export const UserGroups = () => {
   return (
     <div className="mt-10 pb-[102px]">
-      <div className="mb-[17px] text-[13px] font-semibold inline-flex border border-t-0 border-x-0 border-b-2 border-b-[#4848F9]">
-        참여 그룹
+      <div className="flex justify-between mb-[17px]">
+        <div className="text-[13px] font-semibold border border-t-0 border-x-0 border-b-2 border-b-[#4848F9]">
+          참여 그룹
+        </div>
+        <GroupActionDrawer />
       </div>
       <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
         <div>
@@ -32,7 +35,6 @@ export const UserGroups = () => {
           <p className="mb-[7px] text-xs">그룹설명</p>
           <p className="text-[10px] text-[#555555]">@그룹장이름</p>
         </div>
-        <AddGroup />
       </div>
     </div>
   );
