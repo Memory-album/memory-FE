@@ -61,10 +61,10 @@ const Gnb = () => {
     currentPathName = '질문하기';
   } else if (pathname.includes('profile')) {
     currentPathName = '프로필';
-  } else if (pathname === '/questions') {
+  } else if (pathname.includes('/questions')) {
     currentPathName = '질문';
-  } else if (pathname === '/groups') {
-    currentPathName = '내 그룹 보기';
+  } else if (pathname.includes('dashboard')) {
+    currentPathName = '그룹 관리';
   }
   console.log(currentPathName);
 
