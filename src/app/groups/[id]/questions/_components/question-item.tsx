@@ -21,7 +21,7 @@ export const QuestionItem = ({ question }: Props) => {
           {question.receiver}
         </strong>
         <p
-          onClick={() => router.push('/questions/id')}
+          onClick={() => router.push('')}
           className="inline-block py-3 px-[17px] max-w-[232px] sm:max-w-[300px] text-lg bg-[#4848F9] rounded-[20px] rounded-tr-none text-white truncate"
         >
           {question.questionSummary}

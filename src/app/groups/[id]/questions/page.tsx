@@ -6,7 +6,7 @@ import { useState } from 'react';
 const Page = () => {
   const [input, setInput] = useState('');
   return (
-    <div className="m-auto w-full pb-[100px] sm:w-[500px] sm:m-auto pt-2 bg-[#FAFCFF] ForGnbpaddingTop">
+    <div className="m-auto w-full pb-[100px] sm:w-[500px] sm:m-auto bg-[#FAFCFF] ForGnbpaddingTop">
       <SearchForm input={input} setInput={setInput} />
       <QuestionList searchText={input} />
     </div>
