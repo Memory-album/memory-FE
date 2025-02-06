@@ -23,7 +23,7 @@ import {
   usePrevNextButtons,
 } from '@/components/embla/EmblaCarouselButtons';
 import { FormProvider, useForm } from 'react-hook-form';
-import { GroupNameField } from './groupname-field';
+import { GroupNameField } from '../../_components/groupname-field';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 
