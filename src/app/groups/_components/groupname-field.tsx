@@ -22,7 +22,7 @@ export const GroupNameField = ({
   });
 
   return (
-    <div className="mb-10">
+    <div>
       <FormField
         control={control}
         name="groupname"

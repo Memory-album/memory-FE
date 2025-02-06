@@ -46,6 +46,9 @@ const Gnb = () => {
     setIsSideBarOpen(false);
   };
 
+  const groupEditRegex = /^\/groups\/[^/]+\/edit$/;
+  const groupDashboardRegex = /^\/groups\/[^/]+\/dashboard$/;
+
   let currentPathName;
   if (pathname.includes('albums')) {
     currentPathName = '앨범';
@@ -63,8 +66,10 @@ const Gnb = () => {
     currentPathName = '프로필';
   } else if (pathname.includes('/questions')) {
     currentPathName = '질문';
-  } else if (pathname.includes('dashboard')) {
+  } else if (groupDashboardRegex.test(pathname)) {
     currentPathName = '그룹 관리';
+  } else if (groupEditRegex.test(pathname)) {
+    currentPathName = '그룹 수정';
   }
   console.log(currentPathName);
 
