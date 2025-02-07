@@ -6,16 +6,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { CiSquarePlus } from 'react-icons/ci';
+import React from 'react';
 
-export const InviteMember = () => {
+type Props = {
+  children: React.ReactNode;
+};
+
+export const InviteMember = ({ children }: Props) => {
   return (
     <Dialog>
-      <DialogTrigger>
-        <CiSquarePlus className="size-[103px] sm:size-[150px] text-[#969696]" />
-        <p className="text-base text-[#4C4B4B] text-center">멤버 초대하기</p>
-      </DialogTrigger>
-      <DialogContent className="w-[330px] rounded-[10px]">
+      <DialogTrigger className="w-full">{children}</DialogTrigger>
+      <DialogContent
+        onClick={(e) => e.stopPropagation()}
+        className="w-[330px] rounded-[10px]"
+      >
         <DialogHeader className="m-auto">
           <DialogTitle className="mt-2">
             앨범을 공유할 가족을 초대해보세요!

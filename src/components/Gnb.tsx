@@ -48,6 +48,7 @@ const Gnb = () => {
 
   const groupEditRegex = /^\/groups\/[^/]+\/edit$/;
   const groupDashboardRegex = /^\/groups\/[^/]+\/dashboard$/;
+  const groupMembersRegex = /^\/groups\/[^/]+\/members$/;
 
   let currentPathName;
   if (pathname.includes('albums')) {
@@ -70,6 +71,8 @@ const Gnb = () => {
     currentPathName = '그룹 관리';
   } else if (groupEditRegex.test(pathname)) {
     currentPathName = '그룹 수정';
+  } else if (groupMembersRegex.test(pathname)) {
+    currentPathName = '내 그룹 멤버 보기';
   }
   console.log(currentPathName);
 
