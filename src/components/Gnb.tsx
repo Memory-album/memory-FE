@@ -30,6 +30,7 @@ const Gnb = () => {
     '/signup/join',
     '/signup/group/create',
     '/groups/create',
+    '/groups/join',
   ];
 
   if (excludeLayoutRoutes.includes(pathname)) {
