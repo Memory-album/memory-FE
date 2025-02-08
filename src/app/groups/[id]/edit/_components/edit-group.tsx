@@ -14,33 +14,42 @@ type FormInputs = {
   groupImage?: File | null;
 };
 
+type Props = {
+  id: string;
+};
 // TODO: 페이지 반응형
-export const EditGroup = () => {
+export const EditGroup = ({ id }: Props) => {
   const router = useRouter();
+  //TODO: query group 상세 조회 불러오기
 
   const mutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
       formData.append('name', groupnameValue);
       if (preview) {
-        formData.append('groupImageUrl', preview.file);
+        formData.append('groupImage', preview.file);
       }
+      formData.append('groupDescription', 'senior-care');
 
-      // TODO: 그룹 수정 API
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/.........`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}`,
         {
-          method: 'post',
+          method: 'put',
           credentials: 'include',
           body: formData,
         },
       );
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
       return response.json();
     },
-    onSuccess: async (response) => {
+    onSuccess: () => {
       alert('그룹이 수정되었습니다!');
-      router.replace('/??');
+      router.replace(`/groups/${id}/dashboard`);
     },
     onError: (error) => {
       console.log(error);
