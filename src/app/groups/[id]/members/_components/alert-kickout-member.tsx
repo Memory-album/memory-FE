@@ -1,4 +1,3 @@
-import { Item } from '@/app/groups/_components/item';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,27 +9,70 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { FiMinus } from 'react-icons/fi';
 
 type Props = {
+  memberId: string;
+  groupId: string;
   groupname: string;
-  username: string;
+  memberName: string;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const AlertKickoutMember = ({
+  memberId,
+  groupId,
   groupname,
-  username,
+  memberName,
   setIsActive,
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/members/${memberId}`,
+        {
+          method: 'delete',
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      alert('그룹 내보내기 성공');
+      setIsActive(false);
+      queryClient.invalidateQueries({
+        queryKey: ['groups', groupId, 'members'],
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      alert('내보내기 실패했습니다. 다시 시도해주세요.');
+    },
+  });
 
   // 삭제 버튼이 아닌 다른 곳을 누르면 삭제 버튼 비활성화
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (
         containerRef.current &&
+        !event.target.closest('.cancel-btn') &&
         !event.target.closest('.delete-btn') && // ✅ "delete-btn" 클래스를 가진 버튼이 부모인지 확인
         !containerRef.current.contains(event.target as Node)
       ) {
@@ -41,6 +83,11 @@ export const AlertKickoutMember = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleRemoveMember = () => {
+    mutation.mutate();
+  };
+
   return (
     <div ref={containerRef}>
       <AlertDialog>
@@ -58,14 +105,24 @@ export const AlertKickoutMember = ({
           <AlertDialogHeader>
             <AlertDialogTitle className="mb-0">{groupname}</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
-              그룹에서 <strong>{username}</strong>님을 내보내시겠어요?
+              그룹에서 <strong>{memberName}</strong>님을 내보내시겠어요?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsActive(false)}>
+            <AlertDialogCancel
+              className="cancel-btn"
+              onClick={() => {
+                setIsActive(false);
+              }}
+            >
               취소
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => setIsActive(false)}>
+            <AlertDialogAction
+              className="delete-btn"
+              onClick={() => {
+                handleRemoveMember();
+              }}
+            >
               내보내기
             </AlertDialogAction>
           </AlertDialogFooter>
