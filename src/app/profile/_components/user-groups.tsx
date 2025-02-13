@@ -7,6 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserGroups } from '@/features/group/api/getUserGroups';
 import { useRouter } from 'next/navigation';
 
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
 type GroupInfoProps = {
   id: string;
   name: string;
@@ -16,7 +18,7 @@ type GroupInfoProps = {
 export const UserGroups = () => {
   const router = useRouter();
 
-  const { data: groups } = useQuery({
+  const { data: groups, isLoading } = useQuery({
     queryKey: ['user', 'groups'],
     queryFn: getUserGroups,
   });
@@ -29,8 +31,13 @@ export const UserGroups = () => {
         </div>
         <GroupActionDrawer />
       </div>
-      {!groups && (
-        <p className="text-center text-[#c6c7cb]">참여 중인 그룹이 없어요. </p>
+      {isLoading && (
+        <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
+          <AiOutlineLoading3Quarters className="size-8 animate-spin" />
+        </p>
+      )}
+      {groups?.length == 0 && (
+        <p className="text-center text-[#c6c7cb]">참여 중인 그룹이 없어요.</p>
       )}
       {groups && (
         <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
