@@ -36,6 +36,7 @@ export const UserGroups = () => {
         <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
           {groups.map((group: GroupInfoProps) => (
             <div
+              className="w-full overflow-hidden"
               key={group.id}
               onClick={() => router.push(`/groups/${group.id}/dashboard`)}
             >
@@ -47,8 +48,12 @@ export const UserGroups = () => {
                   sizes="150px"
                 />
               </div>
-              <strong className="mb-[7px] text-sm">{group.name}</strong>
-              <p className="mb-[7px] text-xs">{group.description}</p>
+              <strong className="mb-1 text-sm block w-[100px] truncate">
+                {group.name}
+              </strong>
+              <p className="mb-[7px] text-xs w-[120px] h-fit max-h-[32px] overflow-hidden line-clamp-2">
+                {group.description}
+              </p>
               <p className="text-[10px] text-[#555555]">@그룹장이름</p>
             </div>
           ))}
