@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'min-i-album-storage.s3.amazonaws.com', // ✅ S3 버킷 도메인 추가
+      },
+    ],
+  },
+};
 
 export default nextConfig;

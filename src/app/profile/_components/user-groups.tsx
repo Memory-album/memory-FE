@@ -1,7 +1,28 @@
+'use client';
+
 import Image from 'next/image';
 import { GroupActionDrawer } from './group-action-drawer';
+import { useQuery } from '@tanstack/react-query';
 
+import { getUserGroups } from '@/features/group/api/getUserGroups';
+import { useRouter } from 'next/navigation';
+
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
+type GroupInfoProps = {
+  id: string;
+  name: string;
+  groupImageUrl: string;
+  description: string;
+};
 export const UserGroups = () => {
+  const router = useRouter();
+
+  const { data: groups, isLoading } = useQuery({
+    queryKey: ['user', 'groups'],
+    queryFn: getUserGroups,
+  });
+
   return (
     <div className="mt-10 pb-[102px]">
       <div className="flex justify-between mb-[17px]">
@@ -10,32 +31,41 @@ export const UserGroups = () => {
         </div>
         <GroupActionDrawer />
       </div>
-      <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
-        <div>
-          <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden cursor-pointer hover:opacity-90">
-            <Image src="/images/1.png" alt="그룹 이미지" fill />
-          </div>
-          <strong className="mb-[7px] text-sm">그룹 이름</strong>
-          <p className="mb-[7px] text-xs">그룹설명</p>
-          <p className="text-[10px] text-[#555555]">@그룹장이름</p>
+      {isLoading && (
+        <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
+          <AiOutlineLoading3Quarters className="size-8 animate-spin" />
+        </p>
+      )}
+      {groups?.length == 0 && (
+        <p className="text-center text-[#c6c7cb]">참여 중인 그룹이 없어요.</p>
+      )}
+      {groups && (
+        <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
+          {groups.map((group: GroupInfoProps) => (
+            <div
+              className="w-full overflow-hidden"
+              key={group.id}
+              onClick={() => router.push(`/groups/${group.id}/dashboard`)}
+            >
+              <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden cursor-pointer hover:opacity-90">
+                <Image
+                  src={group.groupImageUrl}
+                  alt="그룹 이미지"
+                  fill
+                  sizes="150px"
+                />
+              </div>
+              <strong className="mb-1 text-sm block w-[100px] truncate">
+                {group.name}
+              </strong>
+              <p className="mb-[7px] text-xs w-[120px] h-fit max-h-[32px] overflow-hidden line-clamp-2">
+                {group.description}
+              </p>
+              <p className="text-[10px] text-[#555555]">@그룹장이름</p>
+            </div>
+          ))}
         </div>
-        <div>
-          <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden cursor-pointer hover:opacity-90">
-            <Image src="/images/1.png" alt="그룹 이미지" fill />
-          </div>
-          <strong className="mb-[7px] text-sm">그룹 이름</strong>
-          <p className="mb-[7px] text-xs">그룹설명</p>
-          <p className="text-[10px] text-[#555555]">@그룹장이름</p>
-        </div>
-        <div>
-          <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden cursor-pointer hover:opacity-90">
-            <Image src="/images/1.png" alt="그룹 이미지" fill />
-          </div>
-          <strong className="mb-[7px] text-sm">그룹 이름</strong>
-          <p className="mb-[7px] text-xs">그룹설명</p>
-          <p className="text-[10px] text-[#555555]">@그룹장이름</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

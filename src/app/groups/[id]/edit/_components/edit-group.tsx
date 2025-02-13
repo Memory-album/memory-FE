@@ -1,15 +1,13 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
+
+import { Button } from '@/components/ui/button';
+
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 
-import LoginHeader from '@/components/LoginHeader';
-import { Button } from '@/components/ui/button';
-
-import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
 
 import '@/app/signup/verifyInputStyle.css';
@@ -23,7 +21,9 @@ import {
   PrevButton,
   usePrevNextButtons,
 } from '@/components/embla/EmblaCarouselButtons';
-import { GroupInput } from '../../_components/group-input';
+import useEmblaCarousel from 'embla-carousel-react';
+import LoginHeader from '@/components/LoginHeader';
+import { GroupInput } from '@/app/groups/_components/group-input';
 
 type FormInputs = {
   groupName: string;
@@ -31,43 +31,47 @@ type FormInputs = {
   groupImage?: File | null;
 };
 
-export const CreateGroup = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
-  const [inviteCode, setInviteCode] = useState(null);
+type Props = {
+  id: string;
+};
+// TODO: 페이지 반응형
+export const EditGroup = ({ id }: Props) => {
   const router = useRouter();
+  const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
+  //TODO: query group 상세 조회 불러오기
 
   const mutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
       formData.append('name', groupNameValue);
       if (preview) {
-        formData.append('groupImageUrl', preview.file);
+        formData.append('groupImage', preview.file);
       }
       formData.append('groupDescription', groupDescriptionValue);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}`,
         {
-          method: 'post',
+          method: 'put',
           credentials: 'include',
           body: formData,
         },
       );
 
       if (!response.ok) {
-        throw new Error('그룹 생성에 실패했습니다.');
+        const errorData = await response.json();
+        throw new Error(errorData.message || '서버 오류 발생');
       }
 
       return response.json();
     },
-    onSuccess: async (response) => {
-      alert('그룹이 생성되었습니다!');
-      setInviteCode(response.data.inviteCode);
-      onNextButtonClick();
+    onSuccess: () => {
+      alert('그룹이 수정되었습니다!');
+      router.replace(`/groups/${id}/dashboard`);
     },
     onError: (error) => {
       console.log(error);
-      alert('그룹 생성에 실패했습니다. 다시 시도해주세요.');
+      alert('그룹 수정 실패했습니다. 다시 시도해주세요.');
     },
   });
 
@@ -112,26 +116,8 @@ export const CreateGroup = () => {
     mutation.mutate();
   };
 
-  const { selectedIndex, scrollSnaps } = useDotButton(emblaApi);
-
-  const { onNextButtonClick } = usePrevNextButtons(emblaApi);
-
   return (
     <main>
-      <LoginHeader></LoginHeader>
-      <div
-        className="embla__dots mb-[25px]"
-        style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
-      >
-        {scrollSnaps.map((_, index) => (
-          <DotButton
-            key={index}
-            className={'embla__dot'.concat(
-              index === selectedIndex ? ' embla__dot--selected' : '',
-            )}
-          />
-        ))}
-      </div>
       <article className="max-w-md mx-auto">
         <section ref={emblaRef} className="overflow-hidden h-full">
           <FormProvider {...form}>
@@ -142,10 +128,8 @@ export const CreateGroup = () => {
               <div
                 className="min-w-full p-4 flex flex-col items-center"
                 key={0}
+                style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
               >
-                <h2 className="text-[28px] font-bold text-center mb-[27px]">
-                  그룹을 <br></br> 만들어 봐요
-                </h2>
                 <div
                   onClick={handleClick}
                   className="cursor-pointer w-[177px] h-[177px] rounded-full border-4 border-[#4848F9] flex items-center justicy-center mb-[44px] overflow-hidden"
@@ -182,7 +166,7 @@ export const CreateGroup = () => {
                 />
                 {mutation.isPending ? (
                   <Button type="button" disabled className="cursor-not-allowed">
-                    그룹 생성 중...
+                    수정 중...
                   </Button>
                 ) : (
                   <Button
@@ -193,50 +177,12 @@ export const CreateGroup = () => {
                       groupDescriptionValue.length === 0
                     }
                   >
-                    그룹 만들기
+                    수정하기
                   </Button>
                 )}
               </div>
-
-              {/* 초대코드 단계 */}
-              <div
-                className="min-w-full p-4 flex flex-col items-center mt-[100px]"
-                key={2}
-              >
-                <h2 className="text-[30px] font-bold mb-3 text-center">
-                  초대코드
-                </h2>
-                <p className="text-[16px] text-[#858585] mb-[14px]">
-                  앨범을 공유할 가족을 초대해보세요!
-                </p>
-                <p className="text-[64px] text-[#4848F9]">{inviteCode}</p>
-                <div className="fixed bottom-[6%]">
-                  <Button
-                    asChild
-                    className="mb-[33px] bg-[#FEE500] text-black hover:bg-[#FEE500]/80"
-                  >
-                    <Link href={'/'}>공유하기</Link>
-                  </Button>
-                  <Button type="button" onClick={() => router.replace('/home')}>
-                    시작하기
-                  </Button>
-                </div>
-              </div>
             </form>
           </FormProvider>
-          {/* 
-          TODO: 초대코드 복사 기능
-          */}
-          {selectedIndex === 0 && (
-            <div className="fixed top-[54px] left-[27px]">
-              <PrevButton
-                onClick={() => router.replace('/profile')}
-                className="w-[34px] h-[34px] text-[34px]"
-              >
-                <FaArrowLeft className="w-[34px] h-[34px]" />
-              </PrevButton>
-            </div>
-          )}
         </section>
       </article>
     </main>

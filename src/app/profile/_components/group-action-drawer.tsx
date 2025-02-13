@@ -39,7 +39,10 @@ export const GroupActionDrawer = () => {
               <FaUsersCog />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem className="hover:bg-[#e5e7eb] cursor-pointer">
+          <DropdownMenuItem
+            className="hover:bg-[#e5e7eb] cursor-pointer"
+            onClick={() => router.push('/groups/join')}
+          >
             그룹 참여
             <DropdownMenuShortcut>
               <FaUserPlus />

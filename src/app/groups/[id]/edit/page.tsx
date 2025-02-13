@@ -1,14 +1,28 @@
-'use client';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
+import { EditGroup } from './_components/edit-group';
+import { getSingleGroup } from '@/features/group/api/getSingleGroup';
 
-import { useParams } from 'next/navigation';
+type Props = {
+  params: { id: string };
+};
+const Page = async ({ params }: Props) => {
+  const { id } = params;
 
-const Page = () => {
-  const { id } = useParams();
-  console.log(id);
+  // const queryClient = new QueryClient();
+  // await queryClient.prefetchQuery({
+  //   queryKey: ['groups', id],
+  //   queryFn: getSingleGroup,
+  // });
+  // const dehydratedState = dehydrate(queryClient);
+
   return (
-    <div className="sm:m-auto w-full sm:w-[500px] px-[30px] ForGnbpaddingTop">
-      // TODO: 그룹 수정
-    </div>
+    // <HydrationBoundary state={dehydratedState}>
+    <EditGroup id={id} />
+    // </HydrationBoundary>
   );
 };
 
