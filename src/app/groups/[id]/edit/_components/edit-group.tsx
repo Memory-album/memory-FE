@@ -7,10 +7,27 @@ import { Button } from '@/components/ui/button';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { GroupNameField } from '@/app/groups/_components/groupname-field';
+
+import { FaArrowLeft } from 'react-icons/fa6';
+
+import '@/app/signup/verifyInputStyle.css';
+
+import '@/components/embla/embla.css';
+import {
+  DotButton,
+  useDotButton,
+} from '@/components/embla/EmblaCarouselDotButton';
+import {
+  PrevButton,
+  usePrevNextButtons,
+} from '@/components/embla/EmblaCarouselButtons';
+import useEmblaCarousel from 'embla-carousel-react';
+import LoginHeader from '@/components/LoginHeader';
+import { GroupInput } from '@/app/groups/_components/group-input';
 
 type FormInputs = {
-  groupname: string;
+  groupName: string;
+  groupDescription: string;
   groupImage?: File | null;
 };
 
@@ -20,16 +37,17 @@ type Props = {
 // TODO: 페이지 반응형
 export const EditGroup = ({ id }: Props) => {
   const router = useRouter();
+  const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   //TODO: query group 상세 조회 불러오기
 
   const mutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
-      formData.append('name', groupnameValue);
+      formData.append('name', groupNameValue);
       if (preview) {
         formData.append('groupImage', preview.file);
       }
-      formData.append('groupDescription', 'senior-care');
+      formData.append('groupDescription', groupDescriptionValue);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}`,
@@ -67,11 +85,13 @@ export const EditGroup = ({ id }: Props) => {
 
   const form = useForm<FormInputs>({
     defaultValues: {
-      groupname: '',
+      groupName: '',
+      groupDescription: '',
     },
   });
 
-  const groupnameValue = watch('groupname');
+  const groupNameValue = watch('groupName');
+  const groupDescriptionValue = watch('groupDescription');
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -97,49 +117,74 @@ export const EditGroup = ({ id }: Props) => {
   };
 
   return (
-    <div className="sm:m-auto w-full sm:w-[500px] ForGnbpaddingTop">
-      <FormProvider {...form}>
-        <form
-          className="mt-4 flex flex-col items-center justify-center"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <div className="flex-grow flex flex-col justify-center items-center mb-2">
-            <div
-              onClick={handleClick}
-              className="cursor-pointer w-[177px] h-[177px] rounded-full border-4 border-[#4848F9] flex items-center justicy-center mb-[44px] overflow-hidden"
+    <main>
+      <article className="max-w-md mx-auto">
+        <section ref={emblaRef} className="overflow-hidden h-full">
+          <FormProvider {...form}>
+            <form
+              className="flex h-full"
+              onSubmit={form.handleSubmit(onSubmit)}
             >
-              {preview && (
-                <img
-                  src={preview.dataUrl}
-                  className="block size-full object-cover"
+              <div
+                className="min-w-full p-4 flex flex-col items-center"
+                key={0}
+                style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
+              >
+                <div
+                  onClick={handleClick}
+                  className="cursor-pointer w-[177px] h-[177px] rounded-full border-4 border-[#4848F9] flex items-center justicy-center mb-[44px] overflow-hidden"
+                >
+                  {preview && (
+                    <img
+                      src={preview.dataUrl}
+                      className="block size-full object-cover"
+                    />
+                  )}
+                  <input
+                    ref={imageRef}
+                    accept="image/*"
+                    type="file"
+                    hidden
+                    onChange={handleImageUpload}
+                    className="w-[177px] h-[177px] rounded-full cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+                <GroupInput
+                  name="groupName"
+                  label="그룹 이름"
+                  control={control}
+                  placeholder="그룹 이름을 입력해주세요"
+                  errorMessage="그룹 이름을 입력해주세요."
                 />
-              )}
-              <input
-                ref={imageRef}
-                accept="image/*"
-                type="file"
-                hidden
-                onChange={handleImageUpload}
-                className="w-[177px] h-[177px] rounded-full cursor-pointer"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-            <GroupNameField control={control} />
-          </div>
-          <div>
-            <Button
-              type="submit"
-              disabled={
-                preview === null ||
-                groupnameValue === '' ||
-                groupnameValue === undefined
-              }
-            >
-              그룹 수정
-            </Button>
-          </div>
-        </form>
-      </FormProvider>
-    </div>
+                <GroupInput
+                  name="groupDescription"
+                  label="그룹 설명"
+                  control={control}
+                  placeholder="예) 가족 앨범, 자녀 앨범"
+                  errorMessage="그룹에 대한 설명을 입력해주세요."
+                />
+                {mutation.isPending ? (
+                  <Button type="button" disabled className="cursor-not-allowed">
+                    수정 중...
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    disabled={
+                      preview === null ||
+                      groupNameValue.length === 0 ||
+                      groupDescriptionValue.length === 0
+                    }
+                  >
+                    수정하기
+                  </Button>
+                )}
+              </div>
+            </form>
+          </FormProvider>
+        </section>
+      </article>
+    </main>
   );
 };
