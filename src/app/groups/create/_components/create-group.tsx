@@ -1,14 +1,16 @@
 'use client';
 
-import { FormEvent, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
 
 import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
 
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
-import Theme from '@/app/signup/group/create/_components/Theme';
 
 import '@/app/signup/verifyInputStyle.css';
 
@@ -18,18 +20,14 @@ import {
   useDotButton,
 } from '@/components/embla/EmblaCarouselDotButton';
 import {
-  NextButton,
   PrevButton,
   usePrevNextButtons,
 } from '@/components/embla/EmblaCarouselButtons';
-import { FormProvider, useForm } from 'react-hook-form';
-import { GroupNameField } from '../../_components/groupname-field';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { GroupInput } from '../../_components/group-input';
 
 type FormInputs = {
-  groupname: string;
-  theme: string;
+  groupName: string;
+  groupDescription: string;
   groupImage?: File | null;
 };
 
@@ -41,12 +39,11 @@ export const CreateGroup = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
-      formData.append('name', groupnameValue);
+      formData.append('name', groupNameValue);
       if (preview) {
         formData.append('groupImageUrl', preview.file);
       }
-      // TODO: 앨범 테마 구체화 & 상의하기
-      formData.append('groupDescription', 'senior-care');
+      formData.append('groupDescription', groupDescriptionValue);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups`,
@@ -57,11 +54,16 @@ export const CreateGroup = () => {
         },
       );
 
+      if (!response.ok) {
+        throw new Error('그룹 생성에 실패했습니다.');
+      }
+
       return response.json();
     },
     onSuccess: async (response) => {
       alert('그룹이 생성되었습니다!');
       setInviteCode(response.data.inviteCode);
+      onNextButtonClick();
     },
     onError: (error) => {
       console.log(error);
@@ -79,11 +81,13 @@ export const CreateGroup = () => {
 
   const form = useForm<FormInputs>({
     defaultValues: {
-      groupname: '',
+      groupName: '',
+      groupDescription: '',
     },
   });
 
-  const groupnameValue = watch('groupname');
+  const groupNameValue = watch('groupName');
+  const groupDescriptionValue = watch('groupDescription');
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -108,15 +112,9 @@ export const CreateGroup = () => {
     mutation.mutate();
   };
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
+  const { selectedIndex, scrollSnaps } = useDotButton(emblaApi);
 
-  const {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
+  const { onNextButtonClick } = usePrevNextButtons(emblaApi);
 
   return (
     <main>
@@ -136,7 +134,6 @@ export const CreateGroup = () => {
       </div>
       <article className="max-w-md mx-auto">
         <section ref={emblaRef} className="overflow-hidden h-full">
-          {/* 그룹 이미지, 이름 설정 */}
           <FormProvider {...form}>
             <form
               className="flex h-full"
@@ -169,61 +166,36 @@ export const CreateGroup = () => {
                     onClick={(e) => e.stopPropagation()}
                   />
                 </div>
-                <GroupNameField control={control} />
-                <div className="fixed bottom-[6%]">
-                  <NextButton
-                    type="button"
-                    onClick={onNextButtonClick}
+                <GroupInput
+                  name="groupName"
+                  label="그룹 이름"
+                  control={control}
+                  placeholder="그룹 이름을 입력해주세요"
+                  errorMessage="그룹 이름을 입력해주세요."
+                />
+                <GroupInput
+                  name="groupDescription"
+                  label="그룹 설명"
+                  control={control}
+                  placeholder="예) 가족 앨범, 자녀 앨범"
+                  errorMessage="그룹에 대한 설명을 입력해주세요."
+                />
+                {mutation.isPending ? (
+                  <Button type="button" disabled className="cursor-not-allowed">
+                    그룹 생성 중...
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
                     disabled={
-                      nextBtnDisabled ||
                       preview === null ||
-                      groupnameValue === '' ||
-                      groupnameValue === undefined
+                      groupNameValue.length === 0 ||
+                      groupDescriptionValue.length === 0
                     }
                   >
-                    계속하기
-                  </NextButton>
-                </div>
-              </div>
-
-              {/* 앨범 테마 선택 */}
-              <div
-                className="min-w-full p-4 flex flex-col items-center"
-                key={1}
-              >
-                <h2 className="text-[28px] font-bold text-center mb-[21px]">
-                  앨범 테마를 <br></br> 선택해주세요
-                </h2>
-                <p className="text-[16px] font-semibold text-[#858585] text-center">
-                  앨범의 테마에 따라<br></br>AI의 질문 추천? 이 달라져요?
-                </p>
-                <Theme></Theme>
-                <div className="fixed bottom-[6%]">
-                  {mutation.isPending ? (
-                    <Button
-                      type="button"
-                      disabled
-                      className="cursor-not-allowed"
-                    >
-                      그룹 생성 중...
-                    </Button>
-                  ) : mutation.isSuccess ? (
-                    <NextButton
-                      type="button"
-                      onClick={onNextButtonClick}
-                      disabled={nextBtnDisabled || preview === null}
-                    >
-                      계속하기
-                    </NextButton>
-                  ) : (
-                    <Button
-                      type="submit"
-                      disabled={nextBtnDisabled || preview === null}
-                    >
-                      그룹 만들기
-                    </Button>
-                  )}
-                </div>
+                    그룹 만들기
+                  </Button>
+                )}
               </div>
 
               {/* 초대코드 단계 */}
@@ -252,15 +224,13 @@ export const CreateGroup = () => {
               </div>
             </form>
           </FormProvider>
-          {/* 그룹 생성 성공 후 초대코드 발급 화면으로 넘어가면 이전 화면으로 못
-          넘어가게
+          {/* 
           TODO: 초대코드 복사 기능
           */}
-          {selectedIndex < 2 && (
+          {selectedIndex === 0 && (
             <div className="fixed top-[54px] left-[27px]">
               <PrevButton
-                onClick={onPrevButtonClick}
-                disabled={prevBtnDisabled}
+                onClick={() => router.replace('/profile')}
                 className="w-[34px] h-[34px] text-[34px]"
               >
                 <FaArrowLeft className="w-[34px] h-[34px]" />
