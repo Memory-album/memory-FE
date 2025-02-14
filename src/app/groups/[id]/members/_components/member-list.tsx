@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getMembersByGroupId } from '@/features/member/api/getMembersByGroupId';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { getGroupById } from '@/features/group/api/getGroupById';
 
 interface MemberListProps {
   id: string;
@@ -26,14 +27,20 @@ export const MemberList = ({ id }: MemberListProps) => {
     queryFn: getMembersByGroupId,
   });
 
-  console.log(members);
+  const { data: group } = useQuery({
+    queryKey: ['groups', id],
+    queryFn: getGroupById,
+  });
+
   return (
     <div className="mt-10 pb-[102px]">
       <div className="flex justify-between mb-[17px]">
         <div className="text-[13px] font-semibold border border-t-0 border-x-0 border-b-2 border-b-[#4848F9]">
-          멤버 목록
+          멤버 목록 ({members?.length})
         </div>
-        <MemberActionDropdown setIsActive={setIsActive} />
+        {group?.role === 'OWNER' && (
+          <MemberActionDropdown setIsActive={setIsActive} />
+        )}
       </div>
       {isLoading && (
         <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
@@ -46,6 +53,7 @@ export const MemberList = ({ id }: MemberListProps) => {
             <MemberItem
               key={member.id}
               groupId={id}
+              groupOwnerId={group.ownerUserId}
               memberId={member.id}
               isActive={isActive}
               setIsActive={setIsActive}
@@ -63,6 +71,7 @@ type MemberItemProps = {
   isActive: boolean;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   groupId: string;
+  groupOwnerId: string;
   memberId: string;
   imageUrl: string;
   memberName: string;
@@ -72,14 +81,16 @@ const MemberItem = ({
   isActive,
   setIsActive,
   groupId,
+  groupOwnerId,
   memberId,
   imageUrl,
   memberName,
 }: MemberItemProps) => {
-  // TODO: 그룹 오너일 때만 삭제할 수 있게
+  const isOwner = groupOwnerId === memberId;
+
   return (
     <div className="relative">
-      {isActive && (
+      {isActive && !isOwner && (
         <AlertKickoutMember
           setIsActive={setIsActive}
           groupId={groupId}
