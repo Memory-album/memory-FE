@@ -1,8 +1,8 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 import { getUser } from '@/features/auth/api/getUser';
@@ -14,22 +14,20 @@ type UserType = {
 };
 
 export const UserInfo = () => {
-  const router = useRouter();
-  const { data, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
 
-  if (error) {
-    alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
-    router.replace('/login');
+  if (isLoading) {
+    return (
+      <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
+        <AiOutlineLoading3Quarters className="size-8 animate-spin" />
+      </p>
+    );
   }
 
-  if (!data) {
-    return null;
-  }
-
-  const user: UserType = data.user;
+  const user: UserType = data?.user;
 
   return (
     <div>
