@@ -1,4 +1,4 @@
-export async function getSingleGroup({
+export async function getGroupById({
   queryKey,
 }: {
   queryKey: [string, string];
@@ -8,7 +8,7 @@ export async function getSingleGroup({
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}`,
     {
       next: {
-        tags: ['user', 'groups'],
+        tags: ['groups', id],
       },
       credentials: 'include',
     },

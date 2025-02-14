@@ -6,24 +6,14 @@ import { Button } from '@/components/ui/button';
 
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-
-import { FaArrowLeft } from 'react-icons/fa6';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import '@/app/signup/verifyInputStyle.css';
 
 import '@/components/embla/embla.css';
-import {
-  DotButton,
-  useDotButton,
-} from '@/components/embla/EmblaCarouselDotButton';
-import {
-  PrevButton,
-  usePrevNextButtons,
-} from '@/components/embla/EmblaCarouselButtons';
 import useEmblaCarousel from 'embla-carousel-react';
-import LoginHeader from '@/components/LoginHeader';
 import { GroupInput } from '@/app/groups/_components/group-input';
+import { getGroupById } from '@/features/group/api/getGroupById';
 
 type FormInputs = {
   groupName: string;
@@ -38,7 +28,17 @@ type Props = {
 export const EditGroup = ({ id }: Props) => {
   const router = useRouter();
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
-  //TODO: query group 상세 조회 불러오기
+  const [preview, setPreview] = useState<{
+    dataUrl: string;
+    file: File;
+  } | null>(null);
+  const imageRef = useRef<HTMLInputElement | null>(null);
+
+  const { data: group } = useQuery({
+    queryKey: ['groups', id],
+    queryFn: getGroupById,
+    staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 (선택 사항)
+  });
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -75,18 +75,12 @@ export const EditGroup = ({ id }: Props) => {
     },
   });
 
-  const [preview, setPreview] = useState<{
-    dataUrl: string;
-    file: File;
-  } | null>(null);
-  const imageRef = useRef<HTMLInputElement | null>(null);
-
   const { control, watch } = useForm();
 
   const form = useForm<FormInputs>({
     defaultValues: {
-      groupName: '',
-      groupDescription: '',
+      groupName: group?.name,
+      groupDescription: group?.groupDescription,
     },
   });
 
@@ -119,7 +113,7 @@ export const EditGroup = ({ id }: Props) => {
   return (
     <main>
       <article className="max-w-md mx-auto">
-        <section ref={emblaRef} className="overflow-hidden h-full">
+        <section ref={emblaRef} className="overflow-hidden h-full mb-[80px]">
           <FormProvider {...form}>
             <form
               className="flex h-full"
@@ -154,14 +148,18 @@ export const EditGroup = ({ id }: Props) => {
                   name="groupName"
                   label="그룹 이름"
                   control={control}
-                  placeholder="그룹 이름을 입력해주세요"
+                  placeholder={group?.name || '우리 가족 앨범'}
+                  defaultValue={group?.name}
                   errorMessage="그룹 이름을 입력해주세요."
                 />
                 <GroupInput
                   name="groupDescription"
                   label="그룹 설명"
                   control={control}
-                  placeholder="예) 가족 앨범, 자녀 앨범"
+                  placeholder={
+                    group?.groupDescription || '예) 가족 테마, 우정 테마'
+                  }
+                  defaultValue={group?.groupDescription}
                   errorMessage="그룹에 대한 설명을 입력해주세요."
                 />
                 {mutation.isPending ? (
