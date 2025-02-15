@@ -14,7 +14,9 @@ type GroupInfoProps = {
   name: string;
   groupImageUrl: string;
   description: string;
+  ownerName: string;
 };
+
 export const UserGroups = () => {
   const router = useRouter();
 
@@ -43,11 +45,11 @@ export const UserGroups = () => {
         <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
           {groups.map((group: GroupInfoProps) => (
             <div
-              className="w-full overflow-hidden"
+              className="w-full overflow-hidden cursor-pointer hover:opacity-80"
               key={group.id}
               onClick={() => router.push(`/groups/${group.id}/dashboard`)}
             >
-              <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden cursor-pointer hover:opacity-90">
+              <div className="relative mb-3 size-[150px] rounded-[14px] overflow-hidden">
                 <Image
                   src={group.groupImageUrl}
                   alt="그룹 이미지"
@@ -61,7 +63,7 @@ export const UserGroups = () => {
               <p className="mb-[7px] text-xs w-[120px] h-fit max-h-[32px] overflow-hidden line-clamp-2">
                 {group.description}
               </p>
-              <p className="text-[10px] text-[#555555]">@그룹장이름</p>
+              <p className="text-[10px] text-[#555555]">@{group.ownerName}</p>
             </div>
           ))}
         </div>

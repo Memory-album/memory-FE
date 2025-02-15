@@ -1,30 +1,41 @@
 'use client';
+import { InviteCodeDialog } from '@/components/invite-code-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTrigger,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { DialogTrigger } from '@radix-ui/react-dialog';
-import { useMutation } from '@tanstack/react-query';
+import { getGroupById } from '@/features/group/api/getGroupById';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { CopyIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { FaEdit, FaUsers, FaQuestionCircle, FaKey } from 'react-icons/fa';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
-// TODO: 그룹 수정, 초대 코드 오너만 ..
+interface DashboardMenuProps {
+  groupId: string;
+}
 
-export const DashboardMenu = () => {
-  const { id } = useParams();
+export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
   const router = useRouter();
+
+  const { data: group, isError } = useQuery({
+    queryKey: ['groups', groupId],
+    queryFn: getGroupById,
+  });
 
   const mutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}/leave`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/leave`,
         {
           method: 'delete',
           credentials: 'include',
@@ -48,43 +59,61 @@ export const DashboardMenu = () => {
     },
   });
 
+  useEffect(() => {
+    if (isError) {
+      alert('해당 그룹을 찾을 수 없습니다. 프로필 페이지로 이동합니다.');
+      router.replace('/profile');
+    }
+  }, [isError, router]);
+
+  if (!group) {
+    return null;
+  }
+
   return (
     <div className="bg-[#F2F7FF] rounded-[14px] py-[26px] px-2">
       <ul>
-        <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
-          <FaEdit className="opacity-60" />
-          <Link href={`/groups/${id}/edit`}>그룹 수정</Link>
-        </li>
+        {group.role === 'OWNER' && (
+          <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+            <FaEdit className="opacity-60" />
+            <Link href={`/groups/${groupId}/edit`}>그룹 수정</Link>
+          </li>
+        )}
         <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
           <FaUsers className="opacity-60" />
-          <Link href={`/groups/${id}/members`}>멤버 보기</Link>
+          <Link href={`/groups/${groupId}/members`}>멤버 보기</Link>
         </li>
         <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
           <FaQuestionCircle className="opacity-60" />
-          <Link href={`/groups/${id}/questions`}>내 질문 보기</Link>
+          <Link href={`/groups/${groupId}/questions`}>내 질문 보기</Link>
         </li>
-        <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
-          <FaKey className="opacity-60" />
-          {/* TODO: 초대 코드 조회  */}
-          <Link href="#">그룹 초대 코드</Link>
-        </li>
-        <ConfirmDialog>
-          <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
-            <FaArrowRightFromBracket className="opacity-60" />
-            <button
-              className="bg-none text-base"
-              onClick={() => mutation.mutate()}
-            >
-              그룹 나가기
-            </button>
-          </li>
-        </ConfirmDialog>
+        {group.role === 'OWNER' && (
+          <InviteCodeDialog inviteCode={group.inviteCode}>
+            <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+              <FaKey className="opacity-60" />
+              <p>그룹 초대 코드</p>
+            </li>
+          </InviteCodeDialog>
+        )}
+        {group.role !== 'OWNER' && (
+          <RemoveDialog>
+            <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+              <FaArrowRightFromBracket className="opacity-60" />
+              <button
+                className="bg-none text-base"
+                onClick={() => mutation.mutate()}
+              >
+                그룹 나가기
+              </button>
+            </li>
+          </RemoveDialog>
+        )}
       </ul>
     </div>
   );
 };
 
-const ConfirmDialog = ({ children }: { children: React.ReactNode }) => (
+const RemoveDialog = ({ children }: { children: React.ReactNode }) => (
   <Dialog>
     <DialogTrigger asChild>{children}</DialogTrigger>
     <DialogContent className="w-[450px]">
