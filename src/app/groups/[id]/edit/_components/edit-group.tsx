@@ -87,14 +87,23 @@ export const EditGroup = ({ id }: Props) => {
     }
   }, [isError, router]);
 
-  const { control, watch } = useForm();
+  const { control, watch, reset } = useForm();
 
   const form = useForm<FormInputs>({
     defaultValues: {
-      groupName: group?.name,
-      groupDescription: group?.groupDescription,
+      groupName: '',
+      groupDescription: '',
     },
   });
+
+  useEffect(() => {
+    if (group) {
+      reset({
+        groupName: group.name || '',
+        groupDescription: group.groupDescription || '',
+      });
+    }
+  }, [group, reset]);
 
   const groupNameValue = watch('groupName');
   const groupDescriptionValue = watch('groupDescription');
@@ -118,6 +127,7 @@ export const EditGroup = ({ id }: Props) => {
     }
   };
 
+  console.log(groupNameValue, groupDescriptionValue);
   const onSubmit = () => {
     mutation.mutate();
   };
