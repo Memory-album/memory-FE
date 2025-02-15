@@ -4,15 +4,29 @@ import Image from 'next/image';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { getGroupById } from '@/features/group/api/getGroupById';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 interface GroupInfoProps {
   id: string;
 }
 
 export const GroupInfo = ({ id }: GroupInfoProps) => {
-  const { data: group, isLoading } = useQuery({
+  const router = useRouter();
+  const {
+    data: group,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['groups', id],
     queryFn: getGroupById,
   });
+
+  useEffect(() => {
+    if (isError) {
+      alert('해당 그룹을 찾을 수 없습니다. 프로필 페이지로 이동합니다.');
+      router.replace('/profile');
+    }
+  }, [isError, router]);
 
   if (isLoading) {
     return (

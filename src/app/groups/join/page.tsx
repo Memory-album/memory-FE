@@ -13,6 +13,7 @@ import { useState } from 'react';
 const join = () => {
   const router = useRouter();
   const [joinCode, setJoinCode] = useState<string | null>(null);
+  // TODO: groupNickname 필드 삭제
   const mutation = useMutation({
     mutationFn: async ({
       inviteCode,
@@ -54,7 +55,6 @@ const join = () => {
     setJoinCode(value);
   };
 
-  // TODO: 그룹 관계 보류
   return (
     <main>
       <article className="max-w-md mx-auto w-fit mt-[281px]">
@@ -87,7 +87,7 @@ const join = () => {
                 onClick={() =>
                   mutation.mutate({
                     inviteCode: joinCode as string,
-                    groupNickname: '딸',
+                    groupNickname: '',
                   })
                 }
               >

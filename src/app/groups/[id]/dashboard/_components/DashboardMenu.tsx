@@ -15,6 +15,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { CopyIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { FaEdit, FaUsers, FaQuestionCircle, FaKey } from 'react-icons/fa';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
@@ -25,11 +26,7 @@ interface DashboardMenuProps {
 export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
   const router = useRouter();
 
-  const {
-    data: group,
-    isError,
-    error,
-  } = useQuery({
+  const { data: group, isError } = useQuery({
     queryKey: ['groups', groupId],
     queryFn: getGroupById,
   });
@@ -61,19 +58,12 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
     },
   });
 
-  if (isError) {
-    console.error('에러 발생:', error);
-
-    if (
-      error?.message.includes('Unauthorized') ||
-      error?.message.includes('로그인')
-    ) {
-      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
-      router.replace('/login');
-    } else {
-      return <p>데이터를 불러오는 중 오류가 발생했습니다.</p>;
+  useEffect(() => {
+    if (isError) {
+      alert('해당 그룹을 찾을 수 없습니다. 프로필 페이지로 이동합니다.');
+      router.replace('/profile');
     }
-  }
+  }, [isError, router]);
 
   if (!group) {
     return null;

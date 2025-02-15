@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -14,6 +14,7 @@ import '@/components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { GroupInput } from '@/app/groups/_components/group-input';
 import { getGroupById } from '@/features/group/api/getGroupById';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 type FormInputs = {
   groupName: string;
@@ -34,7 +35,11 @@ export const EditGroup = ({ id }: Props) => {
   } | null>(null);
   const imageRef = useRef<HTMLInputElement | null>(null);
 
-  const { data: group } = useQuery({
+  const {
+    data: group,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['groups', id],
     queryFn: getGroupById,
     staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 (선택 사항)
@@ -74,6 +79,13 @@ export const EditGroup = ({ id }: Props) => {
       alert('그룹 수정 실패했습니다. 다시 시도해주세요.');
     },
   });
+
+  useEffect(() => {
+    if (isError) {
+      alert('해당 그룹을 찾을 수 없습니다. 프로필 페이지로 이동합니다.');
+      router.replace('/profile');
+    }
+  }, [isError, router]);
 
   const { control, watch } = useForm();
 
