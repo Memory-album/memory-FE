@@ -10,26 +10,19 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 
-import { FaUserMinus, FaUserPlus, FaUsersCog } from 'react-icons/fa';
+import { FaUserMinus, FaUserPlus } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { PiPencilDuotone } from 'react-icons/pi';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { InviteMember } from './invite-member';
+import { Dispatch, SetStateAction } from 'react';
+import { InviteCodeDialog } from '@/components/invite-code-dialog';
 
 type Props = {
   setIsActive: Dispatch<SetStateAction<boolean>>;
+  inviteCode: string;
 };
 
-export const MemberActionDropdown = ({ setIsActive }: Props) => {
+export const MemberActionDropdown = ({ setIsActive, inviteCode }: Props) => {
   const router = useRouter();
 
   const handleSelectMember = () => {
@@ -57,7 +50,7 @@ export const MemberActionDropdown = ({ setIsActive }: Props) => {
                 <FaUserMinus />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
-            <InviteMember>
+            <InviteCodeDialog inviteCode={inviteCode}>
               <DropdownMenuItem
                 className="hover:bg-[#e5e7eb] cursor-pointer"
                 onSelect={(e) => e.preventDefault()}
@@ -67,7 +60,7 @@ export const MemberActionDropdown = ({ setIsActive }: Props) => {
                   <FaUserPlus />
                 </DropdownMenuShortcut>
               </DropdownMenuItem>
-            </InviteMember>
+            </InviteCodeDialog>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

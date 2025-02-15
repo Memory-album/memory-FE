@@ -1,16 +1,17 @@
 'use client';
+import { InviteCodeDialog } from '@/components/invite-code-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTrigger,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import { getGroupById } from '@/features/group/api/getGroupById';
-import { DialogTrigger } from '@radix-ui/react-dialog';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CopyIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -109,41 +110,6 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
         )}
       </ul>
     </div>
-  );
-};
-
-const InviteCodeDialog = ({
-  inviteCode,
-  children,
-}: {
-  inviteCode: string;
-  children: React.ReactNode;
-}) => {
-  const handleCopy = () => {
-    navigator.clipboard
-      .writeText(inviteCode)
-      .then(() => alert('코드가 복사되었습니다!'));
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[450px] flex flex-col items-center">
-        <DialogHeader className="flex flex-col items-center">
-          <DialogTitle>앨범을 공유할 가족을 초대해보세요!</DialogTitle>
-          <DialogDescription className="text-[#8C8989]">
-            아래 코드로 멤버를 초대할 수 있어요.
-          </DialogDescription>
-        </DialogHeader>
-        <strong className="text-4xl text-[#4848F9]">{inviteCode}</strong>
-        <Button
-          onClick={handleCopy}
-          className="w-fit text-base bg-transparent hover:bg-transparent hover:opacity-80 border border-blue-100 text-black"
-        >
-          Copy link <CopyIcon className="size-4 ml-2" />
-        </Button>
-      </DialogContent>
-    </Dialog>
   );
 };
 

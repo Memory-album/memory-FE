@@ -22,7 +22,7 @@ type MemberProps = {
 export const MemberList = ({ id }: MemberListProps) => {
   const [isActive, setIsActive] = useState(false);
 
-  const { data: members, isLoading } = useQuery({
+  const { data: members, isLoading: memberLoading } = useQuery({
     queryKey: ['groups', id, 'members'],
     queryFn: getMembersByGroupId,
   });
@@ -39,10 +39,13 @@ export const MemberList = ({ id }: MemberListProps) => {
           멤버 목록 ({members?.length})
         </div>
         {group?.role === 'OWNER' && (
-          <MemberActionDropdown setIsActive={setIsActive} />
+          <MemberActionDropdown
+            setIsActive={setIsActive}
+            inviteCode={group?.inviteCode}
+          />
         )}
       </div>
-      {isLoading && (
+      {memberLoading && (
         <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
           <AiOutlineLoading3Quarters className="size-8 animate-spin" />
         </p>
