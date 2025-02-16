@@ -60,6 +60,7 @@ export const CreateGroup = () => {
       return response.json();
     },
     onSuccess: async (response) => {
+      console.log('초대코드:', response.data.inviteCode);
       alert('그룹이 생성되었습니다!');
       setInviteCode(response.data.inviteCode);
     },

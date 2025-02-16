@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
 interface CreatedBy {
-  id: number;
   name: string;
   profileImgUrl: string;
 }
@@ -9,9 +8,8 @@ interface CreatedBy {
 interface Album {
   id: number;
   title: string;
-  description: string;
-  thumbnailUrl: [string];
-  theme: string;
+  thumbnailUrl: string[];
+  likes: boolean;
   createdBy: CreatedBy;
 }
 
@@ -24,7 +22,9 @@ const useAlbumStore = create<AlbumStore>((set) => ({
   albums: [],
   fetchAlbums: async () => {
     try {
-      const response = await fetch('/api/v1/mock/albums');
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
+      );
       if (!response.ok) {
         throw new Error('Failed to fetch albums');
       }
@@ -32,9 +32,7 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       const minimalData = data.map((album) => ({
         id: album.id,
         title: album.title,
-        description: album.description,
         thumbnailUrl: album.thumbnailUrl,
-        theme: album.theme,
         createdBy: album.createdBy,
       }));
       set({ albums: minimalData });

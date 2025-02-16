@@ -26,6 +26,9 @@ import {
 import '../../components/embla/embla.css';
 
 import { registerUser, sendVerifyCode, verifyEmailCode } from '@/services/auth';
+import useUserStore from '@/store/useUserInfo';
+import { userLogin } from '@/services/auth';
+import axios from 'axios';
 
 type PropType = {
   slides: number[];
@@ -113,32 +116,6 @@ const signup = ({ slides, options }: PropType) => {
     verifyPasswordInput.addEventListener('input', validateForm);
   }, []);
 
-  const handleSignup = async () => {
-    try {
-      const userData = {
-        email,
-        password,
-        name,
-        profileImage: profileImgFile
-      };
-
-      const response = await registerUser({
-        email,
-        password,
-        name,
-        profileImage: profileImgFile || undefined
-      });
-      console.log('Signup success:', response);
-      
-      if (response.status === 'success') {
-        console.log('회원가입이 완료되었습니다.');
-      }
-    } catch (error: any) {
-      console.error('Signup failed:', error);
-      const errorMessage = error.response?.data?.message || '회원가입에 실패했습니다.';
-      alert(errorMessage);
-    }
-  };
   const handleSendVerificationCode = async () => {
     try {
       const userData = {
@@ -164,6 +141,67 @@ const signup = ({ slides, options }: PropType) => {
     } catch (error) {
       console.error('Signup failed', error);
       alert('코드가 유효하지 않습니다.');
+    }
+  };
+
+  const { fetchUserInfo } = useUserStore();
+  const handleLogin = async () => {
+    try {
+      const userData = {
+        email: email,
+        password: password,
+        rememberMe: false,
+      };
+
+      console.log('Login request data:', userData);
+      const result = await userLogin(userData);
+      fetchUserInfo();
+      console.log('Login success:', result);
+    } catch (error: any) {
+      console.error('Login failed:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        error: error,
+      });
+
+      // 서버에서 전달하는 에러 메시지 처리
+      let errorMessage = '로그인에 실패했습니다.';
+
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (typeof error.response?.data === 'string') {
+        errorMessage = error.response.data;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
+    }
+  };
+
+  const handleSignup = async () => {
+    try {
+      const response = await registerUser({
+        email,
+        password,
+        name,
+        profileImage: profileImgFile || undefined,
+      });
+      console.log('Signup success:', response);
+
+      await handleLogin();
+
+      if (response.status === 'success') {
+        console.log('회원가입이 완료되었습니다.');
+      }
+    } catch (error: any) {
+      console.error('Signup failed:', error);
+      const errorMessage =
+        error.response?.data?.message || '회원가입에 실패했습니다.';
+      alert(errorMessage);
     }
   };
 
@@ -263,7 +301,7 @@ const signup = ({ slides, options }: PropType) => {
                   placeholder="인증코드를 입력해주세요"
                   action=""
                   method=""
-                  errorMessage="~자리로 입력해주세요"
+                  errorMessage="6자리로 입력해주세요"
                   id="verifyEmail"
                   onChange={handleVerifyCodeChange}
                   Inputwidth="243px"
