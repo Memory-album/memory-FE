@@ -1,10 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import useUserStore from '@/store/useUserInfo';
+import useGroupStore from '@/store/useGroupStore';
 import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaOptionsType } from 'embla-carousel';
@@ -12,6 +14,11 @@ import { EmblaOptionsType } from 'embla-carousel';
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
   const { userInfo } = useUserStore();
+  const { groups, fetchGroups } = useGroupStore();
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   return (
     <div className="mb-[103px]">
@@ -45,18 +52,24 @@ const home = () => {
         <div className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer">
           <Avatar className="w-10 h-10 text-white">
             <AvatarImage
-              src={userInfo?.profileImgUrl || 'https://github.com/shadcn.png'}
+              src={
+                groups.length > 0
+                  ? groups[0].groupImageUrl
+                  : 'https://github.com/shadcn.png'
+              }
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <p className="mt-[6px] font-regular text-[10px]">그룹 이름</p>
+          <p className="mt-[6px] font-regular text-[10px]">
+            {groups.length > 0 ? groups[0].name : '그룹이 없습니다'}
+          </p>
         </div>
       </header>
       <main className="ml-[28px]">
         <article>
           <div className="mt-[47px] ml-[3px] mb-[21px] flex flex-row w-[92%] justify-between items-end">
             <p className="font-bold text-[28px] drop-shadow-md">
-              {userInfo?.name || 'User'}의 앨범
+              {userInfo?.name || 'User'}님의 앨범
             </p>
           </div>
           <article className="w-fit mx-auto">

@@ -30,8 +30,13 @@ const PhotoDetail = ({ params }: PropType) => {
     { id: '7', src: '/images/6.png', isLiked: true, name: '사진8' },
   ]);
 
-  const currentIndex = images.findIndex((photo) => photo.id === currentPhotoId);
-  // const router = useRouter();
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    images.findIndex((photo) => photo.id === currentPhotoId),
+  );
+
+  useEffect(() => {
+    setCurrentIndex(images.findIndex((photo) => photo.id === currentPhotoId));
+  }, [currentPhotoId, images]); // const router = useRouter();
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     startIndex: currentIndex,
@@ -40,47 +45,41 @@ const PhotoDetail = ({ params }: PropType) => {
 
   const updateURL = useCallback(
     (index: number) => {
+      if (!images[index]) return;
       const newPhotoId = images[index].id;
       const newPath = `/albums/${albumId}/photo/${newPhotoId}`;
       window.history.replaceState(null, '', newPath);
     },
-    [albumId, images],
+    [albumId], // images를 제거
   );
 
   const downloadRef = useRef<HTMLDivElement>(null);
-  const showDownloadSection = () => {
-    if (downloadRef.current) {
-      downloadRef.current.style.display = 'block';
-    }
-  };
-  const closeDownloadSection = () => {
-    if (downloadRef.current) {
-      downloadRef.current.style.display = 'none';
-    }
-  };
-
+  const detailPhotoRef = useRef<HTMLDivElement>(null);
   const conversationRef = useRef<HTMLDivElement>(null);
-  const showConversationSection = () => {
-    if (conversationRef.current) {
-      conversationRef.current.style.display = 'block';
-    }
-  };
-  const closeConversationSection = () => {
-    if (conversationRef.current) {
-      conversationRef.current.style.display = 'none';
+
+  const toggleVisibillity = (
+    ref: React.RefObject<HTMLDivElement>,
+    isVisible: boolean,
+  ) => {
+    if (ref.current) {
+      ref.current.style.display = isVisible ? 'block' : 'none';
     }
   };
 
   useEffect(() => {
     if (!emblaApi) return;
 
-    emblaApi.on('select', () => {
+    const handleSelect = () => {
       const selectedIndex = emblaApi.selectedScrollSnap();
       updateURL(selectedIndex);
-    });
+    };
 
-    emblaApi.scrollTo(currentIndex >= 0 ? currentIndex : 0, false);
-  }, [emblaApi, currentIndex, updateURL]);
+    emblaApi.on('select', handleSelect);
+
+    return () => {
+      emblaApi.off('select', handleSelect); // 언마운트 시 제거
+    };
+  }, [emblaApi, updateURL]);
 
   const toggleLike = (index: number) => {
     setImages((prevImages) =>
@@ -100,10 +99,100 @@ const PhotoDetail = ({ params }: PropType) => {
       >
         <div
           className="absolute top-0 bg-[#e0edffd6] w-full h-full"
-          onClick={closeDownloadSection}
+          onClick={() => toggleVisibillity(downloadRef, false)}
         ></div>
         <div className="absolute right-[33px] top-[10%] cursor-pointer">
-          <CgClose size={30} color="#494949" onClick={closeDownloadSection} />
+          <CgClose
+            size={30}
+            color="#494949"
+            onClick={() => toggleVisibillity(downloadRef, false)}
+          />
+        </div>
+        <div
+          className="absolute top-[16%] w-[342px] h-[480px] overflow-scroll grid grid-cols-2 gap-[26px]"
+          style={{ right: 'calc(50% - 171px)' }}
+        >
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
+            <Image
+              src="/images/example.png"
+              alt="사진"
+              width={160}
+              height={160}
+              className="rounded-[10px] h-[160px]"
+            ></Image>
+          </div>
+        </div>
+        <div
+          className="absolute bottom-[10%]"
+          style={{ left: 'calc(50% - 44px)' }}
+        >
+          <button>
+            <a href="/images/example.png" download="예시사진" role="button">
+              <DownloadSquare02Icon size={88} color="#428EFF" />
+            </a>
+          </button>
+        </div>
+      </div>
+      <div
+        ref={detailPhotoRef}
+        className="w-full h-full absolute top-0 z-50"
+        style={{ display: 'none' }}
+      >
+        <div
+          className="absolute top-0 bg-[#e0edff78] w-full h-full"
+          onClick={() => toggleVisibillity(detailPhotoRef, false)}
+        ></div>
+        <div className="absolute right-[33px] top-[10%] cursor-pointer">
+          <CgClose
+            size={30}
+            color="#494949"
+            onClick={() => toggleVisibillity(detailPhotoRef, false)}
+          />
         </div>
         <div
           className="absolute top-[16%]"
@@ -122,7 +211,7 @@ const PhotoDetail = ({ params }: PropType) => {
           style={{ left: 'calc(50% - 44px)' }}
         >
           <button>
-            <a href="/images/example.png" download="예시사진" role="button">
+            <a href="/images/example2.png" download="예시사진2" role="button">
               <DownloadSquare02Icon size={88} color="#428EFF" />
             </a>
           </button>
@@ -137,7 +226,7 @@ const PhotoDetail = ({ params }: PropType) => {
       >
         <div
           className="absolute top-0 bg-[#cbcbcbd6] w-full h-full"
-          onClick={closeConversationSection}
+          onClick={() => toggleVisibillity(conversationRef, false)}
         ></div>
         <div
           className="absolute top-[16%] w-[362px] h-[518px] rounded-[10px] bg-[#eef6fff5]"
@@ -174,7 +263,7 @@ const PhotoDetail = ({ params }: PropType) => {
             >
               <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
                 <div className="mb-[35px] flex items-end">
-                  <button onClick={showDownloadSection}>
+                  <button onClick={() => toggleVisibillity(downloadRef, true)}>
                     <div
                       className="w-[285px] h-[399px] mr-3 bg-cover bg-center rounded-[10px]"
                       style={{ backgroundImage: `url(${image.src})` }}
@@ -220,7 +309,7 @@ const PhotoDetail = ({ params }: PropType) => {
                 {/* <ReceivedMessageInAlbums /> */}
                 <div
                   className="relative cursor-pointer"
-                  onClick={showConversationSection}
+                  onClick={() => toggleVisibillity(conversationRef, true)}
                 >
                   <div
                     className="w-0 h-0 top-[-23px] left-[19px] absolute"
