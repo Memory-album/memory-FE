@@ -41,8 +41,6 @@ const changePasswordSchema = z
 
 export const PasswordChangeForm = () => {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [authToken, setAuthToken] = useState<string | null>();
   const [verificationCode, setVerificationCode] = useState<string>('');
 
   // 사용자 정보 가져오기
@@ -93,11 +91,10 @@ export const PasswordChangeForm = () => {
       return response.json();
     },
     onSuccess: () => {
-      setError(null);
       alert('이메일로 인증코드가 발송되었습니다.');
     },
     onError: (error: Error) => {
-      setError(error.message);
+      alert(error.message);
     },
   });
 
@@ -127,12 +124,10 @@ export const PasswordChangeForm = () => {
       return response.json();
     },
     onSuccess: (data) => {
-      setError(null);
       alert('검증 완료되었습니다.');
       setVerificationCode(verifyCodeForm.getValues().code); // 인증 코드 저장
     },
     onError: (error: Error) => {
-      setError(error.message);
       alert(error.message);
     },
   });
@@ -140,7 +135,6 @@ export const PasswordChangeForm = () => {
   // 비밀번호 변경 API 호출
   const changePasswordMutation = useMutation({
     mutationFn: async (data: z.infer<typeof changePasswordSchema>) => {
-      if (!authToken) throw new Error('잘못된 요청입니다. 다시 시도해주세요');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/password/reset`,
         {
@@ -148,7 +142,6 @@ export const PasswordChangeForm = () => {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({
             email: user.email,
@@ -166,11 +159,14 @@ export const PasswordChangeForm = () => {
       return response.json();
     },
     onSuccess: () => {
-      alert('비밀번호가 성공적으로 변경되었습니다.');
-      router.replace('/profile');
+      alert(
+        '비밀번호가 성공적으로 변경되었습니다. 보안을 위해 다시 로그인해주세요.',
+      );
+      //로그아웃 처리
+
+      router.replace('/login');
     },
     onError: (error: Error) => {
-      setError(error.message);
       alert(error.message);
     },
   });
