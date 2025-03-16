@@ -121,20 +121,8 @@ const login = () => {
     }
   };
 
-  const LoginHandler = async (select: string) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth/login?provider=${select}`,
-        {
-          method: 'GET',
-        },
-      );
-      if (!response.ok) {
-        throw new Error('로그인 요청 실패');
-      }
-    } catch (error) {
-      console.error('로그인 오류:', error);
-    }
+  const LoginHandler = (select: string) => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth/login?provider=${select}`;
   };
 
   return (

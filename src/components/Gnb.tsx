@@ -79,7 +79,7 @@ const Gnb = () => {
 
   return (
     <header className="w-full h-[102px] fixed bg-[#fdfdfd] z-50">
-      <div className="w-full h-[78px] mt-6 flex justify-between items-center">
+      <div className="sm:w-[500px] w-full h-[78px] mt-6 flex justify-between items-center mx-auto">
         <div className="ml-4 font-bold text-lg text-[#8FB6FF]">
           {currentPathName}
         </div>
