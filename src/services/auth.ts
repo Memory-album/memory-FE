@@ -77,17 +77,17 @@ export const registerUser = async (userData: {
   try {
     // FormData 객체 생성
     const formData = new FormData();
-    
+
     // userRegisterDto JSON 문자열 생성
     const userRegisterDto = {
       email: userData.email,
       password: userData.password,
-      name: userData.name
+      name: userData.name,
     };
-    
+
     // FormData에 데이터 추가
     formData.append('userRegisterDto', JSON.stringify(userRegisterDto));
-    
+
     // 프로필 이미지가 있는 경우 추가
     if (userData.profileImage) {
       formData.append('profileImage', userData.profileImage);
@@ -101,7 +101,7 @@ export const registerUser = async (userData: {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }
+      },
     );
     return response.data;
   } catch (error: any) {
@@ -111,7 +111,7 @@ export const registerUser = async (userData: {
     );
     throw error.response?.data || error.message;
   }
-}
+};
 
 // // 로그인
 // export const userLogin = async (userData: {
@@ -137,22 +137,15 @@ export const userLogin = async (userData: {
   rememberMe?: boolean; // 자동 로그인 옵션 추가
 }) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/auth/login`, 
-      userData,
-      {
-        withCredentials: true, // 쿠키를 받기 위해 필수
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, userData, {
+      withCredentials: true, // 쿠키를 받기 위해 필수
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error: any) {
-    console.error(
-      'Login error:',
-      error.response?.data || error.message,
-    );
+    console.error('Login error:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };

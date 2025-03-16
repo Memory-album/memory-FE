@@ -5,21 +5,10 @@ import Link from 'next/link';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { GoHeart } from 'react-icons/go';
-import { GoHeartFill } from 'react-icons/go';
+import { GoHeart, GoHeartFill } from 'react-icons/go';
 import { usePathname } from 'next/navigation';
 
 const PhotosInAlbum = () => {
-  // const [isClient, setIsClient] = useState(false);
-
-  // useEffect(() => {
-  //   setIsClient(true); // 클라이언트에서만 렌더링되도록 설정
-  // }, []);
-
-  // if (!isClient) {
-  //   return null; // 클라이언트에서만 렌더링
-  // }
-
   const pathname = usePathname();
 
   const [images, setImages] = useState([
