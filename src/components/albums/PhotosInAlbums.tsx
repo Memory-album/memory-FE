@@ -5,24 +5,57 @@ import Link from 'next/link';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { GoHeart } from 'react-icons/go';
-import { GoHeartFill } from 'react-icons/go';
+import { GoHeart, GoHeartFill } from 'react-icons/go';
+import useGroupStore from '@/store/useGroupStore';
 import { usePathname } from 'next/navigation';
 
+interface Media {
+  id: number;
+  fileUrl: string;
+  thumbnailUrl: string;
+  uploadedBy: {
+    name: string;
+    profileImgUrl: string;
+  };
+}
+
 const PhotosInAlbum = () => {
-  // const [isClient, setIsClient] = useState(false);
-
-  // useEffect(() => {
-  //   setIsClient(true); // 클라이언트에서만 렌더링되도록 설정
-  // }, []);
-
-  // if (!isClient) {
-  //   return null; // 클라이언트에서만 렌더링
-  // }
-
   const pathname = usePathname();
+  const { groups } = useGroupStore();
+  const [images, setImages] = useState<Array<Media & { isLiked: boolean }>>([]);
 
-  const [images, setImages] = useState([
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        //url에서 albumId 추출, groupId는 따로 추출하는 방법 필요
+        const urlParts = pathname.split('/');
+        const groupId = groups[0].id;
+        const albumId = urlParts[2]; // URL 구조에 따라 조정 필요
+
+        const response = await fetch(
+          `http://localhost:8080/api/v1/groups/${groupId}/albums/${albumId}/media`,
+        );
+        const data = await response.json();
+
+        if (data.result === 'SUCCESS') {
+          const formattedImages = data.data.content.map((item: Media) => ({
+            id: item.id,
+            src: item.fileUrl,
+            thumbnailUrl: item.thumbnailUrl,
+            uploadedBy: item.uploadedBy,
+            isLiked: false, // 초기값으로 false 설정
+          }));
+          setImages(formattedImages);
+        }
+      } catch (error) {
+        console.error('Failed to fetch photos:', error);
+      }
+    };
+
+    fetchPhotos();
+  }, [pathname]);
+
+  const [dummyImages, setDummyImages] = useState([
     { id: '0', src: '/images/example.png', isLiked: true },
     { id: '1', src: '/images/example2.png', isLiked: true },
     { id: '2', src: '/images/1.png', isLiked: true },
@@ -34,7 +67,7 @@ const PhotosInAlbum = () => {
   ]);
 
   const toggleLike = (index: number) => {
-    setImages((prevImages) =>
+    setDummyImages((prevImages) =>
       prevImages.map((image, i) =>
         i === index ? { ...image, isLiked: !image.isLiked } : image,
       ),
@@ -47,7 +80,7 @@ const PhotosInAlbum = () => {
         columnsCountBreakPoints={{ 500: 2, 600: 3, 1200: 4, 1400: 5 }}
       >
         <Masonry columnsCount={3} gutter="15px">
-          {images.map((image, i) => (
+          {dummyImages.map((image, i) => (
             <div className="relative" key={i}>
               <Link href={`${pathname}/photo/${image.id}`} key={image.id}>
                 <img
@@ -63,6 +96,40 @@ const PhotosInAlbum = () => {
                   <AvatarFallback></AvatarFallback>
                 </Avatar>
                 <p className="text-[11px] pl-1">김덕철</p>
+              </div>
+              <div className="absolute bottom-[7px] right-[7px]">
+                <button
+                  className="bg-white w-7 h-7 rounded-full flex items-center justify-center"
+                  onClick={() => toggleLike(i)}
+                >
+                  {image.isLiked ? (
+                    <GoHeartFill
+                      fill="red"
+                      className="transition-transform transform scale-125 duration-300"
+                    />
+                  ) : (
+                    <GoHeart className="transition-transform transform scale-125 duration-300" />
+                  )}
+                </button>
+              </div>
+            </div>
+          ))}
+          {images.map((image, i) => (
+            <div className="relative" key={image.id}>
+              <Link href={`${pathname}/photo/${image.id}`}>
+                <img
+                  src={image.thumbnailUrl}
+                  style={{ width: '100%', display: 'block' }}
+                  className="rounded-[10px] cursor-pointer"
+                  alt={`Photo ${image.id}`}
+                />
+              </Link>
+              <div className="absolute bottom-[7px] left-[7px] flex items-end">
+                <Avatar className="w-7 h-7 text-white">
+                  <AvatarImage src={image.uploadedBy.profileImgUrl} />
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+                <p className="text-[11px] pl-1">{image.uploadedBy.name}</p>
               </div>
               <div className="absolute bottom-[7px] right-[7px]">
                 <button

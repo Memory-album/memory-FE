@@ -123,10 +123,11 @@ const signup = ({ slides, options }: PropType) => {
       };
 
       const response = await sendVerifyCode(userData);
+      alert('이메일이 전송되었습니다.');
       console.log('Send API Response:', response);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup failed', error);
-      alert('이메일을 전송하지 못 했습니다.');
+      alert(`${error.message}`);
     }
   };
   const handleVerifyEmailCode = async () => {

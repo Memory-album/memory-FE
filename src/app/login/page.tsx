@@ -121,6 +121,10 @@ const login = () => {
     }
   };
 
+  const LoginHandler = (select: string) => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth/login?provider=${select}`;
+  };
+
   return (
     <main>
       <LoginHeader />
@@ -207,6 +211,7 @@ const login = () => {
             <Button
               variant={'loginBtn'}
               className="mb-[18px] bg-[#FEE500] text-[#191919] rounded-[12px]"
+              onClick={() => LoginHandler('kakao')}
             >
               <img
                 src="/images/kakao.svg"
@@ -218,6 +223,7 @@ const login = () => {
             <Button
               variant={'loginBtn'}
               className="mb-[18px] bg-[#03C75A] text-[#FFFFFF] rounded-[12px]"
+              onClick={() => LoginHandler('naver')}
             >
               <img
                 src="/images/naver.svg"
