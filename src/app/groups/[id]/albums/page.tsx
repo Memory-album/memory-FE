@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import PhotoArrangement from './_components/PhotoArrangement';
 import useAlbumStore from '@/store/useAlbumStore';
+import { useRouter } from 'next/navigation';
 
 const Collection = () => {
+  const router = useRouter();
   const { albums, fetchAlbums } = useAlbumStore();
 
   useEffect(() => {
@@ -90,6 +92,14 @@ const Collection = () => {
           />
         </Link>
       ))}
+      <div className="flex justify-center items-center">
+        <button
+          className="bg-[#bbbbbb] text-white px-4 py-2 rounded-[30px] w-[329px] h-[219px] text-[28px] font-semibold"
+          onClick={() => router.push('/albums/add')}
+        >
+          앨범 추가하기
+        </button>
+      </div>
     </main>
   );
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -11,13 +11,49 @@ import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaOptionsType } from 'embla-carousel';
 
+interface UploadedBy {
+  id: number;
+  name: string;
+  profileImgUrl: string;
+}
+
+interface MediaItem {
+  id: number;
+  fileUrl: string;
+  fileType: string;
+  originalFilename: string;
+  fileSize: number;
+  thumbnailUrl: string;
+  uploadedBy: UploadedBy;
+  createdAt: string;
+  story: string;
+}
+
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
   const { userInfo } = useUserStore();
   const { groups, fetchGroups } = useGroupStore();
+  const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
+  const albumId = 1;
 
   useEffect(() => {
     fetchGroups();
+
+    //최근 미디어
+    const fetchRecentMedia = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
+        );
+        const data = await response.json();
+        if (data.result === 'success') {
+          setRecentMedia(data.data);
+        }
+      } catch (error) {
+        console.error('최근 미디어 가져오기 실패:', error);
+      }
+    };
+    fetchRecentMedia();
   }, []);
 
   return (
@@ -73,7 +109,7 @@ const home = () => {
             </p>
           </div>
           <article className="w-fit mx-auto">
-            <Link href="/albums">
+            <Link href={`/groups/${groups[0].id}/albums`}>
               <figure className="w-[328px] h-[272px] overflow-hidden relative cursor-pointer group">
                 <div className="w-[146px] h-[205px] bg-[#FF8888] opacity-60 rounded-[10px] absolute top-[12px] left-[16px] rotate-[-9deg] z-0 group-hover:top-[20px] group-hover:left-[68px] group-hover:rotate-[-15deg] transition-all"></div>
                 <div className="w-[146px] h-[205px] bg-[#FFF68F] opacity-60 rounded-[10px] absolute top-[6px] right-[62px] rotate-[26deg] z-10 group-hover:top-[29px] group-hover:right-[69px] group-hover:rotate-[12deg] transition-all"></div>
@@ -93,12 +129,27 @@ const home = () => {
         <section className="mt-[45px]">
           <div className="w-[92%] flex flex-row justify-between items-end mb-5">
             <p className="font-bold text-[16px]">최근 추가된 콘텐츠</p>
-            <Link
-              href="/albums"
+            {/* <Link
+              href={`/groups/${groups[0].id}/albums`}
               className="font-semibold text-[10px] text-[#676767] mb-[2px]"
             >
               전체보기{'>'}
-            </Link>
+            </Link> */}
+          </div>
+          <div ref={emblaRef} className="overflow-hidden h-[141px]">
+            <div className="flex">
+              {recentMedia.map((media, index) => (
+                <div
+                  className="min-w-[183px] flex flex-col items-center"
+                  key={media.id}
+                >
+                  <div
+                    className="w-[168px] h-[141px] bg-cover cursor-pointer"
+                    style={{ backgroundImage: `url(${media.thumbnailUrl})` }}
+                  ></div>
+                </div>
+              ))}
+            </div>
           </div>
           <div ref={emblaRef} className="overflow-hidden h-[141px]">
             <div className="flex">

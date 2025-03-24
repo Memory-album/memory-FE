@@ -16,6 +16,7 @@ interface InputFieldProps {
   InputLineHeight?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  required?: boolean;
 }
 
 const FormInput = ({
@@ -34,6 +35,7 @@ const FormInput = ({
   InputLineHeight = '36px',
   onChange,
   disabled = false,
+  required = true,
 }: InputFieldProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +55,7 @@ const FormInput = ({
             minLength={minLength}
             value={value}
             onChange={onChange}
-            required
+            required={required}
             style={{ lineHeight: InputLineHeight, width: Inputwidth }}
             disabled={disabled}
           />

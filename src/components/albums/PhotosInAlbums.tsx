@@ -13,6 +13,7 @@ interface Media {
   id: number;
   fileUrl: string;
   thumbnailUrl: string;
+  story: string | null;
   uploadedBy: {
     name: string;
     profileImgUrl: string;
@@ -42,8 +43,10 @@ const PhotosInAlbum = () => {
             id: item.id,
             src: item.fileUrl,
             thumbnailUrl: item.thumbnailUrl,
-            uploadedBy: item.uploadedBy,
+            profileImgUrl: item.uploadedBy.profileImgUrl,
+            uploadedBy: item.uploadedBy.name,
             isLiked: false, // 초기값으로 false 설정
+            story: item.story,
           }));
           setImages(formattedImages);
         }
