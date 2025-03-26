@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 import { getUser } from '@/features/auth/api/getUser';
+import { useRouter } from 'next/navigation';
 
 type UserType = {
   name: string;
@@ -14,6 +15,7 @@ type UserType = {
 };
 
 export const UserInfo = () => {
+  const router = useRouter();
   const { data, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
@@ -37,8 +39,12 @@ export const UserInfo = () => {
         </div>
         <strong className="flex-grow text-xl">{user?.name}</strong>
       </div>
-      <p className="mb-4 text-xs">-</p>
-      <Button className="w-full h-7 text-xs rounded-[6px]">프로필 수정</Button>
+      <Button
+        className="w-full h-7 text-xs rounded-[6px]"
+        onClick={() => router.push('/profile/edit')}
+      >
+        프로필 수정
+      </Button>
     </div>
   );
 };

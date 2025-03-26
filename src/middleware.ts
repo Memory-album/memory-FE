@@ -14,7 +14,8 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/profile',
+    '/profile/:path*',
+    '/password-change',
     '/albums/:path*',
     '/groups/:path*',
     '/answers/:path*',
