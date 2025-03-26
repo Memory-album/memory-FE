@@ -4,11 +4,32 @@ import LoginHeader from '@/components/LoginHeader';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Button } from '@/components/ui/button';
+import { joinGroup } from '@/services/groupJoin';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useUserStore from '@/store/useUserInfo';
 
 import VerificationInput from 'react-verification-input';
 import '../verifyInputStyle.css';
 
 const invite = () => {
+  const [inviteCode, setInviteCode] = useState('');
+  const { userInfo } = useUserStore();
+  const groupNickname = userInfo?.name || '';
+  const router = useRouter();
+
+  const handleJoinGroup = async () => {
+    try {
+      const response = await joinGroup({ inviteCode, groupNickname });
+      if (response.status === 200) {
+        router.push('/home');
+      }
+      console.log(response);
+    } catch (error) {
+      console.error('그룹 참여 실패:', error);
+    }
+  };
+
   return (
     <main>
       <LoginHeader></LoginHeader>
@@ -32,13 +53,12 @@ const invite = () => {
                     characterSelected: 'character--selected',
                     characterFilled: 'character--filled',
                   }}
+                  onChange={(value) => setInviteCode(value)}
                 />
               </div>
             </div>
             <div className="flex justify-center">
-              <Link href={'/home'}>
-                <Button>시작하기</Button>
-              </Link>
+              <Button onClick={handleJoinGroup}>시작하기</Button>
             </div>
           </div>
           <div className="fixed top-[54px] left-[27px]">

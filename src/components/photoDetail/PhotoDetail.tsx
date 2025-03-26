@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import useGroupStore from '@/store/useGroupStore';
 import { EmblaOptionsType } from 'embla-carousel';
 import '@/components/embla/embla.css';
-// import { ReceivedMessageInAlbums } from './_components/received-message-albums';
 import { GoHeartFill } from 'react-icons/go';
 import { CgClose } from 'react-icons/cg';
 import { DownloadSquare02Icon } from 'hugeicons-react';
@@ -18,6 +18,8 @@ type PropType = {
 const PhotoDetail = ({ params }: PropType) => {
   const albumId = params.id;
   const currentPhotoId = params.photoId;
+  const { groups } = useGroupStore();
+  const groupId = groups[0].id;
 
   const [images, setImages] = useState([
     { id: '0', src: '/images/example.png', isLiked: true, name: '사진1' },
@@ -47,7 +49,7 @@ const PhotoDetail = ({ params }: PropType) => {
     (index: number) => {
       if (!images[index]) return;
       const newPhotoId = images[index].id;
-      const newPath = `/albums/${albumId}/photo/${newPhotoId}`;
+      const newPath = `groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
       window.history.replaceState(null, '', newPath);
     },
     [albumId], // images를 제거
@@ -306,7 +308,6 @@ const PhotoDetail = ({ params }: PropType) => {
                     </ul>
                   </div>
                 </div>
-                {/* <ReceivedMessageInAlbums /> */}
                 <div
                   className="relative cursor-pointer"
                   onClick={() => toggleVisibillity(conversationRef, true)}

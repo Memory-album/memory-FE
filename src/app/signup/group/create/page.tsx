@@ -5,6 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
+import useGroupStore from '@/store/useGroupStore';
 
 import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ type FormInputs = {
 };
 
 const FirstCreateGroup = () => {
+  const { groups, fetchGroups } = useGroupStore();
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const [inviteCode, setInviteCode] = useState(null);
   const router = useRouter();
