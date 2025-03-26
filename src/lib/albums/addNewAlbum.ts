@@ -1,12 +1,11 @@
 import axios from 'axios';
-import qs from 'qs';
-
-const API_BASE_URL = 'http://localhost:8080'; // 백엔드 URL 설정
 
 interface AddNewAlbumData {
   title: string;
-  description: string;
+  description?: string;
+  thumbnailFile?: File;
   theme: string;
+  userId?: number;
   groupId: number;
 }
 
@@ -38,22 +37,35 @@ export const addNewAlbum = async (
       throw new Error('groupId must be a number');
     }
 
-    // 데이터를 x-www-form-urlencoded 형식으로 변환
-    const formData = qs.stringify(albumData);
+    const formData = new FormData();
+    formData.append('title', albumData.title);
+    formData.append('theme', albumData.theme);
+    formData.append('groupId', albumData.groupId.toString());
 
-    // 디버깅을 위한 로그
-    console.log('Sending data:', formData);
-    console.log('Headers:', {
-      'Content-Type': 'application/x-www-form-urlencoded',
+    //기본 이미지 파일 생성
+    const defaultImage = await fetch('./images/1.png').then((res) =>
+      res.blob(),
+    );
+    const defaultImageFile = new File([defaultImage], '1.png', {
+      type: 'image/png',
     });
+    formData.append('thumbnailFile', defaultImageFile);
+
+    // Optional fields
+    if (albumData.description) {
+      formData.append('description', albumData.description);
+    }
+    if (albumData.userId) {
+      formData.append('userId', albumData.userId.toString());
+    }
 
     const response = await axios.post<ApiResponse>(
-      `${API_BASE_URL}/api/v1/albums`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums`,
       formData,
       {
         withCredentials: true,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'multipart/form-data',
         },
       },
     );

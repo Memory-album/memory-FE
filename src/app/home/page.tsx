@@ -43,7 +43,7 @@ const home = () => {
     const fetchRecentMedia = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
         );
         const data = await response.json();
         if (data.result === 'success') {
