@@ -8,7 +8,7 @@ import { useMessageStore } from '@/store/useMessageStore';
 
 type Props = {
   roomId: string;
-  images: string[];
+  images: string;
 };
 
 export const SelfUpload = ({ roomId, images }: Props) => {
@@ -24,9 +24,10 @@ export const SelfUpload = ({ roomId, images }: Props) => {
   return (
     <>
       <UploadButton disabled={!hasMessage} onUpload={handleUpload} />
-      {images.map((image, index) => (
+      {/* {images.map((image, index) => (
         <Image key={index} imageSrc={image} />
-      ))}
+      ))} */}
+      <Image imageSrc={images} />
       <SentMessage roomId={roomId} />
       <MessageInput roomId={roomId} onSendMessage={checkMessages} />
     </>

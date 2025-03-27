@@ -1,8 +1,15 @@
 import React from 'react';
 
 type Props = {
-  questions: string[];
+  questions: QuestionProps[];
 };
+
+type QuestionProps = {
+  question: string;
+  category?: string;
+  level?: number;
+};
+
 export const ReceivedMessage = ({ questions }: Props) => {
   return (
     <div className="flex justify-start items-end mb-[25px] pl-[30px]">
@@ -15,15 +22,15 @@ export const ReceivedMessage = ({ questions }: Props) => {
       </div>
 
       <div className="flex flex-col items-start">
-        {questions.map((question, index) => (
-          <QuestionItem key={index} question={question} />
+        {questions.map((value, index) => (
+          <QuestionItem key={index} question={value.question} />
         ))}
       </div>
     </div>
   );
 };
 
-const QuestionItem = ({ question }: { question: string }) => {
+const QuestionItem = ({ question, category, level }: QuestionProps) => {
   return (
     <p className="py-3 px-[17px] mb-1 max-w-[240px] bg-[#ABA5FF] rounded-[20px] rounded-bl-none text-white text-base">
       {question.split('\n').map((line, index) => (

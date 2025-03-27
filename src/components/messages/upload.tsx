@@ -11,11 +11,22 @@ import { useRouter } from 'next/navigation';
 
 type Props = {
   roomId: string;
-  images: string[];
-  questions: string[];
+  data: {
+    albumId: string;
+    imageUrl: string;
+    mediaId: string;
+    questions: QuestionProps[];
+    userId: string;
+  };
 };
 
-export const Upload = ({ images, roomId, questions }: Props) => {
+type QuestionProps = {
+  question: string;
+  category?: string;
+  level?: number;
+};
+
+export const Upload = ({ roomId, data }: Props) => {
   const { hasMessage, checkMessages } = useHasMessage(roomId);
   const { deleteRoom } = useMessageStore();
   const router = useRouter();
@@ -32,10 +43,11 @@ export const Upload = ({ images, roomId, questions }: Props) => {
   return (
     <>
       <UploadButton disabled={!hasMessage} onUpload={handleUpload} />
-      {images.map((image, index) => (
+      {/* {data.imageUrl.map((image, index) => (
         <Image key={index} imageSrc={image} />
-      ))}
-      <ReceivedMessage questions={questions} />
+      ))} */}
+      <Image imageSrc={data.imageUrl} />
+      <ReceivedMessage questions={data.questions} />
       <SentMessage roomId={roomId} />
       <MessageInput roomId={roomId} onSendMessage={checkMessages} />
     </>
