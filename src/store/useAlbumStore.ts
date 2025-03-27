@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import useGroupStore from './useGroupStore';
 
 interface CreatedBy {
   name: string;
@@ -22,6 +23,12 @@ const useAlbumStore = create<AlbumStore>((set) => ({
   albums: [],
   fetchAlbums: async () => {
     try {
+      const { groups } = useGroupStore.getState();
+      if (groups.length === 0) {
+        throw new Error('No groups available');
+      }
+      const groupId = groups[0].id;
+      const albumId = 1;
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
       );
@@ -33,6 +40,7 @@ const useAlbumStore = create<AlbumStore>((set) => ({
         id: album.id,
         title: album.title,
         thumbnailUrl: album.thumbnailUrl,
+        likes: album.likes,
         createdBy: album.createdBy,
       }));
       set({ albums: minimalData });

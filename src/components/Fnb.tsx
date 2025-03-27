@@ -67,12 +67,12 @@ const Fnb = () => {
             style={{ margin: '0 calc(100vw / 8.3)' }}
           ></div>
           <Link
-            href="/albums"
+            href="/groups/1/albums"
             className="flex flex-col text-[10px] font-medium text-[#4848f9] justify-center items-center"
             style={{ width: 'calc(100vw / 8.7)' }}
           >
             <Album02Icon
-              className={`w-8 h-8 ${pathname === '/albums' ? 'text-[#4848F9]' : 'text-white'}`}
+              className={`w-8 h-8 ${pathname === '/groups/1/albums' ? 'text-[#4848F9]' : 'text-white'}`}
             />
             <p className="mt-[2px]">앨범</p>
           </Link>
