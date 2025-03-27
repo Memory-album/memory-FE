@@ -33,7 +33,7 @@ export const MessageInput = ({ roomId, onSendMessage }: Props) => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 p-5 w-full sm:w-[500px] sm:m-auto flex justify-center items-center bg-white">
-      {pathname !== '/uploads/member' && (
+      {roomId === 'owner' && (
         <Button
           className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full [&_svg]:size-6"
           onClick={() => setView('recording')}

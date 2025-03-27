@@ -18,15 +18,14 @@ const Fnb = () => {
     '/signup',
     '/signup/join',
     '/signup/group/create',
-    '/answers/',
-    '/uploads/owner',
-    '/uploads/member',
+    '/answers',
     '/groups/create',
   ];
   const dynamicRoutePatterns = [/^\/answers\/.+$/];
-
+  const dynamicRouteGroupPatterns = [/^\/groups\/.+$/];
   if (
     excludeLayoutRoutes.includes(pathname) ||
+    dynamicRouteGroupPatterns.some((pattern) => pattern.test(pathname)) ||
     dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
   ) {
     return null;
