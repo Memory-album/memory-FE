@@ -6,7 +6,7 @@ import { PiPencil } from 'react-icons/pi';
 import React from 'react';
 
 type Message = {
-  id: number;
+  id: string;
   content: string;
 };
 

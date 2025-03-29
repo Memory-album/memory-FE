@@ -2,9 +2,10 @@ import { ReceivedMessage } from '@/components/messages/received-message';
 import { UploadButton } from '@/components/messages/upload-button';
 import { Image } from '@/components/messages/image';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 type Props = {
-  data: {
+  responseData: {
     albumId: string;
     imageUrl: string;
     mediaId: string;
@@ -13,12 +14,13 @@ type Props = {
   };
 };
 interface QuestionProps {
+  id: string;
   question: string;
   category?: string;
   level?: number;
 }
 
-export const AiUpload = ({ data }: Props) => {
+export const AiUpload = ({ responseData }: Props) => {
   const router = useRouter();
   const handleUpload = () => {
     router.replace('/home');
@@ -31,8 +33,8 @@ export const AiUpload = ({ data }: Props) => {
         {/* {data.images.map((image, index) => (
           <Image key={index} imageSrc={image} />
         ))} */}
-        <Image imageSrc={data.imageUrl} />
-        <ReceivedMessage questions={data.questions} />
+        <Image imageSrc={responseData.imageUrl} />
+        <ReceivedMessage questions={responseData.questions} />
       </div>
     </>
   );

@@ -1,15 +1,18 @@
 'use client';
 
-import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { ImageUpload } from './image-upload';
+import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { Alert } from '@/components/messages/alert';
 import { Upload } from '@/components/messages/upload';
 import { useViewStore } from '@/store/useViewStore';
+import { useMessageStore } from '@/store/useMessageStore';
 import { useFileProcessing } from '@/lib/upload/useFileProcessing';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { getUser } from '@/features/auth/api/getUser';
-import { Button } from '@/components/ui/button';
+
+import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   albumId: string;
@@ -24,56 +27,23 @@ interface responseData {
 }
 
 interface QuestionProps {
+  id: string;
   question: string;
   category?: string;
   level?: number;
 }
 
 export const OwnerView = ({ albumId }: Props) => {
+  const router = useRouter();
   const [previewImages, setPreviewImages] = useState<
     { dataUrl: string; file: File }[]
   >([]);
+  const [chunks, setChunks] = useState<Blob[]>([]);
   const [response, setResponse] = useState<responseData>();
-  const { view, setView } = useViewStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  // const mutation = useMutation({
-  //   mutationFn: async (file: Blob) => {
-  //     const formData = new FormData();
-  //     formData.append('audioFile', file, 'recording.webm');
-
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers/speech-to-text`,
-  //       {
-  //         method: 'POST',
-  //         credentials: 'include',
-  //         body: formData,
-  //       },
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorData = await response
-  //         .json()
-  //         .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
-  //       throw new Error(errorData.message || '서버 오류 발생');
-  //     }
-
-  //     return response.json();
-  //   },
-  //   onSuccess: (data) => {
-  //     console.log('음성 인식 성공:', data);
-  //     // 여기서 다음 단계로 진행 (예: 상태 업데이트, 다음 화면으로 이동 등)
-  //   },
-  //   onError: (error: Error) => {
-  //     console.error('음성 인식 오류:', error);
-  //     // 사용자에게 오류 메시지 표시 (예: toast 알림)
-  //     alert(`음성 인식 중 오류가 발생했습니다: ${error.message}`);
-  //   },
-  //   onSettled: () => {
-  //     // 성공 또는 실패 후 항상 실행되는 로직
-  //     // 예: 로딩 상태 해제
-  //   },
-  // });
+  const { uploadMessages, deleteRoom } = useMessageStore();
+  const { view, setView } = useViewStore();
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
@@ -87,7 +57,6 @@ export const OwnerView = ({ albumId }: Props) => {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('image', file);
-      console.log('FILE', file);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
@@ -110,7 +79,6 @@ export const OwnerView = ({ albumId }: Props) => {
     onSuccess: (response) => {
       console.log('이미지 분석 성공', response);
       setResponse(response.data);
-
       setView('input');
     },
     onError: (error: Error) => {
@@ -119,6 +87,82 @@ export const OwnerView = ({ albumId }: Props) => {
     },
     onSettled: () => {
       setIsAlertOpen(false);
+    },
+  });
+
+  const audioUploadMutation = useMutation({
+    mutationFn: async (file: Blob) => {
+      const formData = new FormData();
+      formData.append('audioFile', file, 'recording.webm');
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers/speech-to-text`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log('음성 인식 성공:', data);
+      if (data.text === '') {
+        throw new Error();
+      }
+      uploadMessages('owner', { id: uuidv4(), content: data.text });
+      setView('input');
+    },
+    onError: (error: Error) => {
+      console.error('음성 인식 오류:', error);
+      alert(`음성 인식 중 오류가 발생했습니다: ${error.message}`);
+    },
+    onSettled: () => {
+      setChunks([]);
+      setIsAlertOpen(false);
+    },
+  });
+
+  const albumUploadMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          // body: JSON.stringify({  // 자바스크립트 객체를 JSON 문자열로 변환
+          //   questionId: questionId,
+          //   textContent: textContent,
+          // }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
+      return response.json();
+    },
+    onSuccess: (response) => {
+      alert('앨범 업로드 성공');
+      router.replace('/home');
+      setView('');
+      deleteRoom('owner');
+    },
+    onError: (error: Error) => {
+      console.error('앨범 업로드 오류:', error);
+      alert('오류가 발생했습니다. 다시 시도해주세요');
     },
   });
 
@@ -133,19 +177,18 @@ export const OwnerView = ({ albumId }: Props) => {
     imageUploadMutation.mutate(singleFile);
   };
 
-  const [chunks, setChunks] = useState<Blob[]>([]);
   const handleSubmitAudioFile = () => {
     if (chunks.length === 0) {
       alert('녹음된 음성이 없습니다.');
       return;
     }
-
+    setIsAlertOpen(true);
     const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+    audioUploadMutation.mutate(audioBlob);
+  };
 
-    // 로딩 상태 설정 (별도의 상태 관리가 필요합니다)
-    // setIsLoading(true);
-
-    //mutation.mutate(audioBlob);
+  const handleSubmitAlbum = () => {
+    albumUploadMutation.mutate();
   };
 
   return (
@@ -168,7 +211,11 @@ export const OwnerView = ({ albumId }: Props) => {
         </>
       )}
       {response && view === 'input' && (
-        <Upload data={response!} roomId="owner" />
+        <Upload
+          responseData={response!}
+          onUploadAlbum={handleSubmitAlbum}
+          roomId="owner"
+        />
       )}
       {view === 'recording' && (
         <VoiceAnswer
@@ -176,6 +223,9 @@ export const OwnerView = ({ albumId }: Props) => {
           chunks={chunks}
           setChunks={setChunks}
           onSubmitAudioFile={handleSubmitAudioFile}
+          isLoading={audioUploadMutation.isPending}
+          open={isAlertOpen}
+          onOpenChange={setIsAlertOpen}
         />
       )}
     </div>

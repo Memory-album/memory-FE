@@ -1,6 +1,6 @@
-import { usePathname } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
 import { MdKeyboardVoice } from 'react-icons/md';
@@ -13,16 +13,14 @@ type Props = {
   roomId: string;
   onSendMessage: () => void;
 };
+
 export const MessageInput = ({ roomId, onSendMessage }: Props) => {
-  const pathname = usePathname();
   const [content, setContent] = useState('');
   const { uploadMessages } = useMessageStore();
   const { setView } = useViewStore();
 
-  const random = Math.random() * 10;
-
   const handleSubmit = () => {
-    uploadMessages(roomId, { id: random, content });
+    uploadMessages(roomId, { id: uuidv4(), content });
     setContent('');
     onSendMessage();
   };

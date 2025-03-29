@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 type Message = {
-  id: number;
+  id: string;
   content: string;
 };
 
@@ -12,7 +12,7 @@ interface MessageState {
   messages: { [roomId: string]: Message[] };
   getMessages: (roomId: string) => Message[];
   uploadMessages: (roomId: string, message: Message) => void;
-  updateMessage: (roomId: string, id: number, content: string) => void;
+  updateMessage: (roomId: string, id: string, content: string) => void;
   clearMessage: (roomId: string) => void;
 }
 
@@ -32,8 +32,8 @@ export const useMessageStore = create<MessageState>((set, get) => ({
 
   messages: {
     room1: [
-      { id: 1, content: 'Hello Room 1!' },
-      { id: 2, content: 'How are you?' },
+      { id: '1', content: 'Hello Room 1!' },
+      { id: '2', content: 'How are you?' },
     ],
     room2: [],
   }, // 초기 상태

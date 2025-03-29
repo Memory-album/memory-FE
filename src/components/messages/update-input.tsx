@@ -2,11 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { Button } from '@/components/ui/button';
-import { MdKeyboardVoice } from 'react-icons/md';
 import { useMessageStore } from '@/store/useMessageStore';
 
 type Message = {
-  id: number;
+  id: string;
   content: string;
 };
 
@@ -52,7 +51,6 @@ export const UpdateInput = ({ roomId, message, setToggleState }: Props) => {
         onChange={(e) => handleChangeInput(e)}
       ></TextareaAutosize>
       <div className="flex justify-end items-center gap-[4px] mt-3">
-        <MdKeyboardVoice className="mr-1 bg-white rounded-full text-[#7878FF] text-[24px]" />
         <Button
           className="py-[1px] px-3 w-12 h-7 bg-white text-black text-xs rounded-[15px] hover:bg-gray-200"
           onClick={handleCancelUpdate}

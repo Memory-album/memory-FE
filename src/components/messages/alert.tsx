@@ -73,7 +73,7 @@ export const Alert = ({
       <AlertDialogContent className="w-[350px] rounded-[16px] sm:rounded-[16px] bg-white shadow-lg border-blue-100 overflow-hidden">
         <AlertDialogHeader className="pt-6">
           <AlertDialogTitle className="mb-6 text-xl text-center font-bold text-[#4848F9]">
-            AI 이미지 분석 중입니다
+            분석 중이에요.
           </AlertDialogTitle>
           {isLoading && (
             <div className="mt-6 flex justify-center">
