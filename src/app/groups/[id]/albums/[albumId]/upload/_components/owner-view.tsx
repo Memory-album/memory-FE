@@ -39,10 +39,10 @@ export const OwnerView = ({ albumId }: Props) => {
     { dataUrl: string; file: File }[]
   >([]);
   const [chunks, setChunks] = useState<Blob[]>([]);
-  const [response, setResponse] = useState<responseData>();
+  const [responseData, setResponse] = useState<responseData>();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const { uploadMessages, deleteRoom } = useMessageStore();
+  const { uploadMessages, getMessages, deleteRoom } = useMessageStore();
   const { view, setView } = useViewStore();
 
   const { data: user, isLoading } = useQuery({
@@ -52,6 +52,7 @@ export const OwnerView = ({ albumId }: Props) => {
 
   // TODO: userId 조회
   const userId = 1;
+  console.log('USER', user);
 
   const imageUploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -133,15 +134,14 @@ export const OwnerView = ({ albumId }: Props) => {
 
   const albumUploadMutation = useMutation({
     mutationFn: async () => {
+      const mediaId = responseData?.mediaId;
+      const textContent = getMessages('owner')[0].content;
+      console.log(textContent);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&textContent=${textContent}`,
         {
           method: 'POST',
           credentials: 'include',
-          // body: JSON.stringify({  // 자바스크립트 객체를 JSON 문자열로 변환
-          //   questionId: questionId,
-          //   textContent: textContent,
-          // }),
         },
       );
 
@@ -158,6 +158,7 @@ export const OwnerView = ({ albumId }: Props) => {
       alert('앨범 업로드 성공');
       router.replace('/home');
       setView('');
+      setPreviewImages([]);
       deleteRoom('owner');
     },
     onError: (error: Error) => {
@@ -165,8 +166,6 @@ export const OwnerView = ({ albumId }: Props) => {
       alert('오류가 발생했습니다. 다시 시도해주세요');
     },
   });
-
-  const { handleFileProcessing } = useFileProcessing('input');
 
   const handleSubmitImageFile = () => {
     setIsAlertOpen(true);
@@ -210,9 +209,9 @@ export const OwnerView = ({ albumId }: Props) => {
           </div>
         </>
       )}
-      {response && view === 'input' && (
+      {responseData && view === 'input' && (
         <Upload
-          responseData={response!}
+          responseData={responseData!}
           onUploadAlbum={handleSubmitAlbum}
           roomId="owner"
         />
