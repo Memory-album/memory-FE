@@ -6,52 +6,27 @@ type Message = {
 };
 
 interface MessageState {
-  roomId: string | null;
-  setRoomId: (roomId: string) => void;
-  deleteRoom: (roomId: string) => void;
   messages: { [roomId: string]: Message[] };
   getMessages: (roomId: string) => Message[];
-  uploadMessages: (roomId: string, message: Message) => void;
+  hasMessages: (roomId: string) => boolean;
+  uploadMessage: (roomId: string, message: Message) => void;
   updateMessage: (roomId: string, id: string, content: string) => void;
-  clearMessage: (roomId: string) => void;
+  clearMessages: (roomId: string) => void;
+  deleteRoom: (roomId: string) => void;
 }
 
 export const useMessageStore = create<MessageState>((set, get) => ({
-  roomId: null,
-  setRoomId: (roomId) => set({ roomId }),
-
-  deleteRoom: (roomId) => {
-    const newMessages = get().messages;
-    delete newMessages[roomId];
-    set(() => ({
-      messages: {
-        ...newMessages,
-      },
-    }));
-  },
-
-  messages: {
-    room1: [
-      { id: '1', content: 'Hello Room 1!' },
-      { id: '2', content: 'How are you?' },
-    ],
-    room2: [],
-  }, // 초기 상태
+  messages: {},
 
   getMessages: (roomId) => {
     return get().messages[roomId] || [];
   },
 
-  clearMessage: (roomId) => {
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        [roomId]: [],
-      },
-    }));
+  hasMessages: (roomId) => {
+    return (get().messages[roomId]?.length || 0) > 0;
   },
 
-  uploadMessages: (roomId, message) =>
+  uploadMessage: (roomId, message) =>
     set((state) => ({
       messages: {
         ...state.messages,
@@ -68,4 +43,20 @@ export const useMessageStore = create<MessageState>((set, get) => ({
         ),
       },
     })),
+
+  clearMessages: (roomId) =>
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [roomId]: [],
+      },
+    })),
+
+  deleteRoom: (roomId) => {
+    set((state) => {
+      const newMessages = { ...state.messages };
+      delete newMessages[roomId];
+      return { messages: newMessages };
+    });
+  },
 }));

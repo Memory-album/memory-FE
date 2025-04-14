@@ -11,23 +11,34 @@ import { useViewStore } from '@/store/useViewStore';
 
 type Props = {
   roomId: string;
-  onSendMessage: () => void;
 };
 
-export const MessageInput = ({ roomId, onSendMessage }: Props) => {
+export const MessageInput = ({ roomId }: Props) => {
   const [content, setContent] = useState('');
-  const { uploadMessages } = useMessageStore();
+  const { uploadMessage } = useMessageStore();
   const { setView } = useViewStore();
 
   const handleSubmit = () => {
-    uploadMessages(roomId, { id: uuidv4(), content });
+    if (content.trim() === '') return;
+
+    uploadMessage(roomId, { id: uuidv4(), content });
     setContent('');
-    onSendMessage();
   };
 
   const handleChangeInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  const isContentEmpty =
+    content.trim() === '' ||
+    content.replace(/<(.|\n)*?>/g, '').trim().length === 0;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 p-5 w-full sm:w-[500px] sm:m-auto flex justify-center items-center bg-white">
@@ -35,6 +46,7 @@ export const MessageInput = ({ roomId, onSendMessage }: Props) => {
         <Button
           className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full [&_svg]:size-6"
           onClick={() => setView('recording')}
+          type="button"
         >
           <MdKeyboardVoice />
         </Button>
@@ -45,15 +57,13 @@ export const MessageInput = ({ roomId, onSendMessage }: Props) => {
           placeholder="답장 보내기..."
           value={content}
           onChange={handleChangeInput}
+          onKeyDown={handleKeyDown}
         />
         <Button
           type="button"
           onClick={handleSubmit}
           className="absolute bottom-[10px] right-2 w-11 h-8 rounded-[20px] bg-[#4848F9] text-white [&_svg]:size-5 cursor-pointer"
-          disabled={
-            content === '' ||
-            content.replace(/<(.|\n)*?>/g, '').trim().length === 0
-          }
+          disabled={isContentEmpty}
         >
           <IoIosSend />
         </Button>

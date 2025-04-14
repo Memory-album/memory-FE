@@ -8,7 +8,6 @@ import { Alert } from '@/components/messages/alert';
 import { Upload } from '@/components/messages/upload';
 import { useViewStore } from '@/store/useViewStore';
 import { useMessageStore } from '@/store/useMessageStore';
-import { useFileProcessing } from '@/lib/upload/useFileProcessing';
 import { getUser } from '@/features/auth/api/getUser';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -16,9 +15,10 @@ import { useRouter } from 'next/navigation';
 
 interface Props {
   albumId: string;
+  groupId: string;
 }
 
-interface responseData {
+interface ResponseDataProps {
   albumId: string;
   imageUrl: string;
   mediaId: string;
@@ -33,31 +33,36 @@ interface QuestionProps {
   level?: number;
 }
 
-export const OwnerView = ({ albumId }: Props) => {
+export const OwnerView = ({ albumId, groupId }: Props) => {
   const router = useRouter();
   const [previewImages, setPreviewImages] = useState<
     { dataUrl: string; file: File }[]
   >([]);
   const [chunks, setChunks] = useState<Blob[]>([]);
-  const [responseData, setResponse] = useState<responseData>();
+  const [responseData, setResponseData] = useState<ResponseDataProps | null>(
+    null,
+  );
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const { uploadMessages, getMessages, deleteRoom } = useMessageStore();
-  const { view, setView } = useViewStore();
+  const { getMessages, deleteRoom, uploadMessage } = useMessageStore();
+  const { view, setView, reset } = useViewStore();
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading: isUserLoading } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
 
-  // TODO: userId 조회
-  const userId = 1;
-  console.log('USER', user);
-
+  // 이미지 분석 API 뮤테이션
   const imageUploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('image', file);
+
+      if (!user?.id) {
+        throw new Error('로그인이 필요합니다.');
+      }
+
+      const userId = user.id;
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
@@ -79,18 +84,19 @@ export const OwnerView = ({ albumId }: Props) => {
     },
     onSuccess: (response) => {
       console.log('이미지 분석 성공', response);
-      setResponse(response.data);
+      setResponseData(response.data);
       setView('input');
     },
     onError: (error: Error) => {
       console.error('이미지 분석 오류:', error);
-      alert('오류가 발생했습니다. 다시 시도해주세요');
+      alert(`오류가 발생했습니다: ${error.message}`);
     },
     onSettled: () => {
       setIsAlertOpen(false);
     },
   });
 
+  // 음성 인식 API 뮤테이션
   const audioUploadMutation = useMutation({
     mutationFn: async (file: Blob) => {
       const formData = new FormData();
@@ -117,9 +123,9 @@ export const OwnerView = ({ albumId }: Props) => {
     onSuccess: (data) => {
       console.log('음성 인식 성공:', data);
       if (data.text === '') {
-        throw new Error();
+        throw new Error('음성을 인식할 수 없습니다.');
       }
-      uploadMessages('owner', { id: uuidv4(), content: data.text });
+      uploadMessage('owner', { id: uuidv4(), content: data.text });
       setView('input');
     },
     onError: (error: Error) => {
@@ -132,100 +138,186 @@ export const OwnerView = ({ albumId }: Props) => {
     },
   });
 
-  const albumUploadMutation = useMutation({
-    mutationFn: async () => {
-      const mediaId = responseData?.mediaId;
-      const textContent = getMessages('owner')[0].content;
-      console.log(textContent);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&textContent=${textContent}`,
-        {
-          method: 'POST',
-          credentials: 'include',
-        },
-      );
+  // 앨범 생성 프로세스 - 앨범 답변 생성 -> 스토리 생성
+  const handleCompleteAlbum = async () => {
+    if (!responseData) return;
 
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
-        throw new Error(errorData.message || '서버 오류 발생');
-      }
-
-      return response.json();
-    },
-    onSuccess: (response) => {
-      alert('앨범 업로드 성공');
-      router.replace('/home');
-      setView('');
-      setPreviewImages([]);
-      deleteRoom('owner');
-    },
-    onError: (error: Error) => {
-      console.error('앨범 업로드 오류:', error);
-      alert('오류가 발생했습니다. 다시 시도해주세요');
-    },
-  });
-
-  const handleSubmitImageFile = () => {
     setIsAlertOpen(true);
-    const files = previewImages.map((item) => item.file);
-    // TODO: 추가 구현 다중 이미지로
-    const singleFile = files[0];
 
+    try {
+      // 1. 질문-답변 업로드
+      await uploadAlbumAnswer();
+
+      // 2. 스토리 생성
+      await generateStory();
+
+      // 3. 성공 처리
+      alert('스토리 생성 성공');
+      resetState();
+      router.replace(`/groups/${groupId}/albums`);
+    } catch (error) {
+      console.error('앨범 생성 오류:', error);
+      alert('오류가 발생했습니다. 다시 시도해주세요');
+    } finally {
+      setIsAlertOpen(false);
+    }
+  };
+
+  // 1단계: 질문-답변 업로드
+  const uploadAlbumAnswer = async () => {
+    if (!responseData) return;
+
+    const mediaId = responseData.mediaId;
+    const questionId = responseData.questions[0].id;
+    const messages = getMessages('owner');
+
+    if (!messages.length) {
+      throw new Error('답변을 먼저 입력해주세요.');
+    }
+
+    const textContent = messages[0].content;
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${textContent}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+      throw new Error(errorData.message || '서버 오류 발생');
+    }
+
+    return response.json();
+  };
+
+  // 2단계: 스토리 생성
+  const generateStory = async () => {
+    if (!responseData) return;
+
+    const mediaId = responseData.mediaId;
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stories/generate?mediaId=${mediaId}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+      throw new Error(errorData.message || '서버 오류 발생');
+    }
+
+    return response.json();
+  };
+
+  // 상태 초기화
+  const resetState = () => {
+    reset();
+    setPreviewImages([]);
+    deleteRoom('owner');
+    setResponseData(null);
+  };
+
+  // 이미지 파일 제출 처리
+  const handleSubmitImageFile = () => {
+    if (previewImages.length === 0) {
+      alert('이미지를 먼저 선택해주세요.');
+      return;
+    }
+
+    setIsAlertOpen(true);
+    const singleFile = previewImages[0].file;
     imageUploadMutation.mutate(singleFile);
   };
 
+  // 음성 파일 제출 처리
   const handleSubmitAudioFile = () => {
     if (chunks.length === 0) {
       alert('녹음된 음성이 없습니다.');
       return;
     }
+
     setIsAlertOpen(true);
     const audioBlob = new Blob(chunks, { type: 'audio/webm' });
     audioUploadMutation.mutate(audioBlob);
   };
 
-  const handleSubmitAlbum = () => {
-    albumUploadMutation.mutate();
+  // 화면에 따른 컴포넌트 렌더링
+  const renderContent = () => {
+    switch (view) {
+      case '':
+        return (
+          <>
+            <ImageUpload
+              preview={previewImages}
+              setPreview={setPreviewImages}
+            />
+            <div className="flex justify-center">
+              <Alert
+                description="ai가 질문을 생각하고 있어요"
+                buttonValue="다음"
+                buttonClassName="disabled:bg-[#DAE2FF]"
+                disabled={previewImages.length === 0}
+                onClick={handleSubmitImageFile}
+                isLoading={imageUploadMutation.isPending}
+                open={isAlertOpen}
+                onOpenChange={setIsAlertOpen}
+              />
+            </div>
+          </>
+        );
+
+      case 'input':
+        return responseData ? (
+          <Upload
+            responseData={responseData}
+            onUploadAlbum={handleCompleteAlbum}
+            roomId="owner"
+            isLoading={
+              imageUploadMutation.isPending || audioUploadMutation.isPending
+            }
+            open={isAlertOpen}
+            onOpenChange={setIsAlertOpen}
+          />
+        ) : null;
+
+      case 'recording':
+        return (
+          <VoiceAnswer
+            message="질문에 답장을 남겨보세요!"
+            chunks={chunks}
+            setChunks={setChunks}
+            onSubmitAudioFile={handleSubmitAudioFile}
+            isLoading={audioUploadMutation.isPending}
+            open={isAlertOpen}
+            onOpenChange={setIsAlertOpen}
+          />
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
-      {view === '' && (
-        <>
-          <ImageUpload preview={previewImages} setPreview={setPreviewImages} />
-          <div className="flex justify-center">
-            <Alert
-              description="ai가 질문을 생각하고 있어요"
-              buttonValue="다음"
-              buttonClassName="disabled:bg-[#DAE2FF]"
-              disabled={previewImages.length === 0}
-              onClick={handleSubmitImageFile}
-              isLoading={imageUploadMutation.isPending}
-              open={isAlertOpen}
-              onOpenChange={setIsAlertOpen}
-            />
-          </div>
-        </>
-      )}
-      {responseData && view === 'input' && (
-        <Upload
-          responseData={responseData!}
-          onUploadAlbum={handleSubmitAlbum}
-          roomId="owner"
-        />
-      )}
-      {view === 'recording' && (
-        <VoiceAnswer
-          message="질문에 답장을 남겨보세요!"
-          chunks={chunks}
-          setChunks={setChunks}
-          onSubmitAudioFile={handleSubmitAudioFile}
-          isLoading={audioUploadMutation.isPending}
-          open={isAlertOpen}
-          onOpenChange={setIsAlertOpen}
-        />
+      {isUserLoading ? (
+        <div className="flex justify-center items-center h-[300px]">
+          <p>로딩 중...</p>
+        </div>
+      ) : (
+        renderContent()
       )}
     </div>
   );

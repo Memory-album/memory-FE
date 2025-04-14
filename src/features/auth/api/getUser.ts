@@ -15,5 +15,6 @@ export async function getUser() {
     throw new Error('Failed to fetch user data');
   }
 
-  return response.json();
+  const { user } = await response.json();
+  return user;
 }

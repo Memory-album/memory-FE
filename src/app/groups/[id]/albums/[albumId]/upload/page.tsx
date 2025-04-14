@@ -21,9 +21,9 @@ const Page = ({ params }: Props) => {
   return (
     <div>
       {isOwner ? (
-        <OwnerView albumId={albumId} />
+        <OwnerView albumId={albumId} groupId={id} />
       ) : (
-        <MemberView albumId={albumId} />
+        <MemberView albumId={albumId} groupId={id} />
       )}
     </div>
   );
