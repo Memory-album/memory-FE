@@ -6,23 +6,32 @@ interface Group {
   id: number;
   name: string;
   groupImageUrl: string;
-  description: string;
+  groupDescription: string;
+  inviteCode: string;
+  role: string;
+  userName: string;
+  groupProfileImgUrl: string;
+  notificationEnabled: boolean;
+  sortOrder: number;
+  lastVisitAt: string;
+  ownerName: string;
+  ownerUserId: number;
 }
 
 interface GroupStore {
-  groups: Group[];
-  fetchGroups: () => Promise<void>;
-  clearGroups: () => void;
+  group: Group | null;
+  fetchGroup: (groupId: number) => Promise<void>;
+  clearGroup: () => void;
 }
 
 const useGroupStore = create(
   persist<GroupStore>(
     (set) => ({
-      groups: [],
-      fetchGroups: async () => {
+      group: null,
+      fetchGroup: async (groupId: number) => {
         try {
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/my-groups`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}`,
             {
               withCredentials: true,
               headers: {
@@ -30,12 +39,12 @@ const useGroupStore = create(
               },
             },
           );
-          set({ groups: response.data.data });
+          set({ group: response.data.data });
         } catch (error) {
-          console.error('Error fetching groups:', error);
+          console.error('Error fetching group:', error);
         }
       },
-      clearGroups: () => set({ groups: [] }),
+      clearGroup: () => set({ group: null }),
     }),
     {
       name: 'group-store',

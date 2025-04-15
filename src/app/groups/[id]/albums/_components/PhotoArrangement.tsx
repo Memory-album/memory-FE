@@ -44,17 +44,23 @@ const PhotoArrangement = ({ id, title, bgImages }: PhotoArrangementProps) => {
         {title}
       </h3>
       <div className="mx-auto w-[329px] h-[219px] relative">
-        {bgImages.map((image, index) => (
-          <div
-            key={index}
-            className={layout[index]}
-            style={{
-              backgroundImage: `url(${image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          ></div>
-        ))}
+        {bgImages.length > 0 ? (
+          bgImages.map((image, index) => (
+            <div
+              key={index}
+              className={layout[index]}
+              style={{
+                backgroundImage: `url(${image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            ></div>
+          ))
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-[10px]">
+            <p className="text-gray-500 text-lg">아직 사진이 없어요!</p>
+          </div>
+        )}
       </div>
     </div>
   );

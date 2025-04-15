@@ -3,17 +3,17 @@
 import FormInput from '@/components/FormInput';
 import { Button } from '@/components/ui/button';
 import { addNewAlbum } from '@/lib/albums/addNewAlbum';
+import useUserStore from '@/store/useUserInfo';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import useGroupStore from '@/store/useGroupStore';
 
 const AddAlbum = () => {
   const router = useRouter();
-  const { groups } = useGroupStore();
+  const { userInfo } = useUserStore();
   const [formData, setFormData] = useState({
     title: '',
     theme: '',
-    groupId: groups[0]?.id || 0,
+    groupId: userInfo?.currentGroupId,
     description: '',
   });
 

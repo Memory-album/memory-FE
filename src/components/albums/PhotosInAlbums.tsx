@@ -6,7 +6,7 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { GoHeart, GoHeartFill } from 'react-icons/go';
-import useGroupStore from '@/store/useGroupStore';
+import useUserStore from '@/store/useUserInfo';
 import { usePathname } from 'next/navigation';
 
 interface Media {
@@ -22,19 +22,23 @@ interface Media {
 
 const PhotosInAlbum = () => {
   const pathname = usePathname();
-  const { groups } = useGroupStore();
   const [images, setImages] = useState<Array<Media & { isLiked: boolean }>>([]);
+  const { userInfo } = useUserStore();
 
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
         //url에서 albumId 추출
         const urlParts = pathname.split('/');
-        const groupId = groups[0].id;
+        const groupId = userInfo?.currentGroupId;
         const albumId = urlParts[2]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
         );
         const data = await response.json();
 

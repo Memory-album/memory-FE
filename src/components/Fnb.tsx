@@ -31,6 +31,8 @@ const Fnb = () => {
     return null;
   }
   const { userInfo } = useUserStore();
+  const groupId = userInfo?.currentGroupId;
+  const albumId = 1;
 
   return (
     <footer className="w-full h-[87px] fixed bottom-0 left-0 right-0 z-40">
@@ -101,7 +103,7 @@ const Fnb = () => {
       </div>
 
       <Link
-        href="uploads"
+        href={`/groups/${groupId}/albums/${albumId}/upload`}
         className="fixed bottom-[32px]"
         style={{ left: 'calc(50% - 1.5rem)' }}
       >

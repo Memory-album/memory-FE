@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
-import { userInfo } from 'os';
 
 interface User {
   email: string;
   name: string;
   profileImgUrl: string;
+  currentGroupId: number;
 }
 
 interface UserStore {
@@ -38,6 +38,7 @@ const useUserStore = create(
               email: user.email,
               name: user.name,
               profileImgUrl: user.profileImgUrl,
+              currentGroupId: 1,
             },
           });
         } catch (error) {

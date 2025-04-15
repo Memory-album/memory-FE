@@ -15,15 +15,17 @@ import { UserGroupIcon } from 'hugeicons-react';
 import { AddTeamIcon } from 'hugeicons-react';
 import { DashboardSquareAddIcon } from 'hugeicons-react';
 import { Mail01Icon } from 'hugeicons-react';
+import useUserStore from '@/store/useUserInfo';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Gnb = () => {
+  const { userInfo } = useUserStore();
+  const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
 
   const excludeLayoutRoutes = [
     '/',
-    ,
     '/home',
     '/login',
     '/signup',

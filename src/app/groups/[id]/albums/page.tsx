@@ -5,70 +5,46 @@ import { useEffect, useState } from 'react';
 import PhotoArrangement from './_components/PhotoArrangement';
 import { useRouter } from 'next/navigation';
 import { addNewAlbum } from '@/lib/albums/addNewAlbum';
-import useGroupStore from '@/store/useGroupStore';
+import useUserStore from '@/store/useUserInfo';
 
 const Collection = () => {
-  const { groups } = useGroupStore();
-  const groupId = groups.length > 0 ? groups[0].id : 1;
+  const { userInfo } = useUserStore();
+  const groupId = userInfo?.currentGroupId;
 
-  const collections = [
-    {
-      id: 1,
-      title: '풍경',
-      bgImages: [
-        './images/1.png',
-        './images/2.png',
-        './images/3.png',
-        './images/4.png',
-        './images/5.png',
-      ],
-    },
-    {
-      id: 2,
-      title: '가족',
-      bgImages: [
-        './images/3.png',
-        './images/2.png',
-        './images/1.png',
-        './images/4.png',
-        './images/5.png',
-      ],
-    },
-    {
-      id: 3,
-      title: '반려동물',
-      bgImages: [
-        './images/5.png',
-        './images/3.png',
-        './images/2.png',
-        './images/4.png',
-        './images/1.png',
-      ],
-    },
-    {
-      id: 4,
-      title: '음식',
-      bgImages: [
-        './images/3.png',
-        './images/2.png',
-        './images/4.png',
-        './images/5.png',
-        './images/1.png',
-      ],
-    },
-    {
-      id: 5,
-      title: '여행',
-      bgImages: [
-        './images/3.png',
-        './images/2.png',
-        './images/4.png',
-        './images/5.png',
-        './images/1.png',
-      ],
-    },
-  ];
-  const router = useRouter();
+  useEffect(() => {
+    const fetchGroupAlmubs = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
+        );
+        const data = await response.json();
+        console.log('API Response:', data);
+        if (data.result === 'SUCCESS') {
+          const formattedAlbums = data.data.map((album: any) => {
+            return {
+              id: album.id,
+              title: album.title,
+              bgImages: album.recentMedia
+                .map((media: any) => {
+                  console.log('Media URL:', media.fileUrl);
+                  return encodeURI(media.fileUrl);
+                })
+                .slice(0, 5),
+            };
+          });
+          setLocalAlbums(formattedAlbums);
+        }
+      } catch (error) {
+        console.error('최근 미디어 가져오기 실패:', error);
+      }
+    };
+    fetchGroupAlmubs();
+  }, [groupId]);
+
   const [addAlbums, setAddAlbums] = useState(false);
   const [localAlbums, setLocalAlbums] = useState<
     Array<{
@@ -102,34 +78,11 @@ const Collection = () => {
         title: newAlbum.title,
         theme: newAlbum.theme,
         description: newAlbum.description,
-        groupId: groupId,
+        groupId: groupId ? groupId : 1,
       });
 
-      // 로컬 상태에 새 앨범 추가
-      //   const newLocalAlbum = {
-      //     id: collections.length + localAlbums.length + 1,
-      //     title: newAlbum.title,
-      //     bgImages: ['./images/1.png'], // 기본 이미지
-      //   };
-
-      //   setLocalAlbums((prev) => [...prev, newLocalAlbum]);
-
-      //   // 입력 필드 초기화
-      //   setNewAlbum({
-      //     title: '',
-      //     theme: '',
-      //     description: '',
-      //   });
-
-      //   // 팝업 닫기
-      //   setAddAlbums(false);
-      // } catch (error) {
-      //   console.error('앨범 추가 실패:', error);
-      //   alert('앨범 추가에 실패했습니다.');
-      // }
-
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
         {
           method: 'get',
           credentials: 'include',
@@ -142,12 +95,12 @@ const Collection = () => {
           (album: {
             id: number;
             title: string;
-            recentMedia: { thumbnailUrl: any }[];
+            recentMedia: { fileUrl: any }[];
           }) => ({
             id: album.id,
             title: album.title,
             bgImages: album.recentMedia
-              .map((media: { thumbnailUrl: any }) => media.thumbnailUrl)
+              .map((media: { fileUrl: any }) => media.fileUrl)
               .slice(0, 5), // 최대 5개의 썸네일만 사용
           }),
         );
@@ -238,15 +191,6 @@ const Collection = () => {
           </button>
         </div>
       </div>
-      {collections.map((collection) => (
-        <Link key={collection.id} href={`/groups/1/albums/${collection.title}`}>
-          <PhotoArrangement
-            id={collection.id}
-            title={collection.title}
-            bgImages={collection.bgImages}
-          />
-        </Link>
-      ))}
       {localAlbums.map((album) => (
         <Link key={album.id} href={`/groups/1/albums/${album.title}`}>
           <PhotoArrangement

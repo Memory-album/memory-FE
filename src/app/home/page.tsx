@@ -32,15 +32,16 @@ interface MediaItem {
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
   const { userInfo } = useUserStore();
-  const { groups, fetchGroups } = useGroupStore();
+  const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
-  const albumId = 1;
+  const groupId = userInfo?.currentGroupId;
 
   useEffect(() => {
-    fetchGroups();
+    fetchGroup(groupId ? groupId : 1);
 
     //최근 미디어
     const fetchRecentMedia = async () => {
+      const albumId = 1;
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
@@ -50,7 +51,7 @@ const home = () => {
           },
         );
         const data = await response.json();
-        if (data.result === 'success') {
+        if (data.result === 'SUCCESS') {
           setRecentMedia(data.data);
         }
       } catch (error) {
@@ -93,15 +94,13 @@ const home = () => {
           <Avatar className="w-10 h-10 text-white">
             <AvatarImage
               src={
-                groups.length > 0
-                  ? groups[0].groupImageUrl
-                  : 'https://github.com/shadcn.png'
+                group ? group.groupImageUrl : 'https://github.com/shadcn.png'
               }
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <p className="mt-[6px] font-regular text-[10px]">
-            {groups.length > 0 ? groups[0].name : '그룹이 없습니다'}
+            {group ? group.name : '그룹이 없습니다'}
           </p>
         </div>
       </header>
@@ -113,7 +112,7 @@ const home = () => {
             </p>
           </div>
           <article className="w-fit mx-auto">
-            <Link href={`/groups/${groups[0].id}/albums`}>
+            <Link href={`/groups/${groupId}/albums`}>
               <figure className="w-[328px] h-[272px] overflow-hidden relative cursor-pointer group">
                 <div className="w-[146px] h-[205px] bg-[#FF8888] opacity-60 rounded-[10px] absolute top-[12px] left-[16px] rotate-[-9deg] z-0 group-hover:top-[20px] group-hover:left-[68px] group-hover:rotate-[-15deg] transition-all"></div>
                 <div className="w-[146px] h-[205px] bg-[#FFF68F] opacity-60 rounded-[10px] absolute top-[6px] right-[62px] rotate-[26deg] z-10 group-hover:top-[29px] group-hover:right-[69px] group-hover:rotate-[12deg] transition-all"></div>
@@ -133,48 +132,37 @@ const home = () => {
         <section className="mt-[45px]">
           <div className="w-[92%] flex flex-row justify-between items-end mb-5">
             <p className="font-bold text-[16px]">최근 추가된 콘텐츠</p>
-            {/* <Link
-              href={`/groups/${groups[0].id}/albums`}
-              className="font-semibold text-[10px] text-[#676767] mb-[2px]"
-            >
-              전체보기{'>'}
-            </Link> */}
           </div>
           <div ref={emblaRef} className="overflow-hidden h-[141px]">
             <div className="flex">
-              {recentMedia.map((media, index) => (
-                <div
-                  className="min-w-[183px] flex flex-col items-center"
-                  key={media.id}
-                >
-                  <div
-                    className="w-[168px] h-[141px] bg-cover cursor-pointer"
-                    style={{ backgroundImage: `url(${media.thumbnailUrl})` }}
-                  ></div>
+              {recentMedia.length > 0 ? (
+                recentMedia.map((media) => {
+                  return (
+                    <div
+                      className="min-w-[183px] flex flex-col items-center"
+                      key={media.id}
+                    >
+                      <div
+                        className="w-[168px] h-[141px] bg-cover cursor-pointer"
+                        style={{
+                          backgroundImage: `url(${encodeURI(media.fileUrl)})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                        }}
+                      ></div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="min-w-[183px] flex flex-col items-center">
+                  <div className="w-[168px] h-[141px] bg-gray-200 flex items-center justify-center">
+                    <p className="text-gray-500">
+                      최근 추가된 콘텐츠가 없습니다
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div ref={emblaRef} className="overflow-hidden h-[141px]">
-            <div className="flex">
-              <div className="min-w-[183px] flex flex-col items-center" key={0}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
-              <div className="min-w-[183px] flex flex-col items-center" key={1}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
-              <div className="min-w-[183px] flex flex-col items-center" key={2}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
-              <div className="min-w-[183px] flex flex-col items-center" key={3}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
-              <div className="min-w-[183px] flex flex-col items-center" key={4}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
-              <div className="min-w-[183px] flex flex-col items-center" key={5}>
-                <div className='bg-[url("/images/example2.png")] w-[168px] h-[141px] bg-cover cursor-pointer'></div>
-              </div>
+              )}
             </div>
           </div>
         </section>

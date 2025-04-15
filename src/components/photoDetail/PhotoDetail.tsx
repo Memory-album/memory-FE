@@ -3,12 +3,11 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import useGroupStore from '@/store/useGroupStore';
-import { EmblaOptionsType } from 'embla-carousel';
 import '@/components/embla/embla.css';
 import { GoHeartFill } from 'react-icons/go';
 import { CgClose } from 'react-icons/cg';
 import { DownloadSquare02Icon } from 'hugeicons-react';
+import useUserStore from '@/store/useUserInfo';
 import { CursorMagicSelection02Icon } from 'hugeicons-react';
 
 type PropType = {
@@ -51,8 +50,8 @@ interface ApiResponse {
 const PhotoDetail = ({ params }: PropType) => {
   const albumId = params.id;
   const currentPhotoId = params.photoId;
-  const { groups } = useGroupStore();
-  const groupId = groups[0].id;
+  const { userInfo } = useUserStore();
+  const groupId = userInfo?.currentGroupId;
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
