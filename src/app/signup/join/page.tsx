@@ -21,9 +21,7 @@ const invite = () => {
   const handleJoinGroup = async () => {
     try {
       const response = await joinGroup({ inviteCode, groupNickname });
-      if (response.status === 200) {
-        router.push('/home');
-      }
+
       console.log(response);
     } catch (error) {
       console.error('그룹 참여 실패:', error);

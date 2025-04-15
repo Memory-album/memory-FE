@@ -31,6 +31,10 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       const albumId = 1;
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
+        {
+          method: 'get',
+          credentials: 'include',
+        },
       );
       if (!response.ok) {
         throw new Error('Failed to fetch albums');

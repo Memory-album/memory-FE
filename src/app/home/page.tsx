@@ -44,6 +44,10 @@ const home = () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
         );
         const data = await response.json();
         if (data.result === 'success') {

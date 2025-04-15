@@ -15,11 +15,74 @@ type PropType = {
   params: { id: string; photoId: string };
 };
 
+interface UploadedBy {
+  id: number;
+  name: string;
+  profileImgUrl: string;
+}
+
+interface MediaItem {
+  id: number;
+  fileUrl: string;
+  fileType: string;
+  originalFilename: string;
+  fileSize: number;
+  thumbnailUrl: string | null;
+  uploadedBy: UploadedBy;
+  createdAt: string;
+  story: string | null;
+  isLiked: boolean;
+}
+
+interface ApiResponse {
+  result: string;
+  message: null;
+  data: {
+    content: MediaItem[];
+    pageNumber: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+    first: boolean;
+    last: boolean;
+  };
+}
+
 const PhotoDetail = ({ params }: PropType) => {
   const albumId = params.id;
   const currentPhotoId = params.photoId;
   const { groups } = useGroupStore();
   const groupId = groups[0].id;
+
+  const [imagess, setImagess] = useState<MediaItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const queryParams = new URLSearchParams({
+          page: currentPage.toString(),
+          size: '10',
+          sort: 'createdAt,desc',
+        });
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
+        );
+        const data: ApiResponse = await response.json();
+
+        if (data.result === 'SUCCESS') {
+          setImagess(data.data.content);
+          setTotalPages(data.data.totalPages);
+        }
+      } catch (error) {
+        console.error('Failed to fetch images:', error);
+      }
+    };
+
+    fetchImages();
+  }, [groupId, albumId, currentPage]);
 
   const [images, setImages] = useState([
     { id: '0', src: '/images/example.png', isLiked: true, name: '사진1' },
@@ -49,7 +112,7 @@ const PhotoDetail = ({ params }: PropType) => {
     (index: number) => {
       if (!images[index]) return;
       const newPhotoId = images[index].id;
-      const newPath = `groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
+      const newPath = `/groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
       window.history.replaceState(null, '', newPath);
     },
     [albumId], // images를 제거
@@ -258,6 +321,89 @@ const PhotoDetail = ({ params }: PropType) => {
       {/* 이미지 슬라이더 */}
       <div ref={emblaRef} className="overflow-hidden h-full">
         <div className="flex h-full">
+          {imagess.map((image, i) => (
+            <div
+              className="min-w-full p-4 flex flex-col items-center"
+              key={image.id}
+            >
+              <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
+                <div className="mb-[35px] flex items-end">
+                  <button onClick={() => toggleVisibillity(downloadRef, true)}>
+                    <div
+                      className="w-[285px] h-[399px] mr-3 bg-cover bg-center rounded-[10px]"
+                      style={{ backgroundImage: `url(${image.fileUrl})` }}
+                    ></div>
+                  </button>
+                  <div className="flex flex-col items-center w-[64px]">
+                    <div>
+                      <button
+                        className="bg-white w-[51px] h-[51px] rounded-full flex items-center justify-center"
+                        onClick={() => toggleLike(i)}
+                      >
+                        {image.isLiked ? (
+                          <div className="w-[51px] h-[51px] rounded-full border-2 border-red-500 border-solid p-3">
+                            <GoHeartFill
+                              size={23}
+                              fill="red"
+                              className="transition-transform transform scale-125 duration-300"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-[51px] h-[51px] rounded-full border-2 border-[#B4B4B4] border-solid p-3">
+                            <GoHeartFill
+                              size={23}
+                              fill="#B4B4B4"
+                              className="transition-transform transform scale-125 duration-300"
+                            />
+                          </div>
+                        )}
+                      </button>
+                    </div>
+
+                    <ul className="text-xs sm:text-sm mt-4">
+                      <li>
+                        <h3 className="font-semibold">작성자</h3>
+                        <p className="text-[10px]">{image.uploadedBy.name}</p>
+                      </li>
+                      <li>
+                        <h3 className="font-semibold">날짜</h3>
+                        <p className="text-[10px]">
+                          {new Date(image.createdAt).toLocaleDateString()}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => toggleVisibillity(conversationRef, true)}
+                >
+                  <div
+                    className="w-0 h-0 top-[-23px] left-[19px] absolute"
+                    style={{
+                      borderWidth: '23px 63px',
+                      borderColor:
+                        'transparent transparent transparent rgb(243, 244, 255)',
+                    }}
+                  ></div>
+                  <div className="p-5 rounded-[20px] bg-[#F3F4FF] pb-3">
+                    <div className="text-lg">
+                      {image.story || '이미지에 대한 설명이 없습니다.'}
+                    </div>
+                    <div className="text-[#8FB6FF] mt-4 flex row items-end justify-end">
+                      <p className="text-[10px]">대화 보기</p>
+                      <CursorMagicSelection02Icon
+                        size={20}
+                        color="#8FB6FF"
+                        fill="white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
           {images.map((image, i) => (
             <div
               className="min-w-full p-4 flex flex-col items-center"

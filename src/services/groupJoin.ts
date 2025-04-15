@@ -1,24 +1,42 @@
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
-const API_BASE_URL = 'http://localhost:8080'; // 백엔드 URL 설정
-
-// 그룹 참여하기
 export const joinGroup = async (userData: {
   inviteCode: string;
   groupNickname: string;
 }) => {
+  const router = useRouter();
+
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/api/v1/groups/join`,
+    // 그룹 참여 요청
+    const joinResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/join`,
       userData,
       {
         withCredentials: true, // 쿠키 사용 설정
       },
     );
-    return response.data; // 성공 시 반환되는 데이터를 리턴
+
+    console.log('Join Group Response:', joinResponse.data);
+
+    // 성공적으로 그룹에 참여했으면 홈 데이터 요청
+    const homeResponse = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/home`,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (homeResponse.status === 200) {
+      console.log('Home response:', homeResponse.data);
+      router.push('/home');
+    }
   } catch (error: any) {
     console.error(
-      'Error during registration:',
+      'Error during registration or home request:',
       error.response?.data || error.message,
     );
     throw error.response?.data || error.message; // 에러 처리

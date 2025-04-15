@@ -5,8 +5,12 @@ import { useEffect, useState } from 'react';
 import PhotoArrangement from './_components/PhotoArrangement';
 import { useRouter } from 'next/navigation';
 import { addNewAlbum } from '@/lib/albums/addNewAlbum';
+import useGroupStore from '@/store/useGroupStore';
 
 const Collection = () => {
+  const { groups } = useGroupStore();
+  const groupId = groups.length > 0 ? groups[0].id : 1;
+
   const collections = [
     {
       id: 1,
@@ -79,7 +83,9 @@ const Collection = () => {
     description: '',
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setNewAlbum((prev) => ({ ...prev, [name]: value }));
   };
@@ -91,31 +97,70 @@ const Collection = () => {
     }
 
     try {
-      // API 호출 (실제로는 응답을 받아서 처리해야 하지만, 현재는 무시)
+      // API 호출
       await addNewAlbum({
         title: newAlbum.title,
         theme: newAlbum.theme,
         description: newAlbum.description,
-        groupId: 1, // 실제 groupId로 교체 필요
+        groupId: groupId,
       });
 
       // 로컬 상태에 새 앨범 추가
-      const newLocalAlbum = {
-        id: collections.length + localAlbums.length + 1,
-        title: newAlbum.title,
-        bgImages: ['./images/1.png'], // 기본 이미지
-      };
+      //   const newLocalAlbum = {
+      //     id: collections.length + localAlbums.length + 1,
+      //     title: newAlbum.title,
+      //     bgImages: ['./images/1.png'], // 기본 이미지
+      //   };
 
-      setLocalAlbums((prev) => [...prev, newLocalAlbum]);
+      //   setLocalAlbums((prev) => [...prev, newLocalAlbum]);
 
-      // 입력 필드 초기화
+      //   // 입력 필드 초기화
+      //   setNewAlbum({
+      //     title: '',
+      //     theme: '',
+      //     description: '',
+      //   });
+
+      //   // 팝업 닫기
+      //   setAddAlbums(false);
+      // } catch (error) {
+      //   console.error('앨범 추가 실패:', error);
+      //   alert('앨범 추가에 실패했습니다.');
+      // }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+        {
+          method: 'get',
+          credentials: 'include',
+        },
+      );
+      const result = await response.json();
+
+      if (result.result === 'SUCCESS') {
+        const formattedAlbums = result.data.map(
+          (album: {
+            id: number;
+            title: string;
+            recentMedia: { thumbnailUrl: any }[];
+          }) => ({
+            id: album.id,
+            title: album.title,
+            bgImages: album.recentMedia
+              .map((media: { thumbnailUrl: any }) => media.thumbnailUrl)
+              .slice(0, 5), // 최대 5개의 썸네일만 사용
+          }),
+        );
+
+        setLocalAlbums(formattedAlbums);
+      }
+
       setNewAlbum({
         title: '',
         theme: '',
         description: '',
       });
 
-      // 팝업 닫기
       setAddAlbums(false);
     } catch (error) {
       console.error('앨범 추가 실패:', error);
@@ -161,15 +206,18 @@ const Collection = () => {
           <label className="mx-6" htmlFor="theme">
             테마
           </label>
-          <input
-            className="mx-6"
-            id="theme"
-            type="text"
-            placeholder="테마"
+          <select
             name="theme"
+            id="theme"
+            className="mx-6 p-2 border rounded"
             value={newAlbum.theme}
             onChange={handleInputChange}
-          />
+          >
+            <option value="">테마를 선택하세요</option>
+            <option value="SENIOR_CARE">SENIOR_CARE</option>
+            <option value="CHILD_GROWTH">CHILD_GROWTH</option>
+            <option value="COUPLE_STORY">COUPLE_STORY </option>
+          </select>
           <label className="mx-6" htmlFor="description">
             설명
           </label>
