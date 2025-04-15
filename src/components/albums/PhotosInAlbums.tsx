@@ -28,13 +28,13 @@ const PhotosInAlbum = () => {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        //url에서 albumId 추출, groupId는 따로 추출하는 방법 필요
+        //url에서 albumId 추출
         const urlParts = pathname.split('/');
         const groupId = groups[0].id;
         const albumId = urlParts[2]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
-          `http://localhost:8080/api/v1/groups/${groupId}/albums/${albumId}/media`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
         );
         const data = await response.json();
 
