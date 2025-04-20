@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'min-i-album-storage.s3.amazonaws.com', // ✅ S3 버킷 도메인 추가
+        hostname: 'mini-album-storage.s3.amazonaws.com', // 수정된 호스트명
       },
     ],
   },
