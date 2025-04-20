@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { ImageUpload } from '../_components/image-upload';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from '@/components/messages/alert';
 import { AiUpload } from './ai-upload';
 import { SelfUpload } from './self-upload';
@@ -16,7 +16,7 @@ interface Props {
   albumId: string;
   groupId: string;
 }
-interface responseData {
+interface ResponseDataProps {
   albumId: string;
   imageUrl: string;
   mediaId: string;
@@ -34,7 +34,9 @@ export const MemberView = ({ albumId, groupId }: Props) => {
   const [previewImages, setPreviewImages] = useState<
     { dataUrl: string; file: File }[]
   >([]);
-  const [response, setResponse] = useState<responseData>();
+  const [responseData, setResponseData] = useState<ResponseDataProps | null>(
+    null,
+  );
   const { view, setView, reset } = useViewStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { getMessages, deleteRoom } = useMessageStore();
@@ -77,7 +79,7 @@ export const MemberView = ({ albumId, groupId }: Props) => {
     },
     onSuccess: (response) => {
       console.log('이미지 분석 성공', response);
-      setResponse(response.data);
+      setResponseData(response.data);
       setView('ai-upload');
     },
     onError: (error: Error) => {
@@ -180,7 +182,7 @@ export const MemberView = ({ albumId, groupId }: Props) => {
           </div>
         </>
       )}
-      {view === 'ai-upload' && <AiUpload responseData={response!} />}
+      {view === 'ai-upload' && <AiUpload responseData={responseData!} />}
       {view === 'input' && (
         <SelfUpload
           images={previewImages[0]}

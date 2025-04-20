@@ -244,7 +244,7 @@ export const AnswerList = ({ searchText, groupId, albumId }: Props) => {
     );
   }
 
-  if (!mediaData || !allMediaContents.length) {
+  if (filteredQuestions.length === 0) {
     return (
       <p className="text-[22px] text-center text-slate-300">
         모든 질문에 답을 남겨주셨어요 😊

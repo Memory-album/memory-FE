@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ImageUpload } from './image-upload';
 import { VoiceAnswer } from '@/components/messages/voice-answer';
@@ -51,6 +51,21 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
     queryKey: ['user'],
     queryFn: getUser,
   });
+
+  const deleteUploadedMedia = async (mediaId: string) => {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media/${mediaId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        },
+      );
+      console.log('미완료된 미디어 삭제 성공');
+    } catch (error) {
+      console.error('미디어 삭제 실패:', error);
+    }
+  };
 
   // 이미지 분석 API 뮤테이션
   const imageUploadMutation = useMutation({
@@ -138,7 +153,69 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
     },
   });
 
-  // 앨범 생성 프로세스 - 앨범 답변 생성 -> 스토리 생성
+  // 1. 질문-답변 업로드 뮤테이션
+  const answerMutation = useMutation({
+    mutationFn: async () => {
+      if (!responseData) return null;
+
+      const mediaId = responseData.mediaId;
+      const questionId = responseData.questions[0].id;
+      const messages = getMessages('owner');
+
+      if (!messages.length) {
+        throw new Error('답변을 먼저 입력해주세요.');
+      }
+
+      const textContent = messages[0].content;
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${textContent}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
+      return response.json();
+    },
+  });
+
+  // 2. 스토리 생성 뮤테이션
+  const storyMutation = useMutation({
+    mutationFn: async () => {
+      if (!responseData) return null;
+
+      const mediaId = responseData.mediaId;
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stories/generate?mediaId=${mediaId}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
+        throw new Error(errorData.message || '서버 오류 발생');
+      }
+
+      return response.json();
+    },
+  });
+
+  // 앨범 완료 프로세스
   const handleCompleteAlbum = async () => {
     if (!responseData) return;
 
@@ -146,10 +223,10 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
 
     try {
       // 1. 질문-답변 업로드
-      await uploadAlbumAnswer();
+      await answerMutation.mutateAsync();
 
       // 2. 스토리 생성
-      await generateStory();
+      await storyMutation.mutateAsync();
 
       // 3. 성공 처리
       alert('스토리 생성 성공');
@@ -163,70 +240,11 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
     }
   };
 
-  // 1단계: 질문-답변 업로드
-  const uploadAlbumAnswer = async () => {
-    if (!responseData) return;
-
-    const mediaId = responseData.mediaId;
-    const questionId = responseData.questions[0].id;
-    const messages = getMessages('owner');
-
-    if (!messages.length) {
-      throw new Error('답변을 먼저 입력해주세요.');
-    }
-
-    const textContent = messages[0].content;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${textContent}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
-      throw new Error(errorData.message || '서버 오류 발생');
-    }
-
-    return response.json();
-  };
-
-  // 2단계: 스토리 생성
-  const generateStory = async () => {
-    if (!responseData) return;
-
-    const mediaId = responseData.mediaId;
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stories/generate?mediaId=${mediaId}`,
-      {
-        method: 'POST',
-        credentials: 'include',
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ message: '알 수 없는 오류가 발생했습니다.' }));
-      throw new Error(errorData.message || '서버 오류 발생');
-    }
-
-    return response.json();
-  };
-
   // 상태 초기화
   const resetState = () => {
     reset();
     setPreviewImages([]);
     deleteRoom('owner');
-    setResponseData(null);
   };
 
   // 이미지 파일 제출 처리
