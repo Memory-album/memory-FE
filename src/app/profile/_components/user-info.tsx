@@ -29,15 +29,13 @@ export const UserInfo = () => {
     );
   }
 
-  const user: UserType = data?.user;
-
   return (
     <div>
       <div className="flex items-center mb-4">
         <div className="relative mr-[15px] size-[68px] rounded-full overflow-hidden">
-          <Image src={user?.profileImgUrl} alt="유저 이미지" fill />
+          <Image src={data?.profileImgUrl} alt="유저 이미지" fill />
         </div>
-        <strong className="flex-grow text-xl">{user?.name}</strong>
+        <strong className="flex-grow text-xl">{data?.name}</strong>
       </div>
       <Button
         className="w-full h-7 text-xs rounded-[6px]"

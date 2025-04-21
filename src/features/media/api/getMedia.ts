@@ -1,14 +1,12 @@
 export async function getMedia({
   queryKey,
+  pageParam,
 }: {
   queryKey: [string, string, string, string, string];
+  pageParam: string;
 }) {
   const [_resource, groupId, _albums, albumId, _media] = queryKey;
-  const pageableObj = {
-    page: 0,
-    size: 1,
-    sort: ['string'],
-  };
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
     {

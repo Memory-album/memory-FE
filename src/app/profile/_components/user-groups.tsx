@@ -63,7 +63,6 @@ export const UserGroups = () => {
               <p className="mb-[7px] text-xs w-[120px] h-fit max-h-[32px] overflow-hidden line-clamp-2">
                 {group.description}
               </p>
-              <p className="text-[10px] text-[#555555]">@{group.ownerName}</p>
             </div>
           ))}
         </div>

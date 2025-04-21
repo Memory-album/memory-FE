@@ -14,6 +14,7 @@ import {
 import { getGroupById } from '@/features/group/api/getGroupById';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CopyIcon } from 'lucide-react';
+import { FaHome } from 'react-icons/fa';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -83,9 +84,13 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
           <FaUsers className="opacity-60" />
           <Link href={`/groups/${groupId}/members`}>멤버 보기</Link>
         </li>
-        <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+        {/* <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
           <FaQuestionCircle className="opacity-60" />
           <Link href={`/groups/${groupId}/questions`}>내 질문 보기</Link>
+        </li> */}
+        <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+          <FaHome className="opacity-60" />
+          <Link href={`/home`}>홈으로 가기</Link>
         </li>
         {group.role === 'OWNER' && (
           <InviteCodeDialog inviteCode={group.inviteCode}>
