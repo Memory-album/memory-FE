@@ -72,7 +72,7 @@ export const EditGroup = ({ id }: Props) => {
     },
     onSuccess: () => {
       alert('그룹이 수정되었습니다!');
-      router.replace(`/groups/${id}/dashboard`);
+      router.replace(`/profile`);
     },
     onError: (error) => {
       console.log(error);
@@ -127,7 +127,6 @@ export const EditGroup = ({ id }: Props) => {
     }
   };
 
-  console.log(groupNameValue, groupDescriptionValue);
   const onSubmit = () => {
     mutation.mutate();
   };
