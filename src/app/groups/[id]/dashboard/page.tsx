@@ -1,27 +1,23 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query';
+import { redirect } from 'next/navigation';
+
+import { getCurrentUser } from '@/features/actions';
+
 import { DashboardMenu } from './_components/DashboardMenu';
-import { getGroupById } from '@/features/group/api/getGroupById';
+
+import { User as UserType } from '@/model/user';
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const id = params.id;
-  const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ['groups', id],
-    queryFn: getGroupById,
-  });
+  const user: UserType = await getCurrentUser();
 
-  const dehydratedState = dehydrate(queryClient);
+  if (!user) {
+    redirect('/login');
+  }
 
   return (
     <div className="sm:m-auto w-full sm:w-[500px] px-[30px] ForGnbpaddingTop">
-      <HydrationBoundary state={dehydratedState}>
-        <DashboardMenu groupId={id} />
-      </HydrationBoundary>
+      <DashboardMenu groupId={id} />
     </div>
   );
 };

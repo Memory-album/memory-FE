@@ -1,6 +1,11 @@
 'use client';
+import { useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FaHome } from 'react-icons/fa';
+
 import { InviteCodeDialog } from '@/components/invite-code-dialog';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -11,15 +16,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { getGroupById } from '@/features/group/api/getGroupById';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { CopyIcon } from 'lucide-react';
-import { FaHome } from 'react-icons/fa';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-import { FaEdit, FaUsers, FaQuestionCircle, FaKey } from 'react-icons/fa';
+import { getGroupById } from '@/features/group/api/getGroupById';
+
+import { FaEdit, FaUsers, FaKey } from 'react-icons/fa';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 interface DashboardMenuProps {
   groupId: string;

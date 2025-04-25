@@ -1,5 +1,9 @@
 'use client';
 
+import { Dispatch, SetStateAction } from 'react';
+import { FaUserMinus, FaUserPlus } from 'react-icons/fa';
+import { PiPencilDuotone } from 'react-icons/pi';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,11 +14,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { FaUserMinus, FaUserPlus } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
-import { PiPencilDuotone } from 'react-icons/pi';
-import { Dispatch, SetStateAction } from 'react';
 import { InviteCodeDialog } from '@/components/invite-code-dialog';
 
 type Props = {
@@ -23,8 +22,6 @@ type Props = {
 };
 
 export const MemberActionDropdown = ({ setIsActive, inviteCode }: Props) => {
-  const router = useRouter();
-
   const handleSelectMember = () => {
     setIsActive((prevState) => !prevState);
   };

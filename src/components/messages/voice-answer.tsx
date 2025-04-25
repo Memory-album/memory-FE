@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { LuWaves } from 'react-icons/lu';
+
 import {
   MdKeyboardVoice,
   MdMic,
@@ -7,9 +9,9 @@ import {
   MdPlayArrow,
   MdPause,
 } from 'react-icons/md';
-import { LuWaves } from 'react-icons/lu';
 import { Alert } from './alert';
 import { Button } from '../ui/button';
+
 import { cn } from '@/lib/utils';
 
 type Props = {

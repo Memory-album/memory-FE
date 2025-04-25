@@ -1,8 +1,8 @@
+import { useRouter } from 'next/navigation';
+
 import { ReceivedMessage } from '@/components/messages/received-message';
 import { UploadButton } from '@/components/messages/upload-button';
 import { Image } from '@/components/messages/image';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 
 type Props = {
   responseData: {

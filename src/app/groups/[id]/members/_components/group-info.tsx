@@ -1,11 +1,11 @@
 'use client';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { getGroupById } from '@/features/group/api/getGroupById';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 interface GroupInfoProps {
   id: string;
 }

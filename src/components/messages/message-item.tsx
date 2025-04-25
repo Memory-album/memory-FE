@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { UpdateInput } from './update-input';
-import { PiPencil } from 'react-icons/pi';
 import React from 'react';
+import { PiPencil } from 'react-icons/pi';
+
+import { UpdateInput } from './update-input';
 
 type Message = {
   id: string;

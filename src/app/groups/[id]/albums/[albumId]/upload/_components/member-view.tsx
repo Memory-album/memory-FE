@@ -1,17 +1,18 @@
 'use client';
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import { ImageUpload } from '../_components/image-upload';
-import { useEffect, useState } from 'react';
 import { Alert } from '@/components/messages/alert';
 import { AiUpload } from './ai-upload';
 import { SelfUpload } from './self-upload';
+
 import { useViewStore } from '@/store/useViewStore';
-import { useFileProcessing } from '@/lib/upload/useFileProcessing';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getUser } from '@/features/auth/api/getUser';
 import { useMessageStore } from '@/store/useMessageStore';
-import { Router } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+
+import { getUser } from '@/features/auth/api/getUser';
 interface Props {
   albumId: string;
   groupId: string;

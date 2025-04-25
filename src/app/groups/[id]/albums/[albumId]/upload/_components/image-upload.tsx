@@ -1,10 +1,12 @@
 'use client';
-import { Input } from '@/components/ui/input';
-import { handlePreviewFiles } from '@/lib/image/handlePreviewFiles';
 import { ChangeEventHandler, useMemo, useRef } from 'react';
 import { MdAddAPhoto, MdClose, MdOutlineCameraAlt } from 'react-icons/md';
-import { cn } from '@/lib/utils';
+
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
+import { cn } from '@/lib/utils';
+import { handlePreviewFiles } from '@/lib/image/handlePreviewFiles';
 
 type Props = {
   preview: { dataUrl: string; file: File }[];

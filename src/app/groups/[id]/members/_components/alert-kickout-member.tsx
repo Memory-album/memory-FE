@@ -1,3 +1,7 @@
+import { useEffect, useRef } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FiMinus } from 'react-icons/fi';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,9 +13,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
-import { FiMinus } from 'react-icons/fi';
 
 type Props = {
   memberId: string;

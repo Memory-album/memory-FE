@@ -1,15 +1,16 @@
+import { useState, useEffect } from 'react';
+
 import {
   AlertDialog,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
 import { LoadingSpinner } from '../loading-spinner';
+
+import { cn } from '@/lib/utils';
 
 type Props = {
   description: string;

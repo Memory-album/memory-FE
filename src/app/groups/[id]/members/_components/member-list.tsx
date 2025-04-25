@@ -1,11 +1,14 @@
 'use client';
-import { AlertKickoutMember } from './alert-kickout-member';
-import Image from 'next/image';
-import { MemberActionDropdown } from './member-action-dropdown';
+
 import { useState } from 'react';
+import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { getMembersByGroupId } from '@/features/member/api/getMembersByGroupId';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
+import { AlertKickoutMember } from './alert-kickout-member';
+import { MemberActionDropdown } from './member-action-dropdown';
+
+import { getMembersByGroupId } from '@/features/member/api/getMembersByGroupId';
 import { getGroupById } from '@/features/group/api/getGroupById';
 
 interface MemberListProps {
@@ -56,6 +59,7 @@ export const MemberList = ({ id }: MemberListProps) => {
             <MemberItem
               key={member.id}
               groupId={id}
+              groupname={group.name}
               groupOwnerId={group.ownerUserId}
               memberId={member.id}
               isActive={isActive}
@@ -74,6 +78,7 @@ type MemberItemProps = {
   isActive: boolean;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   groupId: string;
+  groupname: string;
   groupOwnerId: string;
   memberId: string;
   imageUrl: string;
@@ -85,6 +90,7 @@ const MemberItem = ({
   setIsActive,
   groupId,
   groupOwnerId,
+  groupname,
   memberId,
   imageUrl,
   memberName,
@@ -97,8 +103,8 @@ const MemberItem = ({
         <AlertKickoutMember
           setIsActive={setIsActive}
           groupId={groupId}
+          groupname={groupname}
           memberId={memberId}
-          groupname="미니언즈 모임"
           memberName={memberName}
         />
       )}

@@ -1,9 +1,13 @@
 'use client';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getUser } from '@/features/auth/api/getUser';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useMutation } from '@tanstack/react-query';
+import { z } from 'zod';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Camera, ChevronLeft } from 'lucide-react';
+
 import {
   Form,
   FormControl,
@@ -13,18 +17,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { z } from 'zod';
-import { Camera, ChevronLeft } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
-type UserType = {
-  name: string;
-  profileImgUrl: string;
-  email: string;
-};
+import { User as UserType } from '@/model/user';
 
 type ProfileImageState = {
   type: 'remote' | 'local';
@@ -38,42 +33,24 @@ const formSchema = z.object({
   }),
 });
 
-export const EditProfile = () => {
+interface Props {
+  user: UserType;
+}
+
+export const EditProfile = ({ user }: Props) => {
   const router = useRouter();
-  const [profileImage, setProfileImage] = useState<ProfileImageState | null>(
-    null,
-  );
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
+  const [profileImage, setProfileImage] = useState<ProfileImageState | null>({
+    type: 'remote',
+    url: user.profileImgUrl,
   });
-
-  const user: UserType = data?.user;
 
   // 폼 설정
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      name: user.name,
     },
   });
-
-  // 데이터가 로드되면 상태 업데이트
-  useEffect(() => {
-    if (!isLoading && user) {
-      // 폼 값 업데이트
-      form.reset({
-        name: user.name,
-      });
-
-      // 프로필 이미지 상태 설정
-      setProfileImage({
-        type: 'remote',
-        url: user.profileImgUrl || '',
-      });
-    }
-  }, [isLoading, user, form]);
 
   const mutation = useMutation({
     mutationFn: async (name: string) => {
@@ -128,17 +105,8 @@ export const EditProfile = () => {
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     mutation.mutate(values.name);
   };
-
-  if (isLoading) {
-    return (
-      <div className="w-full h-[200px] flex items-center justify-center">
-        <AiOutlineLoading3Quarters className="size-8 animate-spin text-[#c6c7cb]" />
-      </div>
-    );
-  }
 
   return (
     <Form {...form}>

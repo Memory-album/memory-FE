@@ -1,6 +1,7 @@
+import { useEffect, useRef } from 'react';
+
 import { useMessageStore } from '@/store/useMessageStore';
 import { MessageItem } from './message-item';
-import { useEffect, useRef } from 'react';
 
 type Props = {
   roomId: string;

@@ -1,13 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { GroupActionDrawer } from './group-action-drawer';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { getUserGroups } from '@/features/group/api/getUserGroups';
-import { useRouter } from 'next/navigation';
-
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { GroupActionDrawer } from './group-action-drawer';
 
 type GroupInfoProps = {
   id: string;

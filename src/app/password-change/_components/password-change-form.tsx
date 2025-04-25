@@ -1,12 +1,13 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { CheckCheck, Loader, XIcon } from 'lucide-react';
+
 import {
   Form,
   FormControl,
@@ -16,10 +17,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { getUser } from '@/features/auth/api/getUser';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+
+import { User as UserType } from '@/model/user';
+import { cn } from '@/lib/utils';
 
 const verifyCodeSchema = z.object({
   code: z.string().min(6, { message: '인증 코드를 입력해주세요.' }),
@@ -39,17 +41,13 @@ const changePasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export const PasswordChangeForm = () => {
+interface Props {
+  user: UserType;
+}
+
+export const PasswordChangeForm = ({ user }: Props) => {
   const router = useRouter();
   const [verificationCode, setVerificationCode] = useState<string>('');
-
-  // 사용자 정보 가져오기
-  const { data, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
-  });
-
-  const user = data?.user;
 
   // 인증 코드 확인 폼
   const verifyCodeForm = useForm<z.infer<typeof verifyCodeSchema>>({
@@ -177,6 +175,7 @@ export const PasswordChangeForm = () => {
   };
 
   const onVerifyCode = (data: z.infer<typeof verifyCodeSchema>) => {
+    console.log(data.code);
     verifyCodeMutation.mutate(data.code);
   };
 
@@ -205,15 +204,6 @@ export const PasswordChangeForm = () => {
   const passwordStrength = calculatePasswordStrength(
     changePasswordForm.watch('password'),
   );
-
-  // 로딩 중 표시
-  if (isLoading) {
-    return (
-      <div className="w-full h-[200px] flex items-center justify-center">
-        <AiOutlineLoading3Quarters className="size-8 animate-spin text-[#c6c7cb]" />
-      </div>
-    );
-  }
 
   return (
     <div>

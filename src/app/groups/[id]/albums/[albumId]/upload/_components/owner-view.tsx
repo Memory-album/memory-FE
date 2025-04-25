@@ -1,18 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
+
 import { ImageUpload } from './image-upload';
 import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { Alert } from '@/components/messages/alert';
 import { Upload } from '@/components/messages/upload';
+
 import { useViewStore } from '@/store/useViewStore';
 import { useMessageStore } from '@/store/useMessageStore';
+
 import { getUser } from '@/features/auth/api/getUser';
-
-import { v4 as uuidv4 } from 'uuid';
-import { useRouter } from 'next/navigation';
-
 interface Props {
   albumId: string;
   groupId: string;
@@ -51,21 +52,6 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
     queryKey: ['user'],
     queryFn: getUser,
   });
-
-  const deleteUploadedMedia = async (mediaId: string) => {
-    try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media/${mediaId}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        },
-      );
-      console.log('미완료된 미디어 삭제 성공');
-    } catch (error) {
-      console.error('미디어 삭제 실패:', error);
-    }
-  };
 
   // 이미지 분석 API 뮤테이션
   const imageUploadMutation = useMutation({
@@ -231,7 +217,9 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
       // 3. 성공 처리
       alert('스토리 생성 성공');
       resetState();
-      router.replace(`/groups/${groupId}/albums`);
+      router.replace(
+        `/groups/${groupId}/albums/${albumId}/media/${responseData.mediaId}`,
+      );
     } catch (error) {
       console.error('앨범 생성 오류:', error);
       alert('오류가 발생했습니다. 다시 시도해주세요');

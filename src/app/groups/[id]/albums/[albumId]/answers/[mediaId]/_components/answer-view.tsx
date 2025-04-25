@@ -1,22 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { VoiceAnswer } from '@/components/messages/voice-answer';
-import { useViewStore } from '@/store/useViewStore';
-import { useMessageStore } from '@/store/useMessageStore';
-import { getUser } from '@/features/auth/api/getUser';
-
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
-import { getQuestionsByMedia } from '@/features/media/api/getQuestionsByMedia';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { useViewStore } from '@/store/useViewStore';
+import { useMessageStore } from '@/store/useMessageStore';
+
+import { getQuestionsByMedia } from '@/features/media/api/getQuestionsByMedia';
+import { VoiceAnswer } from '@/components/messages/voice-answer';
 import { Upload } from './upload';
+
+import { User as UserType } from '@/model/user';
 
 interface Props {
   albumId: string;
   groupId: string;
   mediaId: string;
+  user: UserType;
 }
 
 interface QuestionProps {
@@ -39,7 +42,7 @@ interface ResponseDataProps {
   questions: QuestionProps[];
 }
 
-export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
+export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
   const router = useRouter();
   const [chunks, setChunks] = useState<Blob[]>([]);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -48,11 +51,6 @@ export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
   const { view, setView, reset } = useViewStore();
 
   const queryClient = useQueryClient();
-
-  const { data: user, isLoading: isUserLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
-  });
 
   const { data: responseData, isLoading: isQuestionLoading } = useQuery({
     queryKey: [
@@ -125,7 +123,7 @@ export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
       // 2. 스토리 생성
       await generateStory();
 
-      // 3. 관련 쿼리 모두 무효화 (더 포괄적인 접근)
+      // 3. 관련 쿼리 모두 무효화
       // 미디어 목록 무효화
       queryClient.invalidateQueries({
         queryKey: ['groups', groupId, 'albums', albumId, 'media'],
@@ -140,7 +138,9 @@ export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
       alert('답변이 성공적으로 저장되었습니다.');
       resetState();
 
-      router.replace(`/groups/${groupId}/albums/${albumId}/answers`);
+      router.replace(
+        `/groups/${groupId}/albums/${albumId}/media/${responseData.mediaId}`,
+      );
     } catch (error) {
       console.error('답변 저장 오류:', error);
       alert('오류가 발생했습니다. 다시 시도해주세요');
@@ -223,7 +223,7 @@ export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
     audioUploadMutation.mutate(audioBlob);
   };
 
-  if (isUserLoading || isQuestionLoading) {
+  if (isQuestionLoading) {
     return (
       <div className="flex flex-col justify-start items-center text-slate-300">
         <p>
@@ -269,13 +269,7 @@ export const AnswerView = ({ albumId, groupId, mediaId }: Props) => {
 
   return (
     <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
-      {isUserLoading ? (
-        <div className="flex justify-center items-center h-[300px]">
-          <p>로딩 중...</p>
-        </div>
-      ) : (
-        renderContent()
-      )}
+      {renderContent()}
     </div>
   );
 };

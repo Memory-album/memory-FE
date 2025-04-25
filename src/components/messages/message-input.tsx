@@ -1,12 +1,13 @@
 import { ChangeEvent, useState } from 'react';
+import React from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuidv4 } from 'uuid';
-
-import { Button } from '@/components/ui/button';
 import { MdKeyboardVoice } from 'react-icons/md';
 import { IoIosSend } from 'react-icons/io';
+
+import { Button } from '@/components/ui/button';
+
 import { useMessageStore } from '@/store/useMessageStore';
-import React from 'react';
 import { useViewStore } from '@/store/useViewStore';
 
 type Props = {
