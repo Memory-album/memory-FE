@@ -218,7 +218,7 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
       alert('스토리 생성 성공');
       resetState();
       router.replace(
-        `/groups/${groupId}/albums/${albumId}/media/${responseData.mediaId}`,
+        `/groups/${groupId}/albums/${albumId}/photo/${responseData.mediaId}`,
       );
     } catch (error) {
       console.error('앨범 생성 오류:', error);

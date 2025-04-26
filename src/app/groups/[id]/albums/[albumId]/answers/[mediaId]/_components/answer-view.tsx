@@ -139,7 +139,7 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
       resetState();
 
       router.replace(
-        `/groups/${groupId}/albums/${albumId}/media/${responseData.mediaId}`,
+        `/groups/${groupId}/albums/${albumId}/photo/${responseData.mediaId}`,
       );
     } catch (error) {
       console.error('답변 저장 오류:', error);
