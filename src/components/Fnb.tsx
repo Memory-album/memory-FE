@@ -9,6 +9,7 @@ import { Album02Icon } from 'hugeicons-react';
 import { Home11Icon } from 'hugeicons-react';
 import { FavouriteIcon } from 'hugeicons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState, useEffect } from 'react';
 
 const Fnb = () => {
   const pathname = usePathname();
@@ -24,15 +25,47 @@ const Fnb = () => {
   const dynamicRoutePatterns = [/^\/answers\/.+$/];
   const dynamicRouteGroupPatterns = [/^\/groups\/.+$/];
   if (
-    excludeLayoutRoutes.includes(pathname) ||
-    dynamicRouteGroupPatterns.some((pattern) => pattern.test(pathname)) ||
-    dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
+    excludeLayoutRoutes.includes(pathname)
+    // ||
+    // dynamicRouteGroupPatterns.some((pattern) => pattern.test(pathname)) ||
+    // dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
   ) {
     return null;
   }
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const albumId = 1;
+  const [hasAlbums, setHasAlbums] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkAlbums = async () => {
+      if (!groupId) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
+        );
+        const data = await response.json();
+        setHasAlbums(data.data.length > 0);
+      } catch (error) {
+        console.error('Error checking albums:', error);
+      }
+    };
+
+    checkAlbums();
+  }, [groupId]);
+
+  const handleUploadClick = (e: React.MouseEvent) => {
+    if (!hasAlbums) {
+      e.preventDefault();
+      alert('앨범을 먼저 추가해주세요');
+      window.location.href = `/groups/${groupId}/albums`;
+    }
+  };
 
   return (
     <footer className="w-full h-[87px] fixed bottom-0 left-0 right-0 z-40">
@@ -103,9 +136,14 @@ const Fnb = () => {
       </div>
 
       <Link
-        href={`/groups/${groupId}/albums/${albumId}/upload`}
+        href={
+          hasAlbums
+            ? `/groups/${groupId}/albums/${albumId}/upload`
+            : `/groups/${groupId}/albums`
+        }
         className="fixed bottom-[32px]"
         style={{ left: 'calc(50% - 1.5rem)' }}
+        onClick={handleUploadClick}
       >
         <BsPlusCircleFill className="w-12 h-12 text-[#4848f9] bg-white rounded-full "></BsPlusCircleFill>
       </Link>

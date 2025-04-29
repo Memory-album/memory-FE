@@ -45,11 +45,13 @@ const PhotosInAlbum = () => {
         if (data.result === 'SUCCESS') {
           const formattedImages = data.data.content.map((item: Media) => ({
             id: item.id,
-            src: item.fileUrl,
+            fileUrl: item.fileUrl,
             thumbnailUrl: item.thumbnailUrl,
-            profileImgUrl: item.uploadedBy.profileImgUrl,
-            uploadedBy: item.uploadedBy.name,
-            isLiked: false, // 초기값으로 false 설정
+            uploadedBy: {
+              name: item.uploadedBy.name,
+              profileImgUrl: item.uploadedBy.profileImgUrl,
+            },
+            isLiked: false,
             story: item.story,
           }));
           setImages(formattedImages);
@@ -62,23 +64,24 @@ const PhotosInAlbum = () => {
     fetchPhotos();
   }, [pathname]);
 
-  const [dummyImages, setDummyImages] = useState([
-    { id: '0', src: '/images/example.png', isLiked: true },
-    { id: '1', src: '/images/example2.png', isLiked: true },
-    { id: '2', src: '/images/1.png', isLiked: true },
-    { id: '3', src: '/images/2.png', isLiked: true },
-    { id: '4', src: '/images/3.png', isLiked: true },
-    { id: '5', src: '/images/4.png', isLiked: true },
-    { id: '6', src: '/images/5.png', isLiked: true },
-    { id: '7', src: '/images/6.png', isLiked: true },
-  ]);
+  // const [dummyImages, setDummyImages] = useState([
+  //   { id: '0', src: '/images/example.png', isLiked: true },
+  //   { id: '1', src: '/images/example2.png', isLiked: true },
+  //   { id: '2', src: '/images/1.png', isLiked: true },
+  //   { id: '3', src: '/images/2.png', isLiked: true },
+  //   { id: '4', src: '/images/3.png', isLiked: true },
+  //   { id: '5', src: '/images/4.png', isLiked: true },
+  //   { id: '6', src: '/images/5.png', isLiked: true },
+  //   { id: '7', src: '/images/6.png', isLiked: true },
+  // ]);
 
   const toggleLike = (index: number) => {
-    setDummyImages((prevImages) =>
+    setImages((prevImages) =>
       prevImages.map((image, i) =>
         i === index ? { ...image, isLiked: !image.isLiked } : image,
       ),
     );
+    console.log(images);
   };
 
   return (
@@ -87,7 +90,7 @@ const PhotosInAlbum = () => {
         columnsCountBreakPoints={{ 500: 2, 600: 3, 1200: 4, 1400: 5 }}
       >
         <Masonry columnsCount={3} gutter="15px">
-          {dummyImages.map((image, i) => (
+          {/* {dummyImages.map((image, i) => (
             <div className="relative" key={i}>
               <Link href={`${pathname}/photo/${image.id}`} key={image.id}>
                 <img
@@ -120,12 +123,12 @@ const PhotosInAlbum = () => {
                 </button>
               </div>
             </div>
-          ))}
+          ))} */}
           {images.map((image, i) => (
             <div className="relative" key={image.id}>
               <Link href={`${pathname}/photo/${image.id}`}>
                 <img
-                  src={image.thumbnailUrl}
+                  src={image.fileUrl}
                   style={{ width: '100%', display: 'block' }}
                   className="rounded-[10px] cursor-pointer"
                   alt={`Photo ${image.id}`}

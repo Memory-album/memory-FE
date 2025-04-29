@@ -23,6 +23,7 @@ const Gnb = () => {
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   const excludeLayoutRoutes = [
     '/',
@@ -38,8 +39,6 @@ const Gnb = () => {
   if (excludeLayoutRoutes.includes(pathname)) {
     return null;
   }
-
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   const handleSideBarToggle = () => {
     setIsSideBarOpen((prev) => !prev);
@@ -111,7 +110,9 @@ const Gnb = () => {
             />
           </div>
           <div className="flex justify-between items-center mt-5">
-            <p className="font-semibold text-lg text-black">사이트 이름</p>
+            <p className="font-semibold text-[26px] pd-[10px] text-black">
+              Min:i
+            </p>
             <Avatar className="w-7 h-7 text-white">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
@@ -124,12 +125,14 @@ const Gnb = () => {
                 <hr className="bg-[#626262] border-t-1 w-[123px] border-dotted"></hr>
               </div>
               <div className="ml-[33px] mt-4 grid grid-cols-3 gap-x-[19px] gap-y-[12px]">
-                <div className="flex justify-center items-center flex-col">
-                  <BookOpen02Icon color="#85B6FF" />
-                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                    전체보기
-                  </p>
-                </div>
+                <Link href={`/groups/${groupId}/albums`}>
+                  <div className="flex justify-center items-center flex-col">
+                    <BookOpen02Icon color="#85B6FF" />
+                    <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                      전체보기
+                    </p>
+                  </div>
+                </Link>
                 <div className="flex justify-center items-center flex-col">
                   <BubbleChatNotificationIcon color="#85B6FF" />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">

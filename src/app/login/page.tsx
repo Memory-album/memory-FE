@@ -200,7 +200,10 @@ const login = () => {
             >
               로그인
             </Button>
-            <div className="w-[132px] border-b-[1px] border-[#8D8D8D] mb-[67px]">
+            <Link href="/signup">
+              <Button className="mt-[10px] mb-[13px]">회원가입</Button>
+            </Link>
+            <div className="w-[132px] border-b-[1px] border-[#8D8D8D] mb-[47px]">
               <Link
                 href="/"
                 className="text-[12px] font-semibold text-[#8D8D8D]"
