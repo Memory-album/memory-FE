@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -9,7 +9,11 @@ import useUserStore from '@/store/useUserInfo';
 import useGroupStore from '@/store/useGroupStore';
 import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
+import { ArrowDataTransferHorizontalIcon } from 'hugeicons-react';
+import { MdLogout } from 'react-icons/md';
 import { EmblaOptionsType } from 'embla-carousel';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 interface UploadedBy {
   id: number;
@@ -34,7 +38,49 @@ const home = () => {
   const { userInfo } = useUserStore();
   const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
+  const albumId = 1;
   const groupId = userInfo?.currentGroupId;
+  const [hasAlbums, setHasAlbums] = useState<boolean>(true);
+  const logoutRef = useRef<HTMLDivElement>(null);
+  const [isLogoutVisible, setIsLogoutVisible] = useState<boolean>(false);
+  const router = useRouter();
+
+  const toggleVisibillity = () => {
+    setIsLogoutVisible(!isLogoutVisible);
+    if (logoutRef.current) {
+      logoutRef.current.style.display = !isLogoutVisible ? 'flex' : 'none';
+    }
+  };
+
+  useEffect(() => {
+    const checkAlbums = async () => {
+      if (!groupId) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
+        );
+        const data = await response.json();
+        setHasAlbums(data.data.length > 0);
+      } catch (error) {
+        console.error('Error checking albums:', error);
+      }
+    };
+
+    checkAlbums();
+  }, [groupId]);
+
+  const handleUploadClick = (e: React.MouseEvent) => {
+    if (!hasAlbums) {
+      e.preventDefault();
+      alert('앨범을 먼저 추가해주세요');
+      window.location.href = `/groups/${groupId}/albums`;
+    }
+  };
 
   useEffect(() => {
     fetchGroup(groupId ? groupId : 1);
@@ -60,6 +106,39 @@ const home = () => {
     };
     fetchRecentMedia();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const jwtToken = Cookies.get('jwtToken');
+      if (!jwtToken) {
+        throw new Error('No JWT token found');
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/logout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          credentials: 'include',
+        },
+      );
+
+      if (response.ok) {
+        // 쿠키 삭제
+        Cookies.remove('jwtToken');
+        // 로그인 페이지로 리다이렉트
+        router.push('/login');
+      } else {
+        throw new Error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      alert('로그아웃에 실패했습니다.');
+    }
+  };
 
   return (
     <div className="mb-[103px]">
@@ -90,7 +169,10 @@ const home = () => {
             </div>
           </div>
         </div>
-        <div className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer">
+        <div
+          className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer"
+          onClick={toggleVisibillity}
+        >
           <Avatar className="w-10 h-10 text-white">
             <AvatarImage
               src={
@@ -102,6 +184,35 @@ const home = () => {
           <p className="mt-[6px] font-regular text-[10px]">
             {group ? group.name : '그룹이 없습니다'}
           </p>
+        </div>
+        <div
+          ref={logoutRef}
+          className="absolute top-[79px] right-[8px] w-[169px] h-[119px] rounded-[22px] shadow-xl flex flex-col justify-center items-center bg-white"
+          style={{ display: 'none' }}
+        >
+          <Avatar className="w-[50px] h-[50px] text-white">
+            <AvatarImage
+              src={
+                group ? group.groupImageUrl : 'https://github.com/shadcn.png'
+              }
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <p className="font-extrabold text-[13px]">{`${group ? group.name : '그룹이 없습니다'}`}</p>
+          <div className="w-[150px] h-[29px] rounded-[11px] bg-[#EEF4FF] flex flex-row justify-around items-center ">
+            <div>
+              <Link href="/profile" className="flex flex-row">
+                <ArrowDataTransferHorizontalIcon size={12} />
+                <p className="font-extrabold text-[10px]">그룹변경</p>
+              </Link>
+            </div>
+            <div className="flex flex-row cursor-pointer">
+              <MdLogout size={12} />
+              <p className="font-extrabold text-[10px]" onClick={handleLogout}>
+                로그아웃
+              </p>
+            </div>
+          </div>
         </div>
       </header>
       <main className="ml-[28px]">
@@ -143,7 +254,7 @@ const home = () => {
                       key={media.id}
                     >
                       <div
-                        className="w-[168px] h-[141px] bg-cover cursor-pointer"
+                        className="w-[168px] h-[141px] bg-cover cursor-pointer rounded-[21px]"
                         style={{
                           backgroundImage: `url(${encodeURI(media.fileUrl)})`,
                           backgroundSize: 'cover',
@@ -156,8 +267,8 @@ const home = () => {
                 })
               ) : (
                 <div className="min-w-[183px] flex flex-col items-center">
-                  <div className="w-[168px] h-[141px] bg-gray-200 flex items-center justify-center">
-                    <p className="text-gray-500">
+                  <div className="w-[168px] h-[141px] bg-gray-200 flex items-center justify-center rounded-[21px]">
+                    <p className="text-gray-500 mx-[10px] text-center">
                       최근 추가된 콘텐츠가 없습니다
                     </p>
                   </div>
@@ -169,7 +280,16 @@ const home = () => {
         <div className="h-[291px] left-[-28px] relative flex justify-center w-screen">
           <section className="absolute top-[84px] flex flex-col">
             <Button asChild variant={'homeBtn'} size={'homeBtn'}>
-              <Link href="/uploads/member">질문 만들러 가기</Link>
+              <Link
+                href={
+                  hasAlbums
+                    ? `/groups/${groupId}/albums/${albumId}/upload`
+                    : `/groups/${groupId}/albums`
+                }
+                onClick={handleUploadClick}
+              >
+                질문 만들러 가기
+              </Link>
             </Button>
             <Button
               asChild
@@ -180,7 +300,7 @@ const home = () => {
               <Link href="invite">초대하기</Link>
             </Button>
             <Button asChild variant={'homeBtn'} size={'homeBtn'}>
-              <Link href="invite">참가하기</Link>
+              <Link href="groups/join">참가하기</Link>
             </Button>
           </section>
         </div>

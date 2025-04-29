@@ -9,6 +9,8 @@ import { CgClose } from 'react-icons/cg';
 import { DownloadSquare02Icon } from 'hugeicons-react';
 import useUserStore from '@/store/useUserInfo';
 import { CursorMagicSelection02Icon } from 'hugeicons-react';
+import { LoadingSpinner } from '@/components/loading-spinner';
+import { usePathname } from 'next/navigation';
 
 type PropType = {
   params: { id: string; photoId: string };
@@ -52,55 +54,25 @@ const PhotoDetail = ({ params }: PropType) => {
   const currentPhotoId = params.photoId;
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
+  const pathname = usePathname();
+  const currentId = Number(pathname.slice(-1)) - 1;
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const queryParams = new URLSearchParams({
-          page: currentPage.toString(),
-          size: '10',
-          sort: 'createdAt,desc',
-        });
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
-        );
-        const data: ApiResponse = await response.json();
-
-        if (data.result === 'SUCCESS') {
-          setImagess(data.data.content);
-          setTotalPages(data.data.totalPages);
-        }
-      } catch (error) {
-        console.error('Failed to fetch images:', error);
-      }
-    };
-
-    fetchImages();
-  }, [groupId, albumId, currentPage]);
-
-  const [images, setImages] = useState([
-    { id: '0', src: '/images/example.png', isLiked: true, name: '사진1' },
-    { id: '1', src: '/images/example2.png', isLiked: true, name: '사진2' },
-    { id: '2', src: '/images/1.png', isLiked: true, name: '사진3' },
-    { id: '3', src: '/images/2.png', isLiked: true, name: '사진4' },
-    { id: '4', src: '/images/3.png', isLiked: true, name: '사진5' },
-    { id: '5', src: '/images/4.png', isLiked: true, name: '사진6' },
-    { id: '6', src: '/images/5.png', isLiked: true, name: '사진7' },
-    { id: '7', src: '/images/6.png', isLiked: true, name: '사진8' },
-  ]);
+  const [images, setImages] = useState<MediaItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [currentIndex, setCurrentIndex] = useState(() =>
-    images.findIndex((photo) => photo.id === currentPhotoId),
+    images.findIndex((photo) => photo.id.toString() === currentPhotoId),
   );
 
   useEffect(() => {
-    setCurrentIndex(images.findIndex((photo) => photo.id === currentPhotoId));
-  }, [currentPhotoId, images]); // const router = useRouter();
+    setCurrentIndex(
+      images.findIndex((photo) => photo.id.toString() === currentPhotoId),
+    );
+  }, [currentPhotoId, images]);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     startIndex: currentIndex,
@@ -110,11 +82,11 @@ const PhotoDetail = ({ params }: PropType) => {
   const updateURL = useCallback(
     (index: number) => {
       if (!images[index]) return;
-      const newPhotoId = images[index].id;
+      const newPhotoId = images[index].id.toString();
       const newPath = `/groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
       window.history.replaceState(null, '', newPath);
     },
-    [albumId], // images를 제거
+    [albumId, groupId, images],
   );
 
   const downloadRef = useRef<HTMLDivElement>(null);
@@ -151,12 +123,56 @@ const PhotoDetail = ({ params }: PropType) => {
         i === index ? { ...image, isLiked: !image.isLiked } : image,
       ),
     );
+    console.log(pathname.slice(-1));
   };
+
+  useEffect(() => {
+    if (!groupId) {
+      setError('그룹 ID가 없습니다.');
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchImages = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const queryParams = new URLSearchParams({
+          page: currentPage.toString(),
+          size: '10',
+          sort: 'createdAt,desc',
+        });
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
+        );
+        const data: ApiResponse = await response.json();
+
+        if (data.result === 'SUCCESS') {
+          setImages(data.data.content);
+          setTotalPages(data.data.totalPages);
+        } else {
+          setError('이미지를 불러오는데 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Failed to fetch images:', error);
+        setError('이미지를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, [groupId, albumId, currentPage]);
 
   return (
     <main className="ForGnbpaddingTop">
       {/* 다운로드 */}
-      <div
+      {/* <div
         ref={downloadRef}
         className="w-full h-full absolute top-0 z-50"
         style={{ display: 'none' }}
@@ -185,51 +201,6 @@ const PhotoDetail = ({ params }: PropType) => {
               className="rounded-[10px] h-[160px]"
             ></Image>
           </div>
-          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
-            <Image
-              src="/images/example.png"
-              alt="사진"
-              width={160}
-              height={160}
-              className="rounded-[10px] h-[160px]"
-            ></Image>
-          </div>
-          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
-            <Image
-              src="/images/example.png"
-              alt="사진"
-              width={160}
-              height={160}
-              className="rounded-[10px] h-[160px]"
-            ></Image>
-          </div>
-          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
-            <Image
-              src="/images/example.png"
-              alt="사진"
-              width={160}
-              height={160}
-              className="rounded-[10px] h-[160px]"
-            ></Image>
-          </div>
-          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
-            <Image
-              src="/images/example.png"
-              alt="사진"
-              width={160}
-              height={160}
-              className="rounded-[10px] h-[160px]"
-            ></Image>
-          </div>
-          <div onClick={() => toggleVisibillity(detailPhotoRef, true)}>
-            <Image
-              src="/images/example.png"
-              alt="사진"
-              width={160}
-              height={160}
-              className="rounded-[10px] h-[160px]"
-            ></Image>
-          </div>
         </div>
         <div
           className="absolute bottom-[10%]"
@@ -241,34 +212,36 @@ const PhotoDetail = ({ params }: PropType) => {
             </a>
           </button>
         </div>
-      </div>
+      </div> */}
+      {/* 다운로드 */}
       <div
-        ref={detailPhotoRef}
+        ref={downloadRef}
         className="w-full h-full absolute top-0 z-50"
         style={{ display: 'none' }}
       >
         <div
           className="absolute top-0 bg-[#e0edff78] w-full h-full"
-          onClick={() => toggleVisibillity(detailPhotoRef, false)}
+          onClick={() => toggleVisibillity(downloadRef, false)}
         ></div>
         <div className="absolute right-[33px] top-[10%] cursor-pointer">
           <CgClose
             size={30}
             color="#494949"
-            onClick={() => toggleVisibillity(detailPhotoRef, false)}
+            onClick={() => toggleVisibillity(downloadRef, false)}
           />
         </div>
-        <div
-          className="absolute top-[16%]"
-          style={{ right: 'calc(50% - 171px)' }}
-        >
-          <Image
-            src="/images/example.png"
-            alt="사진"
-            width={342}
-            height={480}
-            className="rounded-[10px]"
-          ></Image>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-[500px] h-[480px] flex items-center justify-center">
+          {images.length > 0 && (
+            <div className="relative w-full h-full">
+              <Image
+                src={images[currentId]?.fileUrl || ''}
+                alt="사진"
+                fill
+                style={{ objectFit: 'contain' }}
+                className="rounded-[10px]"
+              />
+            </div>
+          )}
         </div>
         <div
           className="absolute bottom-[10%]"
@@ -296,22 +269,11 @@ const PhotoDetail = ({ params }: PropType) => {
           className="absolute top-[16%] w-[362px] h-[518px] rounded-[10px] bg-[#eef6fff5]"
           style={{ left: 'calc(50% - 181px' }}
         >
-          <div className="mt-5 h-[498px] overflow-scroll">
-            {/* 여기 컴포넌트화 */}
-            <div className="flex justify-start items-end mb-[25px] pl-[30px]">
-              <div className="mr-4 w-[50px] h-[50px] shrink-0">
-                <img
-                  className="block w-full h-full object-cover rounded-full"
-                  src="/images/profile.png"
-                  alt="프로필 이미지"
-                />
-              </div>
-
-              <div className="flex flex-col items-start">
-                <p className="py-3 px-[17px] mb-1 max-w-[240px] bg-[#ABA5FF] rounded-[20px] rounded-bl-none text-white text-base">
-                  답장예시
-                </p>
-              </div>
+          <div className="mt-5 h-[498px] overflow-y-scroll">
+            <div className="flex justify-start items-end mb-[25px] pl-[30px] pr-[20px]">
+              {images.length > 0
+                ? images[currentId]?.story || '이미지에 대한 설명이 없습니다.'
+                : '이미지에 대한 설명이 없습니다.'}
             </div>
           </div>
         </div>
@@ -320,169 +282,103 @@ const PhotoDetail = ({ params }: PropType) => {
       {/* 이미지 슬라이더 */}
       <div ref={emblaRef} className="overflow-hidden h-full">
         <div className="flex h-full">
-          {imagess.map((image, i) => (
-            <div
-              className="min-w-full p-4 flex flex-col items-center"
-              key={image.id}
-            >
-              <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
-                <div className="mb-[35px] flex items-end">
-                  <button onClick={() => toggleVisibillity(downloadRef, true)}>
-                    <div
-                      className="w-[285px] h-[399px] mr-3 bg-cover bg-center rounded-[10px]"
-                      style={{ backgroundImage: `url(${image.fileUrl})` }}
-                    ></div>
-                  </button>
-                  <div className="flex flex-col items-center w-[64px]">
-                    <div>
-                      <button
-                        className="bg-white w-[51px] h-[51px] rounded-full flex items-center justify-center"
-                        onClick={() => toggleLike(i)}
-                      >
-                        {image.isLiked ? (
-                          <div className="w-[51px] h-[51px] rounded-full border-2 border-red-500 border-solid p-3">
-                            <GoHeartFill
-                              size={23}
-                              fill="red"
-                              className="transition-transform transform scale-125 duration-300"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-[51px] h-[51px] rounded-full border-2 border-[#B4B4B4] border-solid p-3">
-                            <GoHeartFill
-                              size={23}
-                              fill="#B4B4B4"
-                              className="transition-transform transform scale-125 duration-300"
-                            />
-                          </div>
-                        )}
-                      </button>
+          {isLoading ? (
+            <div className="min-w-full p-4 flex flex-col items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : error ? (
+            <div className="min-w-full p-4 flex flex-col items-center justify-center">
+              <div className="w-[285px] h-[399px] bg-gray-200 rounded-[10px] flex items-center justify-center">
+                <p className="text-gray-500 text-center">{error}</p>
+              </div>
+            </div>
+          ) : (
+            images.map((image, i) => (
+              <div
+                className="min-w-full p-4 flex flex-col items-center"
+                key={image.id}
+              >
+                <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
+                  <div className="mb-[35px] flex items-end">
+                    <button
+                      onClick={() => toggleVisibillity(downloadRef, true)}
+                    >
+                      <div
+                        className="w-[285px] h-[399px] mr-3 bg-cover bg-center rounded-[10px]"
+                        style={{
+                          backgroundImage: `url(${encodeURI(image.fileUrl)})`,
+                        }}
+                      ></div>
+                    </button>
+                    <div className="flex flex-col items-center w-[64px]">
+                      <div>
+                        <button
+                          className="bg-white w-[51px] h-[51px] rounded-full flex items-center justify-center"
+                          onClick={() => toggleLike(i)}
+                        >
+                          {image.isLiked ? (
+                            <div className="w-[51px] h-[51px] rounded-full border-2 border-red-500 border-solid p-3">
+                              <GoHeartFill
+                                size={23}
+                                fill="red"
+                                className="transition-transform transform scale-125 duration-300"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-[51px] h-[51px] rounded-full border-2 border-[#B4B4B4] border-solid p-3">
+                              <GoHeartFill
+                                size={23}
+                                fill="#B4B4B4"
+                                className="transition-transform transform scale-125 duration-300"
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </div>
+                      <ul className="text-xs sm:text-sm mt-4">
+                        <li>
+                          <h3 className="font-semibold">작성자</h3>
+                          <p className="text-[10px]">{image.uploadedBy.name}</p>
+                        </li>
+                        <li>
+                          <h3 className="font-semibold">날짜</h3>
+                          <p className="text-[10px]">
+                            {new Date(image.createdAt).toLocaleDateString()}
+                          </p>
+                        </li>
+                      </ul>
                     </div>
-
-                    <ul className="text-xs sm:text-sm mt-4">
-                      <li>
-                        <h3 className="font-semibold">작성자</h3>
-                        <p className="text-[10px]">{image.uploadedBy.name}</p>
-                      </li>
-                      <li>
-                        <h3 className="font-semibold">날짜</h3>
-                        <p className="text-[10px]">
-                          {new Date(image.createdAt).toLocaleDateString()}
-                        </p>
-                      </li>
-                    </ul>
                   </div>
-                </div>
-                <div
-                  className="relative cursor-pointer"
-                  onClick={() => toggleVisibillity(conversationRef, true)}
-                >
                   <div
-                    className="w-0 h-0 top-[-23px] left-[19px] absolute"
-                    style={{
-                      borderWidth: '23px 63px',
-                      borderColor:
-                        'transparent transparent transparent rgb(243, 244, 255)',
-                    }}
-                  ></div>
-                  <div className="p-5 rounded-[20px] bg-[#F3F4FF] pb-3">
-                    <div className="text-lg">
-                      {image.story || '이미지에 대한 설명이 없습니다.'}
-                    </div>
-                    <div className="text-[#8FB6FF] mt-4 flex row items-end justify-end">
-                      <p className="text-[10px]">대화 보기</p>
-                      <CursorMagicSelection02Icon
-                        size={20}
-                        color="#8FB6FF"
-                        fill="white"
-                      />
+                    className="relative cursor-pointer"
+                    onClick={() => toggleVisibillity(conversationRef, true)}
+                  >
+                    <div
+                      className="w-0 h-0 top-[-23px] left-[19px] absolute"
+                      style={{
+                        borderWidth: '23px 63px',
+                        borderColor:
+                          'transparent transparent transparent rgb(243, 244, 255)',
+                      }}
+                    ></div>
+                    <div className="p-5 rounded-[20px] bg-[#F3F4FF] pb-3">
+                      <div className="text-lg h-[82px] line-clamp-3 overflow-hidden text-ellipsis break-words">
+                        {image.story || '이미지에 대한 설명이 없습니다.'}
+                      </div>
+                      <div className="text-[#8FB6FF] mt-4 flex row items-end justify-end">
+                        <p className="text-[10px]">대화 보기</p>
+                        <CursorMagicSelection02Icon
+                          size={20}
+                          color="#8FB6FF"
+                          fill="white"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-
-          {images.map((image, i) => (
-            <div
-              className="min-w-full p-4 flex flex-col items-center"
-              key={image.id}
-            >
-              <div className="px-4 pt-6 sm:w-[500px] sm:m-auto">
-                <div className="mb-[35px] flex items-end">
-                  <button onClick={() => toggleVisibillity(downloadRef, true)}>
-                    <div
-                      className="w-[285px] h-[399px] mr-3 bg-cover bg-center rounded-[10px]"
-                      style={{ backgroundImage: `url(${image.src})` }}
-                    ></div>
-                  </button>
-                  <div className="flex flex-col items-center w-[64px]">
-                    <div>
-                      <button
-                        className="bg-white w-[51px] h-[51px] rounded-full flex items-center justify-center"
-                        onClick={() => toggleLike(i)}
-                      >
-                        {image.isLiked ? (
-                          <div className="w-[51px] h-[51px] rounded-full border-2 border-red-500 border-solid p-3">
-                            <GoHeartFill
-                              size={23}
-                              fill="red"
-                              className="transition-transform transform scale-125 duration-300"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-[51px] h-[51px] rounded-full border-2 border-[#B4B4B4] border-solid p-3">
-                            <GoHeartFill
-                              size={23}
-                              fill="#B4B4B4"
-                              className="transition-transform transform scale-125 duration-300"
-                            />
-                          </div>
-                        )}
-                      </button>
-                    </div>
-                    <ul className="text-xs sm:text-sm mt-4">
-                      <li>
-                        <h3 className="font-semibold">작성자</h3>
-                        <p className="text-[10px]">두칠이</p>
-                      </li>
-                      <li>
-                        <h3 className="font-semibold">날짜</h3>
-                        <p className="text-[10px]">24년 1월 1일</p>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div
-                  className="relative cursor-pointer"
-                  onClick={() => toggleVisibillity(conversationRef, true)}
-                >
-                  <div
-                    className="w-0 h-0 top-[-23px] left-[19px] absolute"
-                    style={{
-                      borderWidth: '23px 63px',
-                      borderColor:
-                        'transparent transparent transparent rgb(243, 244, 255)',
-                    }}
-                  ></div>
-                  <div className="p-5 rounded-[20px] bg-[#F3F4FF] pb-3">
-                    <div className="text-lg">
-                      이건 언젠데 토끼랑 토끼가 둘이 앉아있고 뭐라고 하는데
-                      새벽이고 하늘이 예쁘고 블라블라
-                    </div>
-                    <div className="text-[#8FB6FF] mt-4 flex row items-end justify-end">
-                      <p className="text-[10px]">대화 보기</p>
-                      <CursorMagicSelection02Icon
-                        size={20}
-                        color="#8FB6FF"
-                        fill="white"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </main>
