@@ -109,19 +109,10 @@ const home = () => {
 
   const handleLogout = async () => {
     try {
-      const jwtToken = Cookies.get('jwtToken');
-      if (!jwtToken) {
-        throw new Error('No JWT token found');
-      }
-
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/logout`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwtToken}`,
-          },
           credentials: 'include',
         },
       );
