@@ -22,13 +22,16 @@ const Fnb = () => {
     '/answers',
     '/groups/create',
   ];
-  const dynamicRoutePatterns = [/^\/answers\/.+$/];
-  const dynamicRouteGroupPatterns = [/^\/groups\/.+$/];
+
+  // 추가된 패턴
+  const dynamicRouteGroupPatterns = [
+    /^\/groups\/[^\/]+\/albums\/[^\/]+\/upload$/,
+    /^\/groups\/[^\/]+\/albums\/[^\/]+\/answers\/[^\/]+$/,
+  ];
+
   if (
-    excludeLayoutRoutes.includes(pathname)
-    // ||
-    // dynamicRouteGroupPatterns.some((pattern) => pattern.test(pathname)) ||
-    // dynamicRoutePatterns.some((pattern) => pattern.test(pathname))
+    excludeLayoutRoutes.includes(pathname) ||
+    dynamicRouteGroupPatterns.some((pattern) => pattern.test(pathname))
   ) {
     return null;
   }
