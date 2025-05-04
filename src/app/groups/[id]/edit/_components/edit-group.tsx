@@ -133,7 +133,7 @@ export const EditGroup = ({ id }: Props) => {
 
   return (
     <main>
-      <article className="max-w-md mx-auto">
+      <article className="sm:mx-auto w-full sm:w-[500px] mx-auto">
         <section ref={emblaRef} className="overflow-hidden h-full mb-[80px]">
           <FormProvider {...form}>
             <form
@@ -143,7 +143,6 @@ export const EditGroup = ({ id }: Props) => {
               <div
                 className="min-w-full p-4 flex flex-col items-center"
                 key={0}
-                style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
               >
                 <div
                   onClick={handleClick}

@@ -16,7 +16,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="sm:m-auto w-full sm:w-[500px] px-[30px] ForGnbpaddingTop">
+    <div className="sm:mx-auto w-full sm:w-[500px] px-[30px]">
       <DashboardMenu groupId={id} />
     </div>
   );

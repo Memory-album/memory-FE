@@ -19,7 +19,7 @@ const Page = ({ params }: Props) => {
 
   const isOwner = group?.role === 'OWNER';
   return (
-    <div>
+    <div className="w-full h-full sm:w-[500px] bg-[#FAFCFF] sm:mx-auto">
       {isOwner ? (
         <OwnerView albumId={albumId} groupId={id} />
       ) : (

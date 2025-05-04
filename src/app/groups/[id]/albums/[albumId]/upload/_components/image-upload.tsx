@@ -51,7 +51,7 @@ export const ImageUpload = ({ preview, setPreview }: Props) => {
   const remainingUploads = 10 - preview.length;
 
   return (
-    <div className="my-5 w-full max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl sm:mx-auto">
       <Input
         type="file"
         multiple

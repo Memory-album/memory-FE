@@ -158,11 +158,11 @@ export const MemberView = ({ albumId, groupId }: Props) => {
   };
 
   return (
-    <div className="relative mb-24 w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto h-full ForGnbpaddingTop">
+    <div className="h-full flex flex-col justify-around">
       {view === '' && (
         <>
           <ImageUpload preview={previewImages} setPreview={setPreviewImages} />
-          <div className="px-[30px] flex">
+          <div className="flex w-full mt-4">
             <Button
               className="mr-[30px] py-[50px] disabled:bg-[#DAE2FF]"
               disabled={previewImages.length === 0}

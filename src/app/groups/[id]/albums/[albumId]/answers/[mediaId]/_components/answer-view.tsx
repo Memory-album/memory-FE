@@ -70,6 +70,10 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
     console.log(responseData);
   }
 
+  useEffect(() => {
+    reset();
+  }, []);
+
   // 음성 인식 API 뮤테이션
   const audioUploadMutation = useMutation({
     mutationFn: async (file: Blob) => {
@@ -268,7 +272,7 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
   };
 
   return (
-    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
+    <div className="w-full sm:w-[500px] bg-[#FAFCFF] sm:mx-auto">
       {renderContent()}
     </div>
   );
