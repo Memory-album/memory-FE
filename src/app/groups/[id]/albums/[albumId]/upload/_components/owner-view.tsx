@@ -269,7 +269,7 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
               preview={previewImages}
               setPreview={setPreviewImages}
             />
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <Alert
                 description="ai가 질문을 생각하고 있어요"
                 buttonValue="다음"
@@ -317,14 +317,16 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
   };
 
   return (
-    <div className="relative w-full sm:w-[500px] bg-[#FAFCFF] sm:m-auto ForGnbpaddingTop">
+    <>
       {isUserLoading ? (
         <div className="flex justify-center items-center h-[300px]">
           <p>로딩 중...</p>
         </div>
       ) : (
-        renderContent()
+        <div className="h-full flex flex-col justify-around">
+          {renderContent()}
+        </div>
       )}
-    </div>
+    </>
   );
 };

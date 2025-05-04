@@ -27,9 +27,13 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
         <RQProvider>
-          <Gnb />
-          <div className="">{children}</div>
-          <Fnb />
+          <div className="flex flex-col min-h-screen">
+            <Gnb />
+            <div className="ForGnbmarginTop"></div>
+            <div className="grid flex-1">{children}</div>
+            <div className="h-[87px]"></div>
+            <Fnb />
+          </div>
         </RQProvider>
       </body>
     </html>

@@ -120,10 +120,7 @@ export const CreateGroup = () => {
   return (
     <main>
       <LoginHeader></LoginHeader>
-      <div
-        className="embla__dots mb-[25px]"
-        style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
-      >
+      <div className="embla__dots mb-[25px]">
         {scrollSnaps.map((_, index) => (
           <DotButton
             key={index}

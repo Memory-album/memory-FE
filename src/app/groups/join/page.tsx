@@ -55,8 +55,8 @@ const join = () => {
   };
 
   return (
-    <div className="m-auto w-full sm:w-[500px] h-screen ForGnbpaddingTop">
-      <div className="h-full flex flex-col justify-between pb-[90px] sm:justify-around">
+    <div className="sm:mx-auto w-full h-full sm:w-[500px]">
+      <div className="flex flex-col h-full justify-around">
         {/* 그룹참여 단계 */}
         <div className="p-4 flex flex-col items-center">
           <div>

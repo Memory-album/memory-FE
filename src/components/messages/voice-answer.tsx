@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
-import { LuWaves } from 'react-icons/lu';
+import { RiDeleteBinLine } from 'react-icons/ri';
+import { TbPlayerPauseFilled } from 'react-icons/tb';
+import { FaPlay } from 'react-icons/fa';
+import Image from 'next/image';
 
-import {
-  MdKeyboardVoice,
-  MdMic,
-  MdStop,
-  MdDelete,
-  MdPlayArrow,
-  MdPause,
-} from 'react-icons/md';
 import { Alert } from './alert';
 import { Button } from '../ui/button';
-
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -148,138 +142,130 @@ export const VoiceAnswer = ({
   };
 
   return (
-    <div className="flex-grow flex flex-col items-center min-h-screen pb-[ForFnbmarginBottom]">
+    <div className="flex flex-col justify-between h-full items-center">
+      <div className="w-full right-0 text-right">
+        <Alert
+          description="음성을 분석하고 있어요"
+          buttonValue="다음"
+          buttonClassName="disabled:bg-[#DAE2FF] w-[60px] h-[40px]"
+          disabled={chunks.length === 0 || isRecording}
+          onClick={onSubmitAudioFile}
+          isLoading={isLoading}
+          open={open}
+          onOpenChange={onOpenChange}
+        />
+      </div>
+
       {/* 메시지 카드 */}
-      <div className="w-full max-w-md px-4">
+      {/* <div className="w-full max-w-md px-4">
         <div className="py-4 px-6 bg-white rounded-2xl text-[#4848F9] font-semibold text-xl border border-blue-200 text-center shadow-sm">
           {message}
         </div>
-      </div>
+      </div> */}
 
       {/* 녹음 영역 */}
-      <div className="flex flex-col items-center justify-center flex-grow w-full">
-        <div
-          className={cn(
-            'relative flex items-center justify-center rounded-full',
-            isRecording ? 'bg-red-50 p-8 animate-pulse' : 'bg-blue-50 p-6',
-          )}
-        >
-          <div
-            className={cn(
-              'flex items-center justify-center rounded-full transition-all duration-300',
-              isRecording ? 'bg-red-500 size-24' : 'bg-[#4848F9] size-28',
-            )}
-          >
-            {isRecording ? (
-              <MdMic className="size-12 text-white" />
-            ) : (
-              <MdKeyboardVoice className="size-14 text-white" />
-            )}
-          </div>
-
-          {isRecording && (
-            <div className="absolute -bottom-2 bg-white px-4 py-1 rounded-full shadow-sm border border-red-100">
-              <div className="flex items-center gap-2 text-red-600 font-medium">
-                <div className="w-2 h-2 rounded-full bg-red-600"></div>
-                {formatTime(recordingDuration)}
-              </div>
-            </div>
-          )}
+      <div>
+        <div className="mb-4 pb-2 text-[#333333]  border border-1 border-solid border-transparent border-b-[#ccc]">
+          <h1 className="text-[24px] font-semibold">녹음하기</h1>
+          <ol>
+            <li className="mt-3">
+              <p>
+                1. 녹음을 시작하려면{' '}
+                <Image
+                  alt="녹음 버튼"
+                  width={34}
+                  height={30}
+                  className="inline"
+                  src="/images/startRecording.png"
+                />
+                을 탭하세요.
+              </p>
+            </li>
+            <li className="mt-3">
+              <p>
+                2. 녹음을 마치려면{' '}
+                <Image
+                  alt="중단 버튼"
+                  width={30}
+                  height={30}
+                  className="inline"
+                  src="/images/stopRecording.png"
+                />
+                을 탭하세요.
+              </p>
+            </li>
+            <li className="mt-3">
+              <p>
+                3. 녹음을 검토하려면{' '}
+                <Image
+                  alt="재생 버튼"
+                  width={27}
+                  height={30}
+                  className="inline"
+                  src="/images/recording.png"
+                />
+                을 탭하세요.
+              </p>
+            </li>
+            <li className="mt-3">
+              <p>4. 녹음을 마친 뒤, 다음을 탭하세요.</p>
+            </li>
+          </ol>
         </div>
-
-        <div className="mt-6 text-center">
-          {isRecording ? (
-            <p className="font-medium text-red-600 animate-pulse flex items-center gap-2 justify-center">
-              <LuWaves className="size-5" />
-              음성 녹음 중...
-            </p>
-          ) : audioUrl ? (
-            <p className="font-medium text-blue-600">녹음이 완료되었습니다!</p>
-          ) : (
-            <p className="font-medium text-gray-600">
-              시작 버튼을 누르고 말해보세요
-            </p>
-          )}
-        </div>
+        <div className="border-solid border-1 border-[#ccc] w-full"></div>
+        {isRecording && (
+          <p className="text-center text-[47px] font-semibold text-black">
+            {formatTime(recordingDuration)}
+          </p>
+        )}
 
         {/* 오디오 플레이어 - 녹음 후에만 표시 */}
         {audioUrl && !isRecording && (
-          <div className="mt-6 flex items-center gap-4">
+          <div className="flex justify-between">
             <Button
               onClick={handleTogglePlayback}
-              className="bg-transparent hover:bg-gray-200 rounded-full h-10 w-10 border-blue-200"
+              className="bg-transparent hover:bg-transparent h-10 w-10 border-none"
             >
               {isPlaying ? (
-                <MdPause className="size-5 text-blue-600" />
+                <TbPlayerPauseFilled className="size-10 text-black" />
               ) : (
-                <MdPlayArrow className="size-5 text-blue-600" />
+                <FaPlay className="size-8 text-black" />
               )}
             </Button>
 
-            <div className="w-32 h-2 bg-blue-100 rounded-full">
-              <div
-                className={cn(
-                  'h-full bg-[#4848F9] rounded-full',
-                  isPlaying ? 'animate-pulse' : '',
-                )}
-                style={{ width: isPlaying ? '100%' : '0%' }}
-              ></div>
-            </div>
-
             <Button
               onClick={handleDeleteRecording}
-              className="bg-transparent hover:bg-gray-200 rounded-full h-10 w-10 border-red-200"
+              className="bg-transparent border-none size-10 rounded-full text-[#4848F9] hover:bg-transparent"
             >
-              <MdDelete className="size-5 text-red-600" />
+              <RiDeleteBinLine className="size-8 text-[#4848F9]" />
             </Button>
           </div>
         )}
       </div>
 
       {/* 액션 버튼 영역 */}
-      <div className="mt-auto w-full flex flex-col items-center gap-3">
+      <div className="">
         {!isRecording && !audioUrl ? (
           <Button
             onClick={handleStartRecording}
-            className="px-8 py-2  bg-[#4848F9] hover:bg-[#4848F9]/80 text-white border-none shadow-sm"
+            className="p-0 size-[100px] rounded-full bg-white border-[5px] border-solid border-gray-400 hover:bg-white"
           >
-            <MdMic className="size-5 mr-2" /> 녹음 시작하기
+            <p className="size-[80px] bg-red-500 rounded-full"></p>
           </Button>
         ) : isRecording ? (
           <Button
             onClick={handleStopRecording}
-            className="px-8 py-2  bg-red-600 hover:bg-red-700 text-white"
+            className="p-0 size-[100px] rounded-full bg-white border-[5px] border-solid border-gray-400 hover:bg-white"
           >
-            <MdStop className="size-5 mr-2" /> 녹음 중지하기
+            <p className="size-[40px] bg-red-500 rounded-[8px]"></p>
           </Button>
         ) : (
           <Button
             onClick={handleStartRecording}
-            className="px-8 py-2  bg-[#4848F9] hover:bg-[#4848F9]/80 text-white"
+            className="p-0 size-[100px] rounded-full bg-white border-[5px] border-solid border-gray-400 hover:bg-white"
           >
-            <MdMic className="size-5 mr-2" /> 다시 녹음하기
+            <p className="size-[80px] bg-red-500 rounded-full"></p>
           </Button>
-        )}
-
-        {chunks.length > 0 && !isRecording && (
-          <div className="flex justify-center">
-            <Alert
-              description="음성을 분석하고 있어요"
-              buttonValue="다음"
-              buttonClassName="disabled:bg-[#DAE2FF]"
-              disabled={chunks.length === 0 || isRecording}
-              onClick={onSubmitAudioFile}
-              isLoading={isLoading}
-              open={open}
-              onOpenChange={onOpenChange}
-            />
-            {/* <Button
-              onClick={onSubmitAudioFile}
-              disabled={chunks.length === 0 || isRecording}
-            >
-              다음
-            </Button> */}
-          </div>
         )}
       </div>
     </div>
