@@ -13,6 +13,7 @@ interface UserStore {
   userInfo: User | null;
   fetchUserInfo: () => Promise<void>;
   clearUserInfo: () => void;
+  setCurrentGroupId: (groupId: number) => void;
 }
 
 const useUserStore = create(
@@ -46,6 +47,12 @@ const useUserStore = create(
         }
       },
       clearUserInfo: () => set({ userInfo: null }),
+      setCurrentGroupId: (groupId: number) =>
+        set((state) => ({
+          userInfo: state.userInfo
+            ? { ...state.userInfo, currentGroupId: groupId }
+            : null,
+        })),
     }),
     {
       name: 'user-storage',

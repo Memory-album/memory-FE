@@ -127,7 +127,7 @@ const Collection = () => {
   };
 
   return (
-    <main className="ForGnbpaddingTop ForFnbmarginBottom">
+    <main className="ForGnbpaddingTop ForFnbmarginBottom mx-auto w-full sm:w-[500px]">
       {addAlbums && (
         <div
           className="bg-black/[.28] w-screen h-screen fixed top-0 z-10"

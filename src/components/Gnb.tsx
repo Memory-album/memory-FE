@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Menu11Icon } from 'hugeicons-react';
 import { CgClose } from 'react-icons/cg';
@@ -12,10 +12,12 @@ import { PiClockCounterClockwiseFill } from 'react-icons/pi';
 import { BookOpen02Icon } from 'hugeicons-react';
 import { Settings02Icon } from 'hugeicons-react';
 import { UserGroupIcon } from 'hugeicons-react';
+import { MdLogout } from 'react-icons/md';
 import { AddTeamIcon } from 'hugeicons-react';
 import { DashboardSquareAddIcon } from 'hugeicons-react';
 import { Mail01Icon } from 'hugeicons-react';
 import useUserStore from '@/store/useUserInfo';
+import { handleLogout } from '@/services/auth';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -24,6 +26,15 @@ const Gnb = () => {
   const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const router = useRouter();
+
+  const onLogout = async () => {
+    const isConfirmed = window.confirm('로그아웃 하시겠습니까?');
+
+    if (isConfirmed) {
+      await handleLogout(router);
+    }
+  };
 
   const excludeLayoutRoutes = [
     '/',
@@ -195,6 +206,15 @@ const Gnb = () => {
                   <Settings02Icon color="#85B6FF" />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
                     설정하기
+                  </p>
+                </div>
+                <div
+                  className="flex justify-center items-center flex-col cursor-pointer"
+                  onClick={onLogout}
+                >
+                  <MdLogout size={23} color="#85B6FF" />
+                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                    로그아웃
                   </p>
                 </div>
               </div>

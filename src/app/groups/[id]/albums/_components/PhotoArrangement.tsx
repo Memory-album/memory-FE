@@ -6,6 +6,7 @@ interface PhotoArrangementProps {
 
 const PhotoArrangement = ({ id, title, bgImages }: PhotoArrangementProps) => {
   const layouts: Record<number, string[]> = {
+    0: ['w-[329px] h-[219px] rounded-[10px] absolute inset-0'],
     1: [
       'w-[54px] h-[85px] rounded-full absolute top-[69px]',
       'w-[186px] h-[117px] rounded-[10px] absolute right-0 bottom-[33px]',
@@ -35,8 +36,15 @@ const PhotoArrangement = ({ id, title, bgImages }: PhotoArrangementProps) => {
     ],
   };
 
-  const randomLayout = Math.floor(Math.random() * 4);
-  const layout = layouts[randomLayout] || [];
+  const getLayout = () => {
+    if (bgImages.length <= 4) {
+      return layouts[0];
+    }
+    const randomLayout = Math.floor(Math.random() * 4) + 1;
+    return layouts[randomLayout] || [];
+  };
+
+  const layout = getLayout();
 
   return (
     <div className="mb-[50px]">

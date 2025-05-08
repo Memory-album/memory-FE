@@ -14,6 +14,15 @@ import { MdLogout } from 'react-icons/md';
 import { EmblaOptionsType } from 'embla-carousel';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { InviteCodeDialog } from '@/components/invite-code-dialog';
+import { handleLogout } from '@/services/auth';
 
 interface UploadedBy {
   id: number;
@@ -33,12 +42,22 @@ interface MediaItem {
   story: string;
 }
 
+interface Album {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  recentMedia: MediaItem[];
+}
+
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
   const { userInfo } = useUserStore();
   const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
-  const albumId = 1;
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<string>('');
   const groupId = userInfo?.currentGroupId;
   const [hasAlbums, setHasAlbums] = useState<boolean>(true);
   const logoutRef = useRef<HTMLDivElement>(null);
@@ -49,6 +68,13 @@ const home = () => {
     setIsLogoutVisible(!isLogoutVisible);
     if (logoutRef.current) {
       logoutRef.current.style.display = !isLogoutVisible ? 'flex' : 'none';
+    }
+  };
+
+  const onLogout = async () => {
+    const isConfirmed = window.confirm('로그아웃 하시겠습니까?');
+    if (isConfirmed) {
+      await handleLogout(router);
     }
   };
 
@@ -74,12 +100,34 @@ const home = () => {
     checkAlbums();
   }, [groupId]);
 
-  const handleUploadClick = (e: React.MouseEvent) => {
-    if (!hasAlbums) {
-      e.preventDefault();
-      alert('앨범을 먼저 추가해주세요');
-      window.location.href = `/groups/${groupId}/albums`;
-    }
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      if (!groupId) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          {
+            method: 'get',
+            credentials: 'include',
+          },
+        );
+        const data = await response.json();
+        if (data.result === 'SUCCESS') {
+          setAlbums(data.data);
+          setHasAlbums(data.data.length > 0);
+        }
+      } catch (error) {
+        console.error('Error fetching albums:', error);
+      }
+    };
+
+    fetchAlbums();
+  }, [groupId]);
+
+  const handleAlbumSelect = (value: string) => {
+    setSelectedAlbumId(value);
+    router.push(`/groups/${groupId}/albums/${value}/answers`);
   };
 
   useEffect(() => {
@@ -107,33 +155,9 @@ const home = () => {
     fetchRecentMedia();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
-        {
-          method: 'POST',
-          credentials: 'include',
-        },
-      );
-
-      if (response.ok) {
-        // 쿠키 삭제
-        Cookies.remove('jwtToken');
-        // 로그인 페이지로 리다이렉트
-        router.push('/login');
-      } else {
-        throw new Error('Logout failed');
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-      alert('로그아웃에 실패했습니다.');
-    }
-  };
-
   return (
-    <div className="mb-[103px]">
-      <header className="h-[226px] bg-[#E5EDFF] w-full">
+    <div className="mb-[103px] mx-auto w-full sm:w-[500px]">
+      <header className="h-[226px] bg-[#E5EDFF] w-full relative">
         <div className="ml-5">
           <Image
             src="/images/민니로고2.png"
@@ -142,6 +166,22 @@ const home = () => {
             height={66}
             className="pt-8"
           ></Image>
+          <div
+            className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer"
+            onClick={toggleVisibillity}
+          >
+            <Avatar className="w-10 h-10 text-white">
+              <AvatarImage
+                src={
+                  group ? group.groupImageUrl : 'https://github.com/shadcn.png'
+                }
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <p className="mt-[6px] font-regular text-[10px]">
+              {group ? group.name : '그룹이 없습니다'}
+            </p>
+          </div>
           <div className="mt-3 font-semibold">
             <p className="text-[12px]">
               반가워요 {userInfo?.name || 'User'}님!
@@ -149,32 +189,34 @@ const home = () => {
             <p className="text-[20px]">오늘도 좋은 하루 보내세요!</p>
           </div>
           <div className="mt-[18px] w-fit">
-            <Button
-              asChild
-              className="w-[150px] h-[44px] font-bold text-[16px]"
-            >
-              <Link href="answers">답변하러 가기 →</Link>
-            </Button>
-            <div className="rounded-full bg-[#FFFFBF] w-7 h-7 text-center font-semibold text-[16px] leading-7 relative bottom-[57px] left-[134px]">
-              7
-            </div>
+            {hasAlbums ? (
+              <Select onValueChange={handleAlbumSelect}>
+                <SelectTrigger className="pl-[20px] w-[150px] h-[44px] font-bold text-[16px] rounded-[9px] bg-[#4848F9] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors text-white">
+                  <SelectValue placeholder="답변하러 가기" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-2 border-[#E5EDFF]">
+                  {albums.map((album) => (
+                    <SelectItem
+                      key={album.id}
+                      value={album.id.toString()}
+                      className="hover:bg-[#E5EDFF] hover:text-[#4B6FFF] cursor-pointer"
+                    >
+                      {album.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Button
+                asChild
+                className="w-[150px] h-[44px] font-bold text-[16px] bg-[#4848F9] text-white rounded-[9px] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors"
+              >
+                <Link href={`/groups/${groupId}/albums`}>
+                  앨범 만들러 가기 →
+                </Link>
+              </Button>
+            )}
           </div>
-        </div>
-        <div
-          className="absolute top-[35px] right-[20px] flex flex-col justify-center items-center cursor-pointer"
-          onClick={toggleVisibillity}
-        >
-          <Avatar className="w-10 h-10 text-white">
-            <AvatarImage
-              src={
-                group ? group.groupImageUrl : 'https://github.com/shadcn.png'
-              }
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <p className="mt-[6px] font-regular text-[10px]">
-            {group ? group.name : '그룹이 없습니다'}
-          </p>
         </div>
         <div
           ref={logoutRef}
@@ -199,7 +241,7 @@ const home = () => {
             </div>
             <div className="flex flex-row cursor-pointer">
               <MdLogout size={12} />
-              <p className="font-extrabold text-[10px]" onClick={handleLogout}>
+              <p className="font-extrabold text-[10px]" onClick={onLogout}>
                 로그아웃
               </p>
             </div>
@@ -268,16 +310,16 @@ const home = () => {
             </div>
           </div>
         </section>
-        <div className="h-[291px] left-[-28px] relative flex justify-center w-screen">
+        <div className="h-[291px] relative flex justify-center">
           <section className="absolute top-[84px] flex flex-col">
             <Button asChild variant={'homeBtn'} size={'homeBtn'}>
               <Link
                 href={
                   hasAlbums
-                    ? `/groups/${groupId}/albums/${albumId}/upload`
+                    ? // ? `/groups/${groupId}/albums/${selectedAlbumId}/upload`
+                      `/groups/${groupId}/albums/1/upload`
                     : `/groups/${groupId}/albums`
                 }
-                onClick={handleUploadClick}
               >
                 질문 만들러 가기
               </Link>
@@ -288,7 +330,11 @@ const home = () => {
               size={'homeBtn'}
               className="my-[25px]"
             >
-              <Link href="invite">초대하기</Link>
+              <InviteCodeDialog inviteCode={group ? group.inviteCode : '1'}>
+                <div className="my-[25px] cursor-pointer w-[328px] h-[52px] px-4 py-2 text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf] shadow-[0_0_10px_1px_rgba(141,146,255,0.42)] inline-flex items-center justify-center">
+                  초대하기
+                </div>
+              </InviteCodeDialog>
             </Button>
             <Button asChild variant={'homeBtn'} size={'homeBtn'}>
               <Link href="groups/join">참가하기</Link>
