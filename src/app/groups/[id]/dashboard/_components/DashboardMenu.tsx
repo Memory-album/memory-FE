@@ -63,8 +63,11 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
   });
 
   const handleSetCurrentGroup = () => {
-    setCurrentGroupId(Number(groupId));
-    alert('현재 그룹이 변경되었습니다.');
+    if (window.confirm('현재 그룹으로 설정하시겠습니까?')) {
+      setCurrentGroupId(Number(groupId));
+      alert('현재 그룹이 변경되었습니다.');
+      router.push('/home');
+    }
   };
 
   useEffect(() => {
@@ -108,10 +111,10 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
           <FaQuestionCircle className="opacity-60" />
           <Link href={`/groups/${groupId}/questions`}>내 질문 보기</Link>
         </li> */}
-        <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
+        {/* <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">
           <FaHome className="opacity-60" />
           <Link href={`/home`}>홈으로 가기</Link>
-        </li>
+        </li> */}
         {group.role === 'OWNER' && (
           <InviteCodeDialog inviteCode={group.inviteCode}>
             <li className="flex items-center gap-2 hover:bg-[#e1e6ed] p-2 rounded-[5px] cursor-pointer">

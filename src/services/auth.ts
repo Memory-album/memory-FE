@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 const API_BASE_URL = 'http://localhost:8080'; // 백엔드 URL 설정
 
@@ -147,5 +149,30 @@ export const userLogin = async (userData: {
   } catch (error: any) {
     console.error('Login error:', error.response?.data || error.message);
     throw error.response?.data || error.message;
+  }
+};
+
+//로그아웃
+export const handleLogout = async (router: AppRouterInstance) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
+      {
+        method: 'POST',
+        credentials: 'include',
+      },
+    );
+
+    if (response.ok) {
+      // 쿠키 삭제
+      Cookies.remove('jwtToken');
+      // 로그인 페이지로 리다이렉트
+      router.push('/login');
+    } else {
+      throw new Error('Logout failed');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('로그아웃에 실패했습니다.');
   }
 };
