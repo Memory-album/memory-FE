@@ -124,10 +124,6 @@ const Gnb = () => {
             <p className="font-semibold text-[26px] pd-[10px] text-black">
               Min:i
             </p>
-            <Avatar className="w-7 h-7 text-white">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
           </div>
           <div className="ml-3 mt-[9px]">
             <div className="mt-[29px]">
@@ -144,24 +140,28 @@ const Gnb = () => {
                     </p>
                   </div>
                 </Link>
+                {/* <Link href={`/groups/${groupId}/albums/${albumId}/answers`}>
                 <div className="flex justify-center items-center flex-col">
                   <BubbleChatNotificationIcon color="#85B6FF" />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
                     답변하기
                   </p>
                 </div>
-                <div className="flex justify-center items-center flex-col">
-                  <BubbleChatQuestionIcon color="#85B6FF" />
-                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                    질문하기
-                  </p>
-                </div>
-                <div className="flex justify-center items-center flex-col">
+                </Link> */}
+                <Link href={`/groups/${groupId}/upload`}>
+                  <div className="flex justify-center items-center flex-col">
+                    <BubbleChatQuestionIcon color="#85B6FF" />
+                    <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                      질문하기
+                    </p>
+                  </div>
+                </Link>
+                {/* <div className="flex justify-center items-center flex-col">
                   <PiClockCounterClockwiseFill color="#85B6FF" size={24} />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
                     최근컨텐츠
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="mt-[29px]">
@@ -170,30 +170,36 @@ const Gnb = () => {
                 <hr className="bg-[#626262] border-t-1 w-[123px] border-dotted"></hr>
               </div>
               <div className="ml-[33px] mt-4 grid grid-cols-3 gap-x-[19px] gap-y-[12px]">
-                <div className="flex justify-center items-center flex-col">
-                  <UserGroupIcon color="#85B6FF" />
-                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                    그룹 보기
-                  </p>
-                </div>
-                <div className="flex justify-center items-center flex-col">
-                  <AddTeamIcon color="#85B6FF" />
-                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                    참여하기
-                  </p>
-                </div>
-                <div className="flex justify-center items-center flex-col">
-                  <DashboardSquareAddIcon color="#85B6FF" />
-                  <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                    그룹 만들기
-                  </p>
-                </div>
-                <div className="flex justify-center items-center flex-col">
+                <Link href={`/groups/${groupId}/members`}>
+                  <div className="flex justify-center items-center flex-col">
+                    <UserGroupIcon color="#85B6FF" />
+                    <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                      그룹 보기
+                    </p>
+                  </div>
+                </Link>
+                <Link href={`/groups/join`}>
+                  <div className="flex justify-center items-center flex-col">
+                    <AddTeamIcon color="#85B6FF" />
+                    <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                      참여하기
+                    </p>
+                  </div>
+                </Link>
+                <Link href={`/groups/create`}>
+                  <div className="flex justify-center items-center flex-col">
+                    <DashboardSquareAddIcon color="#85B6FF" />
+                    <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
+                      그룹 만들기
+                    </p>
+                  </div>
+                </Link>
+                {/* <div className="flex justify-center items-center flex-col">
                   <Mail01Icon color="#85B6FF" />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
                     초대하기
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="mt-[29px]">
@@ -202,12 +208,12 @@ const Gnb = () => {
                 <hr className="bg-[#626262] border-t-1 w-[123px] border-dotted"></hr>
               </div>
               <div className="ml-[33px] mt-4 grid grid-cols-3 gap-x-[19px] gap-y-[12px]">
-                <div className="flex justify-center items-center flex-col">
+                {/* <div className="flex justify-center items-center flex-col">
                   <Settings02Icon color="#85B6FF" />
                   <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
                     설정하기
                   </p>
-                </div>
+                </div> */}
                 <div
                   className="flex justify-center items-center flex-col cursor-pointer"
                   onClick={onLogout}

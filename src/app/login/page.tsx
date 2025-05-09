@@ -128,7 +128,7 @@ const login = () => {
   return (
     <main>
       <LoginHeader />
-      <article className="w-[315px] mx-auto ForGnbmarginTop">
+      <article className="w-[315px] mx-auto">
         <div>
           <p className="font-bold text-[32px] text-[#4E76D6]">
             다 함께 <br /> 추억을 쌓아볼까요?

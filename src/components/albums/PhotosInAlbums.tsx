@@ -85,11 +85,11 @@ const PhotosInAlbum = () => {
   };
 
   return (
-    <div className="ForGnbpaddingTop ForFnbmarginBottom mx-4 mx-auto w-full sm:w-[500px]">
+    <div className="ForFnbmarginBottom mx-4 mx-auto w-full sm:w-[500px]">
       <ResponsiveMasonry
         columnsCountBreakPoints={{ 500: 2, 600: 3, 1200: 4, 1400: 5 }}
       >
-        <Masonry columnsCount={3} gutter="15px">
+        <Masonry columnsCount={3} gutter="15px" className="px-[15px]">
           {/* {dummyImages.map((image, i) => (
             <div className="relative" key={i}>
               <Link href={`${pathname}/photo/${image.id}`} key={image.id}>

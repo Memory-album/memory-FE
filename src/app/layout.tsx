@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
-
 import localFont from 'next/font/local';
-import Gnb from '@/components/Gnb';
-import Fnb from '@/components/Fnb';
-import RQProvider from './_component/RQProvider';
+import ClientLayout from './_component/ClientLayout';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,7 +14,7 @@ const pretendard = localFont({
   variable: '--font-pretendard',
   weight: 'normal',
 });
-// TODO : FNB, layout 되돌리기
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,15 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`main-bg ${pretendard.className}`}>
-        <RQProvider>
-          <div className="flex flex-col min-h-screen">
-            <Gnb />
-            <div className="ForGnbmarginTop"></div>
-            <div className="grid flex-1">{children}</div>
-            <div className="h-[87px]"></div>
-            <Fnb />
-          </div>
-        </RQProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

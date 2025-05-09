@@ -156,7 +156,7 @@ const home = () => {
   }, []);
 
   return (
-    <div className="mb-[103px] mx-auto w-full sm:w-[500px]">
+    <div className="mb-[29px] mx-auto w-full sm:w-[500px]">
       <header className="h-[226px] bg-[#E5EDFF] w-full relative">
         <div className="ml-5">
           <Image
@@ -310,38 +310,38 @@ const home = () => {
             </div>
           </div>
         </section>
-        <div className="h-[291px] relative flex justify-center">
-          <section className="absolute top-[84px] flex flex-col">
-            <Button asChild variant={'homeBtn'} size={'homeBtn'}>
-              <Link
-                href={
-                  hasAlbums
-                    ? // ? `/groups/${groupId}/albums/${selectedAlbumId}/upload`
-                      `/groups/${groupId}/albums/1/upload`
-                    : `/groups/${groupId}/albums`
-                }
-              >
-                질문 만들러 가기
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant={'homeBtn'}
-              size={'homeBtn'}
-              className="my-[25px]"
-            >
-              <InviteCodeDialog inviteCode={group ? group.inviteCode : '1'}>
-                <div className="my-[25px] cursor-pointer w-[328px] h-[52px] px-4 py-2 text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf] shadow-[0_0_10px_1px_rgba(141,146,255,0.42)] inline-flex items-center justify-center">
-                  초대하기
-                </div>
-              </InviteCodeDialog>
-            </Button>
-            <Button asChild variant={'homeBtn'} size={'homeBtn'}>
-              <Link href="groups/join">참가하기</Link>
-            </Button>
-          </section>
-        </div>
       </main>
+      <div className="h-[291px] relative flex justify-center">
+        <section className="absolute top-[84px] flex flex-col">
+          <Button asChild variant={'homeBtn'} size={'homeBtn'}>
+            <Link
+              href={
+                hasAlbums
+                  ? // ? `/groups/${groupId}/albums/${selectedAlbumId}/upload`
+                    `/groups/${groupId}/albums/1/upload`
+                  : `/groups/${groupId}/albums`
+              }
+            >
+              질문 만들러 가기
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant={'homeBtn'}
+            size={'homeBtn'}
+            className="my-[25px]"
+          >
+            <InviteCodeDialog inviteCode={group ? group.inviteCode : '1'}>
+              <div className="my-[25px] cursor-pointer w-[328px] h-[52px] px-4 py-2 text-[16px] bg-[#4848f9] text-white rounded-[10px] font-bold hover:bg-[#3d3dcf] shadow-[0_0_10px_1px_rgba(141,146,255,0.42)] inline-flex items-center justify-center">
+                초대하기
+              </div>
+            </InviteCodeDialog>
+          </Button>
+          <Button asChild variant={'homeBtn'} size={'homeBtn'}>
+            <Link href="groups/join">참가하기</Link>
+          </Button>
+        </section>
+      </div>
     </div>
   );
 };

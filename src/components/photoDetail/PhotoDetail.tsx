@@ -170,7 +170,7 @@ const PhotoDetail = ({ params }: PropType) => {
   }, [groupId, albumId, currentPage]);
 
   return (
-    <main className="ForGnbpaddingTop">
+    <main className="">
       {/* 다운로드 */}
       {/* <div
         ref={downloadRef}

@@ -211,8 +211,8 @@ const signup = ({ slides, options }: PropType) => {
       <TermsOfUse isOpen={terms} onClose={popupTerms}></TermsOfUse>
       <LoginHeader></LoginHeader>
       <div
-        className="embla__dots mb-[42px]"
-        style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
+        className="embla__dots mb-[42px] mt-[39px]"
+        // style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
       >
         {scrollSnaps.map((_, index) => (
           <DotButton
