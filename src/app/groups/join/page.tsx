@@ -1,13 +1,14 @@
 'use client';
 
-import { FaArrowLeft } from 'react-icons/fa6';
-import { Button } from '@/components/ui/button';
-
-import VerificationInput from 'react-verification-input';
-import '@/app/signup/verifyInputStyle.css';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { FaArrowLeft } from 'react-icons/fa6';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import VerificationInput from 'react-verification-input';
+
+import '@/app/signup/verifyInputStyle.css';
+import { Button } from '@/components/ui/button';
+import { PrevButton } from '@/components/embla/EmblaCarouselButtons';
 
 const join = () => {
   const router = useRouter();
@@ -55,7 +56,15 @@ const join = () => {
   };
 
   return (
-    <div className="sm:mx-auto w-full h-full sm:w-[500px]">
+    <div className="w-full h-full sm:w-[500px] bg-[#FAFCFF] sm:mx-auto">
+      <div>
+        <PrevButton
+          onClick={() => router.replace('/profile')}
+          className="w-[34px] h-[34px] text-[34px]"
+        >
+          <FaArrowLeft className="w-[34px] h-[34px]" />
+        </PrevButton>
+      </div>
       <div className="flex flex-col h-full justify-around">
         {/* 그룹참여 단계 */}
         <div className="p-4 flex flex-col items-center">
@@ -91,14 +100,6 @@ const join = () => {
             시작하기
           </Button>
         </div>
-      </div>
-      <div className="fixed top-[54px] left-[27px]">
-        <button
-          className="w-[34px] h-[34px] text-[34px]"
-          onClick={() => router.replace('/profile')}
-        >
-          <FaArrowLeft className="w-[34px] h-[34px]" />
-        </button>
       </div>
     </div>
   );

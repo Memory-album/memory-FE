@@ -1,16 +1,16 @@
 import { redirect } from 'next/navigation';
 
 import { getCurrentUser } from '@/features/actions';
-import { EditGroup } from './_components/edit-group';
 
 import { User as UserType } from '@/model/user';
+import { AlbumList } from './_components/album-list';
 
 type Props = {
   params: { id: string };
 };
 
 const Page = async ({ params }: Props) => {
-  const { id } = params;
+  const id = params.id;
 
   const user: UserType = await getCurrentUser();
 
@@ -20,7 +20,7 @@ const Page = async ({ params }: Props) => {
 
   return (
     <div className="w-full h-full sm:w-[500px] bg-[#FAFCFF] sm:mx-auto">
-      <EditGroup id={id} />
+      <AlbumList groupId={id} />
     </div>
   );
 };
