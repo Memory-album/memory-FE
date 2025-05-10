@@ -40,6 +40,7 @@ interface MediaItem {
   uploadedBy: UploadedBy;
   createdAt: string;
   story: string;
+  albumId?: number;
 }
 
 interface Album {
@@ -135,10 +136,11 @@ const home = () => {
 
     //최근 미디어
     const fetchRecentMedia = async () => {
-      const albumId = 1;
+      if (!groupId) return;
+
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/${albumId}/recent-media?limit=5`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -146,14 +148,31 @@ const home = () => {
         );
         const data = await response.json();
         if (data.result === 'SUCCESS') {
-          setRecentMedia(data.data);
+          // 모든 앨범의 미디어를 하나의 배열로 합치고 createdAt 기준으로 정렬
+          const allMedia: MediaItem[] = data.data.flatMap((album: Album) =>
+            album.recentMedia.map((media) => ({
+              ...media,
+              albumId: album.id,
+            })),
+          );
+
+          // createdAt 기준으로 정렬하고 최대 5개만 선택
+          const sortedMedia: MediaItem[] = [...allMedia]
+            .sort(
+              (a: MediaItem, b: MediaItem) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime(),
+            )
+            .slice(0, 5);
+
+          setRecentMedia(sortedMedia);
         }
       } catch (error) {
         console.error('최근 미디어 가져오기 실패:', error);
       }
     };
     fetchRecentMedia();
-  }, []);
+  }, [groupId]);
 
   return (
     <div className="mb-[29px] mx-auto w-full sm:w-[500px]">
@@ -189,31 +208,40 @@ const home = () => {
             <p className="text-[20px]">오늘도 좋은 하루 보내세요!</p>
           </div>
           <div className="mt-[18px] w-fit">
-            {hasAlbums ? (
-              <Select onValueChange={handleAlbumSelect}>
-                <SelectTrigger className="pl-[20px] w-[150px] h-[44px] font-bold text-[16px] rounded-[9px] bg-[#4848F9] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors text-white">
-                  <SelectValue placeholder="답변하러 가기" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-2 border-[#E5EDFF]">
-                  {albums.map((album) => (
-                    <SelectItem
-                      key={album.id}
-                      value={album.id.toString()}
-                      className="hover:bg-[#E5EDFF] hover:text-[#4B6FFF] cursor-pointer"
-                    >
-                      {album.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {group?.role === 'OWNER' ? (
+              hasAlbums ? (
+                <Select onValueChange={handleAlbumSelect}>
+                  <SelectTrigger className="pl-[20px] w-[150px] h-[44px] font-bold text-[16px] rounded-[9px] bg-[#4848F9] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors text-white">
+                    <SelectValue placeholder="답변하러 가기" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-2 border-[#E5EDFF]">
+                    {albums.map((album) => (
+                      <SelectItem
+                        key={album.id}
+                        value={album.id.toString()}
+                        className="hover:bg-[#E5EDFF] hover:text-[#4B6FFF] cursor-pointer"
+                      >
+                        {album.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Button
+                  asChild
+                  className="w-[150px] h-[44px] font-bold text-[16px] bg-[#4848F9] text-white rounded-[9px] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors"
+                >
+                  <Link href={`/groups/${groupId}/albums`}>
+                    앨범 만들러 가기 →
+                  </Link>
+                </Button>
+              )
             ) : (
               <Button
                 asChild
                 className="w-[150px] h-[44px] font-bold text-[16px] bg-[#4848F9] text-white rounded-[9px] border-2 border-[#E5EDFF] hover:bg-[#E5EDFF] hover:text-[#4B6FFF] transition-colors"
               >
-                <Link href={`/groups/${groupId}/albums`}>
-                  앨범 만들러 가기 →
-                </Link>
+                <Link href="/groups/1/albums/select">질문하러 가기 →</Link>
               </Button>
             )}
           </div>
@@ -286,15 +314,19 @@ const home = () => {
                       className="min-w-[183px] flex flex-col items-center"
                       key={media.id}
                     >
-                      <div
-                        className="w-[168px] h-[141px] bg-cover cursor-pointer rounded-[21px]"
-                        style={{
-                          backgroundImage: `url(${encodeURI(media.fileUrl)})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          backgroundRepeat: 'no-repeat',
-                        }}
-                      ></div>
+                      <Link
+                        href={`/groups/${groupId}/albums/${media.albumId}/photo/${media.id}`}
+                      >
+                        <div
+                          className="w-[168px] h-[141px] bg-cover cursor-pointer rounded-[21px]"
+                          style={{
+                            backgroundImage: `url(${encodeURI(media.fileUrl)})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                          }}
+                        ></div>
+                      </Link>
                     </div>
                   );
                 })

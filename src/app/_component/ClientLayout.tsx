@@ -18,8 +18,14 @@ export default function ClientLayout({
     '/login',
     /^\/groups\/\d+\/albums\/\d+\/photo\/\d+$/,
   ];
-  const noMarginPaths = ['/login', '/signup', /^\/groups\/\d+\/albums$/]; // 필요한 경로를 여기에 추가하세요
-  const noGnbMarginPaths = ['/home']; // 필요한 경로를 여기에 추가하세요
+  const noMarginPaths = [
+    '/login',
+    '/signup',
+    /^\/groups\/\d+\/albums$/,
+    '/signup/group/create',
+    '/signup/join',
+  ]; // 필요한 경로를 여기에 추가하세요
+  const noGnbMarginPaths = ['/home', '/signup/join']; // 필요한 경로를 여기에 추가하세요
 
   return (
     <RQProvider>

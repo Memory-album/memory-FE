@@ -33,7 +33,6 @@ type FormInputs = {
 };
 
 const FirstCreateGroup = () => {
-  const { groups, fetchGroups } = useGroupStore();
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const [inviteCode, setInviteCode] = useState(null);
   const router = useRouter();
@@ -123,8 +122,8 @@ const FirstCreateGroup = () => {
     <main>
       <LoginHeader></LoginHeader>
       <div
-        className="embla__dots mb-[25px]"
-        style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
+        className="embla__dots mb-[25px] mt-[39px]"
+        // style={{ marginTop: 'calc(var(--ForGnbmarginTop) + 39px)' }}
       >
         {scrollSnaps.map((_, index) => (
           <DotButton

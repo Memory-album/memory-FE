@@ -31,7 +31,7 @@ const PhotosInAlbum = () => {
         //url에서 albumId 추출
         const urlParts = pathname.split('/');
         const groupId = userInfo?.currentGroupId;
-        const albumId = urlParts[2]; // URL 구조에 따라 조정 필요
+        const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,

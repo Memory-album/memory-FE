@@ -192,7 +192,7 @@ const Collection = () => {
         </div>
       </div>
       {localAlbums.map((album) => (
-        <Link key={album.id} href={`/groups/1/albums/${album.title}`}>
+        <Link key={album.id} href={`/groups/1/albums/${album.id}`}>
           <PhotoArrangement
             id={album.id}
             title={album.title}

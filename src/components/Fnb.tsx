@@ -141,7 +141,7 @@ const Fnb = () => {
       <Link
         href={
           hasAlbums
-            ? `/groups/${groupId}/albums/${albumId}/upload`
+            ? `/groups/${groupId}/albums/select`
             : `/groups/${groupId}/albums`
         }
         className="fixed bottom-[32px]"

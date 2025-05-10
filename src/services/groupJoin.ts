@@ -1,12 +1,13 @@
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
-export const joinGroup = async (userData: {
-  inviteCode: string;
-  groupNickname: string;
-}) => {
-  const router = useRouter();
-
+export const joinGroup = async (
+  userData: {
+    inviteCode: string;
+    groupNickname: string;
+  },
+  router: AppRouterInstance,
+) => {
   try {
     // 그룹 참여 요청
     const joinResponse = await axios.post(

@@ -12,7 +12,7 @@ import useUserStore from '@/store/useUserInfo';
 import VerificationInput from 'react-verification-input';
 import '../verifyInputStyle.css';
 
-const invite = () => {
+const Invite = () => {
   const [inviteCode, setInviteCode] = useState('');
   const { userInfo } = useUserStore();
   const groupNickname = userInfo?.name || '';
@@ -20,7 +20,7 @@ const invite = () => {
 
   const handleJoinGroup = async () => {
     try {
-      const response = await joinGroup({ inviteCode, groupNickname });
+      const response = await joinGroup({ inviteCode, groupNickname }, router);
 
       console.log(response);
     } catch (error) {
@@ -73,4 +73,4 @@ const invite = () => {
   );
 };
 
-export default invite;
+export default Invite;
