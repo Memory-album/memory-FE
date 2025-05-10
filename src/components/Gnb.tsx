@@ -43,7 +43,6 @@ const Gnb = () => {
     '/signup',
     '/signup/join',
     '/signup/group/create',
-    '/groups/create',
     '/groups/join',
   ];
 
@@ -63,30 +62,99 @@ const Gnb = () => {
   const groupDashboardRegex = /^\/groups\/[^/]+\/dashboard$/;
   const groupMembersRegex = /^\/groups\/[^/]+\/members$/;
 
-  let currentPathName;
-  if (pathname.includes('albums')) {
-    currentPathName = '앨범';
-  } else if (pathname.includes('likes')) {
-    currentPathName = '좋아요';
-  } else if (pathname.includes('collection')) {
-    currentPathName = '컬렉션';
-  } else if (pathname === '/answers') {
-    currentPathName = '답변하기';
-  } else if (pathname === '/uploads/owners') {
-    currentPathName = '앨범 만들기';
-  } else if (pathname === '/uploads/members') {
-    currentPathName = '질문하기';
-  } else if (pathname.includes('profile')) {
-    currentPathName = '프로필';
-  } else if (pathname.includes('/questions')) {
-    currentPathName = '질문';
-  } else if (groupDashboardRegex.test(pathname)) {
-    currentPathName = '그룹 관리';
-  } else if (groupEditRegex.test(pathname)) {
-    currentPathName = '그룹 수정';
-  } else if (groupMembersRegex.test(pathname)) {
-    currentPathName = '내 그룹 멤버 보기';
-  }
+  const pathNameMap = {
+    '/albums': '앨범',
+    '/albums/[id]': '앨범',
+    '/groups/[id]/albums/[albumId]': '앨범',
+    '/groups/[id]/albums/[albumId]/photo/[mediaId]': '앨범',
+    '/likes': '좋아요',
+    '/collection': '컬렉션',
+    '/profile': '프로필',
+    '/profile/edit': '프로필 수정',
+    '/password-change': '비밀번호 변경',
+    '/groups/create': '그룹 생성',
+    '/groups/[id]/dashboard': '그룹 관리',
+    '/groups/[id]/edit': '그룹 수정',
+    '/groups/[id]/members': '내 그룹 멤버 보기',
+    '/groups/[id]/albums': '앨범',
+    '/groups/[id]/albums/select': '앨범 선택',
+    '/groups/[id]/albums/[albumId]/upload': '앨범 업로드',
+    '/groups/[id]/albums/[albumId]/answers': '답변하기',
+    '/groups/[id]/albums/[albumId]/answers/[mediaId]': '답변하기',
+  } as const;
+
+  // let currentPathName;
+  // if (pathname.includes('albums')) {
+  //   currentPathName = '앨범';
+  // } else if (pathname.includes('likes')) {
+  //   currentPathName = '좋아요';
+  // } else if (pathname.includes('collection')) {
+  //   currentPathName = '컬렉션';
+  // } else if (pathname === '/answers') {
+  //   currentPathName = '답변하기';
+  // } else if (pathname.includes('profile')) {
+  //   currentPathName = '프로필';
+  // } else if (pathname.includes('/questions')) {
+  //   currentPathName = '질문';
+  // } else if (groupDashboardRegex.test(pathname)) {
+  //   currentPathName = '그룹 관리';
+  // } else if (groupEditRegex.test(pathname)) {
+  //   currentPathName = '그룹 수정';
+  // } else if (groupMembersRegex.test(pathname)) {
+  //   currentPathName = '내 그룹 멤버 보기';
+  // }
+
+  type PathNames = keyof typeof pathNameMap;
+
+  const matchPath = (pathname: string): string => {
+    // 정확히 일치하는 경로 먼저 확인
+    if (pathname in pathNameMap) {
+      return pathNameMap[pathname as PathNames];
+    }
+
+    // 동적 경로 매칭
+    const patterns = [
+      { regex: /^\/albums\/[^\/]+$/, title: '앨범' },
+      {
+        regex: /^\/groups\/[^\/]+\/albums\/[^\/]+\/photo\/[^\/]+$/,
+        title: '앨범',
+      },
+      {
+        regex: /^\/groups\/[^\/]+\/albums\/[^\/]+$/,
+        title: '앨범',
+      },
+      { regex: /^\/groups\/[^\/]+\/dashboard$/, title: '그룹 관리' },
+      { regex: /^\/groups\/[^\/]+\/edit$/, title: '그룹 수정' },
+      { regex: /^\/groups\/[^\/]+\/members$/, title: '내 그룹 멤버 보기' },
+      { regex: /^\/groups\/[^\/]+\/albums\/select$/, title: '앨범 선택' },
+      {
+        regex: /^\/groups\/[^\/]+\/albums\/[^\/]+\/upload$/,
+        title: '앨범 업로드',
+      },
+      {
+        regex: /^\/groups\/[^\/]+\/albums\/[^\/]+\/answers$/,
+        title: '답변하기',
+      },
+      {
+        regex: /^\/groups\/[^\/]+\/albums\/[^\/]+\/answers\/[^\/]+$/,
+        title: '답변하기',
+      },
+      { regex: /^\/groups\/[^\/]+\/albums$/, title: '앨범' },
+    ];
+
+    for (const pattern of patterns) {
+      if (pattern.regex.test(pathname)) {
+        return pattern.title;
+      }
+    }
+
+    // 기본값
+    return '페이지';
+  };
+
+  // 사용
+  const currentPathName: string = matchPath(pathname);
+
   console.log(currentPathName);
 
   return (
@@ -148,7 +216,7 @@ const Gnb = () => {
                   </p>
                 </div>
                 </Link> */}
-                <Link href={`/groups/${groupId}/upload`}>
+                <Link href={`/groups/${groupId}/albums/select`}>
                   <div className="flex justify-center items-center flex-col">
                     <BubbleChatQuestionIcon color="#85B6FF" />
                     <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
@@ -174,7 +242,7 @@ const Gnb = () => {
                   <div className="flex justify-center items-center flex-col">
                     <UserGroupIcon color="#85B6FF" />
                     <p className="font-extrabold text-[6px] text-[#626262] mt-[5px]">
-                      그룹 보기
+                      멤버 보기
                     </p>
                   </div>
                 </Link>

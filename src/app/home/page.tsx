@@ -318,7 +318,7 @@ const home = () => {
               href={
                 hasAlbums
                   ? // ? `/groups/${groupId}/albums/${selectedAlbumId}/upload`
-                    `/groups/${groupId}/albums/1/upload`
+                    `/groups/${groupId}/albums/select`
                   : `/groups/${groupId}/albums`
               }
             >

@@ -1,20 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-
-import { Button } from '@/components/ui/button';
-
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { FaArrowLeft } from 'react-icons/fa';
 
 import '@/app/signup/verifyInputStyle.css';
 
 import '@/components/embla/embla.css';
-import useEmblaCarousel from 'embla-carousel-react';
+import { Button } from '@/components/ui/button';
+import { PrevButton } from '@/components/embla/EmblaCarouselButtons';
 import { GroupInput } from '@/app/groups/_components/group-input';
+
 import { getGroupById } from '@/features/group/api/getGroupById';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 type FormInputs = {
   groupName: string;
@@ -28,7 +27,6 @@ type Props = {
 // TODO: 페이지 반응형
 export const EditGroup = ({ id }: Props) => {
   const router = useRouter();
-  const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const [preview, setPreview] = useState<{
     dataUrl: string;
     file: File;
@@ -133,8 +131,16 @@ export const EditGroup = ({ id }: Props) => {
 
   return (
     <main>
-      <article className="sm:mx-auto w-full sm:w-[500px] mx-auto">
-        <section ref={emblaRef} className="overflow-hidden h-full mb-[80px]">
+      <article>
+        <section className="overflow-hidden h-full">
+          <div>
+            <PrevButton
+              onClick={() => router.replace(`/groups/${id}/dashboard`)}
+              className="w-[34px] h-[34px] text-[34px]"
+            >
+              <FaArrowLeft className="w-[34px] h-[34px]" />
+            </PrevButton>
+          </div>
           <FormProvider {...form}>
             <form
               className="flex h-full"
