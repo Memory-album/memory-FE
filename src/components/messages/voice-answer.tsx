@@ -38,17 +38,23 @@ export const VoiceAnswer = ({
 
   // 녹음 시간 타이머
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | undefined;
 
     if (isRecording) {
       interval = setInterval(() => {
         setRecordingDuration((prev) => prev + 1);
       }, 1000);
     } else if (!isRecording && recordingDuration !== 0) {
-      clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+      }
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [isRecording, recordingDuration]);
 
   // 녹음된 오디오 URL 생성
