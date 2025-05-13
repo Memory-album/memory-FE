@@ -79,11 +79,24 @@
         }
       }
     ],
-    "jsx-a11y/label-has-associated-control": "off", // "A form label must be associated with a control" 오류 비활성화
-    "react/button-has-type": "off", // "Missing an explicit type attribute for button" 오류 비활성화
-    "import/prefer-default-export": "off", // "Prefer default export on a file with single export" 오류 비활성화
-    "jsx-a11y/click-events-have-key-events": "off", // "Visible, non-interactive elements with click handlers must have at least one keyboard listener" 오류 비활성화
-    "jsx-a11y/no-static-element-interactions": "off", // "Avoid non-native interactive elements" 오류 비활성화
-    "@next/next/no-img-element": "off" // "Using <img> could result in slower LCP" 경고 비활성화
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/button-has-type": "off",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "@next/next/no-img-element": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true, // 작은따옴표로 일관되게 사용
+        "trailingComma": "es5", // es5 규칙에 맞춰 쉼표 추가
+        "arrowParens": "always", // 화살표 함수에서 매개변수가 하나일 때도 괄호 사용
+        "bracketSpacing": true, // 객체 리터럴의 괄호 안에 공백 추가
+        "semi": true, // 세미콜론을 강제
+        "quoteProps": "as-needed", // 필요할 때만 객체의 속성에 큰따옴표 사용
+        "jsxSingleQuote": true // JSX에서 작은따옴표 사용
+      }
+    ],
+    "react/jsx-props-no-spreading": "off" // Prop spreading에 대한 경고 비활성화
   }
 }

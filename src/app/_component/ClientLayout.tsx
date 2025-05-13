@@ -1,8 +1,10 @@
 'use client';
 
+import React from 'react';
 import { usePathname } from 'next/navigation';
-import Gnb from '@/components/Gnb';
+
 import Fnb from '@/components/Fnb';
+import Gnb from '@/components/Gnb';
 import RQProvider from './RQProvider';
 
 export default function ClientLayout({
@@ -32,7 +34,7 @@ export default function ClientLayout({
       <div className="flex flex-col min-h-screen">
         <Gnb />
         {!noGnbMarginPaths.includes(pathname) && (
-          <div className="ForGnbmarginTop"></div>
+          <div className="ForGnbmarginTop" />
         )}
         <div
           className={`${
@@ -51,7 +53,7 @@ export default function ClientLayout({
           typeof pattern === 'string'
             ? pattern === pathname
             : pattern.test(pathname),
-        ) && <div className="h-[87px]"></div>}
+        ) && <div className="h-[87px]" />}
         <Fnb />
       </div>
     </RQProvider>
