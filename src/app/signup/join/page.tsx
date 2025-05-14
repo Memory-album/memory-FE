@@ -62,7 +62,7 @@ const Invite = () => {
           <div className="fixed top-[54px] left-[27px]">
             <button
               className="w-[34px] h-[34px] text-[34px]"
-              onClick={history.back}
+              onClick={() => router.back()}
             >
               <FaArrowLeft className="w-[34px] h-[34px]" />
             </button>
