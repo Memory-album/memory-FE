@@ -6,7 +6,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 export const sendVerifyCode = async (userData: { email: string }) => {
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/register/send-verification-code`,
+      `/api/register/send-verification-code`,
       userData,
       {
         withCredentials: true, // 쿠키 사용 설정 <<< 여기다가 설정 해야지 사용됨!!!!!!!!!!
