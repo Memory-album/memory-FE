@@ -24,7 +24,7 @@ const useUserStore = create(
       fetchUserInfo: async () => {
         try {
           const userResponse = await axios.get(
-            'http://localhost:8080/user/my-page',
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/my-page`,
             {
               withCredentials: true,
               headers: {

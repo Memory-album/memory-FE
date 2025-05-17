@@ -59,7 +59,7 @@ const login = () => {
         try {
           // /user/home 엔드포인트 요청
           const homeResponse = await axios.get(
-            'http://localhost:8080/user/home',
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/home`,
             {
               withCredentials: true,
               headers: {
