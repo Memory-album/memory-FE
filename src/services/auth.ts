@@ -158,7 +158,7 @@ export const userLogin = async (userData: {
 export const handleLogout = async (router: AppRouterInstance) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
       {
         method: 'POST',
         credentials: 'include',
