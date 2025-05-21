@@ -10,6 +10,7 @@ import { User as UserType } from '@/model/user';
 const Page = async () => {
   const user: UserType = await getCurrentUser();
 
+  console.log('USER', user);
   if (!user) {
     redirect('/login');
   }

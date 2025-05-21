@@ -5,7 +5,6 @@ export const getCurrentUser = async () => {
   try {
     // 쿠키에서 jwtToken 가져오기
     const token = await cookies().get('jwtToken');
-    console.log('TOKEN', token);
     // 토큰이 없으면 null 반환
     if (!token) return null;
 
