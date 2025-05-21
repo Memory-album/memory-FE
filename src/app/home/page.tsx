@@ -11,9 +11,7 @@ import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowDataTransferHorizontalIcon } from 'hugeicons-react';
 import { MdLogout } from 'react-icons/md';
-import { EmblaOptionsType } from 'embla-carousel';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import {
   Select,
   SelectContent,
