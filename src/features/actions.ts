@@ -25,7 +25,6 @@ export const getCurrentUser = async () => {
     }
 
     const { user } = await response.json();
-    console.log('USER', user);
     return user;
   } catch {
     return null;

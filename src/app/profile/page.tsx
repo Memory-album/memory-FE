@@ -10,10 +10,9 @@ import { User as UserType } from '@/model/user';
 const Page = async () => {
   const user: UserType = await getCurrentUser();
 
-  console.log('USER', user);
-  if (!user) {
-    redirect('/login');
-  }
+  // if (!user) {
+  //   redirect('/login');
+  // }
 
   return (
     <div className="px-[30px] sm:mx-auto w-full sm:w-[500px]">
