@@ -36,7 +36,7 @@ const useUserStore = create(
               email: user.email,
               name: user.name,
               profileImgUrl: user.profileImgUrl,
-              currentGroupId: 1,
+              currentGroupId: 0,
             },
           });
         } catch (error) {
