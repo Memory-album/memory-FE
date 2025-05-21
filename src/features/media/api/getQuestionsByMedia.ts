@@ -6,7 +6,7 @@ export async function getQuestionsByMedia({
   const [_groups, groupId, _albums, albumId, _media, mediaId, _questions] =
     queryKey;
 
-  const response = await fetch(`/api/api/v1/questions/media/${mediaId}`, {
+  const response = await fetch(`/backend/api/v1/questions/media/${mediaId}`, {
     next: {
       tags: [
         'groups',

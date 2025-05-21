@@ -61,7 +61,7 @@ export const MemberView = ({ albumId, groupId }: Props) => {
       const userId = user.id;
 
       const response = await fetch(
-        `/api/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
+        `/backend/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
         {
           method: 'POST',
           credentials: 'include',
@@ -98,7 +98,7 @@ export const MemberView = ({ albumId, groupId }: Props) => {
       formData.append('file', file);
 
       const response = await fetch(
-        `/api/api/v1/questions/with-media?groupId=${groupId}&albumId=${albumId}&content=${content}`,
+        `/backend/api/v1/questions/with-media?groupId=${groupId}&albumId=${albumId}&content=${content}`,
         {
           method: 'POST',
           credentials: 'include',

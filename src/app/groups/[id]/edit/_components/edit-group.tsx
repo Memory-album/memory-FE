@@ -52,7 +52,7 @@ export const EditGroup = ({ id }: Props) => {
       }
       formData.append('groupDescription', groupDescriptionValue);
 
-      const response = await fetch(`/api/api/v1/groups/${id}`, {
+      const response = await fetch(`/backend/api/v1/groups/${id}`, {
         method: 'put',
         credentials: 'include',
         body: formData,

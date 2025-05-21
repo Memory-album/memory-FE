@@ -8,7 +8,7 @@ export async function getMedia({
   const [_resource, groupId, _albums, albumId, _media] = queryKey;
 
   const response = await fetch(
-    `/api/api/v1/groups/${groupId}/albums/${albumId}/media`,
+    `/backend/api/v1/groups/${groupId}/albums/${albumId}/media`,
     {
       next: {
         tags: ['groups', groupId, 'albums', albumId, 'media'],

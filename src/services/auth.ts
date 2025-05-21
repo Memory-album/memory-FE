@@ -6,7 +6,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 export const sendVerifyCode = async (userData: { email: string }) => {
   try {
     const response = await axios.post(
-      `/api/register/send-verification-code`,
+      `/backend/register/send-verification-code`,
       userData,
       {
         withCredentials: true, // 쿠키 사용 설정 <<< 여기다가 설정 해야지 사용됨!!!!!!!!!!
@@ -27,9 +27,13 @@ export const verifyEmailCode = async (userData: {
   emailVerificationCode: string;
 }) => {
   try {
-    const response = await axios.post(`/api/register/verify-email`, userData, {
-      withCredentials: true, // 쿠키 사용 설정
-    });
+    const response = await axios.post(
+      `/backend/register/verify-email`,
+      userData,
+      {
+        withCredentials: true, // 쿠키 사용 설정
+      },
+    );
     return response.data; // 성공 시 반환되는 데이터를 리턴
   } catch (error: any) {
     console.error(
@@ -49,7 +53,7 @@ export const verifyEmailCode = async (userData: {
 // }) => {
 //   try {
 //     const response = await axios.post(
-//       `/api/register/complete-register`,
+//       `/backend/register/complete-register`,
 //       userData,
 //       {
 //         withCredentials: true, // 쿠키 사용 설정
@@ -90,7 +94,7 @@ export const registerUser = async (userData: {
     }
 
     const response = await axios.post(
-      `/api/register/complete-register`,
+      `/backend/register/complete-register`,
       formData,
       {
         withCredentials: true,
@@ -115,7 +119,7 @@ export const registerUser = async (userData: {
 //   password: string;
 // }) => {
 //   try {
-//     const response = await axios.post(`/api/auth/login`, userData);
+//     const response = await axios.post(`/backend/auth/login`, userData);
 //     return response.data; // 성공 시 반환되는 데이터를 리턴
 //   } catch (error: any) {
 //     console.error(
@@ -133,7 +137,7 @@ export const userLogin = async (userData: {
   rememberMe?: boolean; // 자동 로그인 옵션 추가
 }) => {
   try {
-    const response = await axios.post(`/api/auth/login`, userData, {
+    const response = await axios.post(`/backend/auth/login`, userData, {
       withCredentials: true, // 쿠키를 받기 위해 필수
       headers: {
         'Content-Type': 'application/json',
@@ -149,7 +153,7 @@ export const userLogin = async (userData: {
 //로그아웃
 export const handleLogout = async (router: AppRouterInstance) => {
   try {
-    const response = await fetch(`/api/auth/logout`, {
+    const response = await fetch(`/backend/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     });

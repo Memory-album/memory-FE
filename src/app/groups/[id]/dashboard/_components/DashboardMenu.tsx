@@ -37,7 +37,7 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/api/v1/groups/${groupId}/leave`, {
+      const response = await fetch(`/backend/api/v1/groups/${groupId}/leave`, {
         method: 'delete',
         credentials: 'include',
       });

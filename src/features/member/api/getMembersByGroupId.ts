@@ -4,7 +4,7 @@ export async function getMembersByGroupId({
   queryKey: [string, string, string];
 }) {
   const [_1, id] = queryKey;
-  const response = await fetch(`/api/api/v1/groups/${id}/members`, {
+  const response = await fetch(`/backend/api/v1/groups/${id}/members`, {
     next: {
       tags: ['groups', id, 'members'],
     },

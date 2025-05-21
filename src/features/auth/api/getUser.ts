@@ -1,5 +1,5 @@
 export async function getUser() {
-  const response = await fetch(`/api/user/my-page`, {
+  const response = await fetch(`/backend/user/my-page`, {
     next: {
       tags: ['user'],
     },

@@ -22,7 +22,7 @@ const join = () => {
       inviteCode: string;
       groupNickname: string;
     }) => {
-      const response = await fetch(`/api/api/v1/groups/join`, {
+      const response = await fetch(`/backend/api/v1/groups/join`, {
         method: 'POST',
         credentials: 'include',
         headers: {

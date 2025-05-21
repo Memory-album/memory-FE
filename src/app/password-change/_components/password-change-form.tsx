@@ -69,7 +69,7 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 인증 코드 요청 API 호출
   const requestCodeMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/user/password/reset-request`, {
+      const response = await fetch(`/backend/user/password/reset-request`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -96,7 +96,7 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 인증 코드 확인 API 호출
   const verifyCodeMutation = useMutation({
     mutationFn: async (verificationCode: string) => {
-      const response = await fetch(`/api/user/password/verify-code`, {
+      const response = await fetch(`/backend/user/password/verify-code`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -127,7 +127,7 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 비밀번호 변경 API 호출
   const changePasswordMutation = useMutation({
     mutationFn: async (data: z.infer<typeof changePasswordSchema>) => {
-      const response = await fetch(`/api/user/password/reset`, {
+      const response = await fetch(`/backend/user/password/reset`, {
         method: 'PUT',
         credentials: 'include',
         headers: {

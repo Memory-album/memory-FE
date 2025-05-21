@@ -45,7 +45,7 @@ export const CreateGroup = () => {
       }
       formData.append('groupDescription', groupDescriptionValue);
 
-      const response = await fetch(`/api/api/v1/groups`, {
+      const response = await fetch(`/backend/api/v1/groups`, {
         method: 'post',
         credentials: 'include',
         body: formData,

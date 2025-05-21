@@ -97,7 +97,7 @@ export const AnswerList = ({ searchText, groupId, albumId }: Props) => {
     queryKey: ['groups', groupId, 'albums', albumId, 'media'],
     queryFn: async ({ pageParam = 0 }) => {
       const response = await fetch(
-        `/api/api/v1/groups/${groupId}/albums/${albumId}/media?page=${pageParam}&size=10&sort=createdAt,DESC`,
+        `/backend/api/v1/groups/${groupId}/albums/${albumId}/media?page=${pageParam}&size=10&sort=createdAt,DESC`,
         {
           method: 'GET',
           credentials: 'include',
@@ -137,7 +137,7 @@ export const AnswerList = ({ searchText, groupId, albumId }: Props) => {
       queryKey: ['questions', media.id] as const,
       queryFn: async (): Promise<QuestionsResponse> => {
         const response = await fetch(
-          `/api/api/v1/questions/media/${media.id}?filter=unanswered`,
+          `/backend/api/v1/questions/media/${media.id}?filter=unanswered`,
           {
             method: 'GET',
             credentials: 'include',

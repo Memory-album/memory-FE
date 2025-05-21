@@ -23,7 +23,7 @@ const useUserStore = create(
       userInfo: null,
       fetchUserInfo: async () => {
         try {
-          const userResponse = await axios.get(`/api/user/my-page`, {
+          const userResponse = await axios.get(`/backend/user/my-page`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',

@@ -67,7 +67,7 @@ export const EditProfile = ({ user }: Props) => {
         formData.append('profileImage', profileImage.file);
       }
 
-      const response = await fetch(`/api/user/update`, {
+      const response = await fetch(`/backend/user/update`, {
         method: 'PUT',
         credentials: 'include',
         body: formData,

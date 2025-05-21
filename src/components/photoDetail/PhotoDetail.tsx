@@ -144,7 +144,7 @@ const PhotoDetail = ({ params }: PropType) => {
         });
 
         const response = await fetch(
-          `/api/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
+          `/backend/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
           {
             method: 'get',
             credentials: 'include',

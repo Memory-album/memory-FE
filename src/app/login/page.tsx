@@ -58,7 +58,7 @@ const login = () => {
       } else if (result.status === 'success') {
         try {
           // /user/home 엔드포인트 요청
-          const homeResponse = await axios.get(`/api/user/home`, {
+          const homeResponse = await axios.get(`/backend/user/home`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const login = () => {
   };
 
   const LoginHandler = (select: string) => {
-    window.location.href = `/api/oauth/login?provider=${select}`;
+    window.location.href = `/backend/oauth/login?provider=${select}`;
   };
 
   return (

@@ -1,5 +1,5 @@
 export async function getUserGroups() {
-  const response = await fetch(`/api/api/v1/groups/my-groups`, {
+  const response = await fetch(`/backend/api/v1/groups/my-groups`, {
     next: {
       tags: ['user', 'groups'],
     },
