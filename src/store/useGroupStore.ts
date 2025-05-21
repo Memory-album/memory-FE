@@ -30,7 +30,7 @@ const useGroupStore = create(
       group: null,
       fetchGroup: async (groupId: number) => {
         try {
-          const response = await axios.get(`/api/v1/groups/${groupId}`, {
+          const response = await axios.get(`/api/api/v1/groups/${groupId}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
