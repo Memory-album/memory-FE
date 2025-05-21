@@ -67,14 +67,11 @@ export const EditProfile = ({ user }: Props) => {
         formData.append('profileImage', profileImage.file);
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/update`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/api/user/update`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error('프로필 수정에 실패했습니다.');

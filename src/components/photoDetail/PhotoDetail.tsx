@@ -144,7 +144,7 @@ const PhotoDetail = ({ params }: PropType) => {
         });
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
+          `/api/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
           {
             method: 'get',
             credentials: 'include',

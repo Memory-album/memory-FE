@@ -35,7 +35,7 @@ export const AlertKickoutMember = ({
   const mutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/members/${memberId}`,
+        `/api/api/v1/groups/${groupId}/members/${memberId}`,
         {
           method: 'delete',
           credentials: 'include',

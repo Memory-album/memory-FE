@@ -84,13 +84,10 @@ const home = () => {
       if (!groupId) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`/api/api/v1/albums/group/${groupId}`, {
+          method: 'get',
+          credentials: 'include',
+        });
         const data = await response.json();
         setHasAlbums(data.data.length > 0);
       } catch (error) {
@@ -106,13 +103,10 @@ const home = () => {
       if (!groupId) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`/api/api/v1/albums/group/${groupId}`, {
+          method: 'get',
+          credentials: 'include',
+        });
         const data = await response.json();
         if (data.result === 'SUCCESS') {
           setAlbums(data.data);
@@ -139,13 +133,10 @@ const home = () => {
       if (!groupId) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`/api/api/v1/albums/group/${groupId}`, {
+          method: 'get',
+          credentials: 'include',
+        });
         const data = await response.json();
         if (data.result === 'SUCCESS') {
           // 모든 앨범의 미디어를 하나의 배열로 합치고 createdAt 기준으로 정렬

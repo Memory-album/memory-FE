@@ -45,13 +45,10 @@ const Fnb = () => {
       if (!groupId) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`/api/api/v1/albums/group/${groupId}`, {
+          method: 'get',
+          credentials: 'include',
+        });
         const data = await response.json();
         setHasAlbums(data.data.length > 0);
       } catch (error) {

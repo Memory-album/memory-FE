@@ -15,7 +15,7 @@ const Collection = () => {
     const fetchGroupAlmubs = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
+          `/api/api/v1/albums/group/${groupId}?thumbnailCount=5`,
           {
             method: 'get',
             credentials: 'include',
@@ -82,7 +82,7 @@ const Collection = () => {
       });
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
+        `/api/api/v1/albums/group/${groupId}?thumbnailCount=5`,
         {
           method: 'get',
           credentials: 'include',

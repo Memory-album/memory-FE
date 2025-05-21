@@ -30,15 +30,12 @@ const useGroupStore = create(
       group: null,
       fetchGroup: async (groupId: number) => {
         try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}`,
-            {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-              },
+          const response = await axios.get(`/api/api/v1/groups/${groupId}`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
+          });
           set({ group: response.data.data });
         } catch (error) {
           console.error('Error fetching group:', error);

@@ -60,7 +60,7 @@ export const addNewAlbum = async (
     }
 
     const response = await axios.post<ApiResponse>(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums`,
+      `/api/api/v1/albums`,
       formData,
       {
         withCredentials: true,

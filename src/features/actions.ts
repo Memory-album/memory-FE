@@ -8,18 +8,15 @@ export const getCurrentUser = async () => {
     // 토큰이 없으면 null 반환
     if (!token) return null;
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/my-page`,
-      {
-        next: {
-          tags: ['user'],
-        },
-        headers: {
-          Cookie: `jwtToken=${token.value}`, // 쿠키 명시적 전달
-        },
-        credentials: 'include',
+    const response = await fetch(`/api/user/my-page`, {
+      next: {
+        tags: ['user'],
       },
-    );
+      headers: {
+        Cookie: `jwtToken=${token.value}`, // 쿠키 명시적 전달
+      },
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

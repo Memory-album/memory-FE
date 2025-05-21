@@ -27,13 +27,9 @@ export const verifyEmailCode = async (userData: {
   emailVerificationCode: string;
 }) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/register/verify-email`,
-      userData,
-      {
-        withCredentials: true, // 쿠키 사용 설정
-      },
-    );
+    const response = await axios.post(`/api/register/verify-email`, userData, {
+      withCredentials: true, // 쿠키 사용 설정
+    });
     return response.data; // 성공 시 반환되는 데이터를 리턴
   } catch (error: any) {
     console.error(
@@ -53,7 +49,7 @@ export const verifyEmailCode = async (userData: {
 // }) => {
 //   try {
 //     const response = await axios.post(
-//       `${process.env.NEXT_PUBLIC_API_BASE_URL}/register/complete-register`,
+//       `/api/register/complete-register`,
 //       userData,
 //       {
 //         withCredentials: true, // 쿠키 사용 설정
@@ -94,7 +90,7 @@ export const registerUser = async (userData: {
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/register/complete-register`,
+      `/api/register/complete-register`,
       formData,
       {
         withCredentials: true,
@@ -119,7 +115,7 @@ export const registerUser = async (userData: {
 //   password: string;
 // }) => {
 //   try {
-//     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, userData);
+//     const response = await axios.post(`/api/auth/login`, userData);
 //     return response.data; // 성공 시 반환되는 데이터를 리턴
 //   } catch (error: any) {
 //     console.error(
@@ -137,16 +133,12 @@ export const userLogin = async (userData: {
   rememberMe?: boolean; // 자동 로그인 옵션 추가
 }) => {
   try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-      userData,
-      {
-        withCredentials: true, // 쿠키를 받기 위해 필수
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await axios.post(`/api/auth/login`, userData, {
+      withCredentials: true, // 쿠키를 받기 위해 필수
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     return response.data;
   } catch (error: any) {
     console.error('Login error:', error.response?.data || error.message);
@@ -157,13 +149,10 @@ export const userLogin = async (userData: {
 //로그아웃
 export const handleLogout = async (router: AppRouterInstance) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
-      {
-        method: 'POST',
-        credentials: 'include',
-      },
-    );
+    const response = await fetch(`/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
 
     if (response.ok) {
       // 쿠키 삭제

@@ -66,7 +66,7 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
       const userId = user.id;
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
+        `/api/api/v1/images/analyze?userId=${userId}&albumId=${albumId}`,
         {
           method: 'POST',
           credentials: 'include',
@@ -103,14 +103,11 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
       const formData = new FormData();
       formData.append('audioFile', file, 'recording.webm');
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers/speech-to-text`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/api/api/answers/speech-to-text`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         const errorData = await response
@@ -155,7 +152,7 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
       const textContent = messages[0].content;
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${textContent}`,
+        `/api/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${textContent}`,
         {
           method: 'POST',
           headers: {
@@ -183,7 +180,7 @@ export const OwnerView = ({ albumId, groupId }: Props) => {
 
       const mediaId = responseData.mediaId;
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stories/generate?mediaId=${mediaId}`,
+        `/api/api/v1/stories/generate?mediaId=${mediaId}`,
         {
           method: 'POST',
           credentials: 'include',

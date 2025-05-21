@@ -80,14 +80,11 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
       const formData = new FormData();
       formData.append('audioFile', file, 'recording.webm');
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers/speech-to-text`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/api/api/answers/speech-to-text`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         const errorData = await response
@@ -169,7 +166,7 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
     const textContent = messages[0].content;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${encodeURIComponent(textContent)}`,
+      `/api/api/answers?mediaId=${mediaId}&questionId=${questionId}&textContent=${encodeURIComponent(textContent)}`,
       {
         method: 'POST',
         headers: {
@@ -192,7 +189,7 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
   // 2단계: 스토리 생성
   const generateStory = async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stories/generate?mediaId=${mediaId}`,
+      `/api/api/v1/stories/generate?mediaId=${mediaId}`,
       {
         method: 'POST',
         credentials: 'include',

@@ -58,15 +58,12 @@ const login = () => {
       } else if (result.status === 'success') {
         try {
           // /user/home 엔드포인트 요청
-          const homeResponse = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/home`,
-            {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-              },
+          const homeResponse = await axios.get(`/api/user/home`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
+          });
 
           if (homeResponse.status === 200) {
             console.log('Home response:', homeResponse.data);
@@ -122,7 +119,7 @@ const login = () => {
   };
 
   const LoginHandler = (select: string) => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth/login?provider=${select}`;
+    window.location.href = `/api/oauth/login?provider=${select}`;
   };
 
   return (

@@ -5,7 +5,7 @@ export async function getAlbumsByGroupId({
 }) {
   const [_1, id] = queryKey;
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${id}?thumbnailCount=1`,
+    `/api/api/v1/albums/group/${id}?thumbnailCount=1`,
     {
       next: {
         tags: ['groupAlbums', id],

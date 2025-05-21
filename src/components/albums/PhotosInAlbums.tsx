@@ -34,7 +34,7 @@ const PhotosInAlbum = () => {
         const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
+          `/api/api/v1/groups/${groupId}/albums/${albumId}/media`,
           {
             method: 'get',
             credentials: 'include',

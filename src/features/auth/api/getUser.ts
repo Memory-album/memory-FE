@@ -1,13 +1,10 @@
 export async function getUser() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/my-page`,
-    {
-      next: {
-        tags: ['user'],
-      },
-      credentials: 'include',
+  const response = await fetch(`/api/user/my-page`, {
+    next: {
+      tags: ['user'],
     },
-  );
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     const errorData = await response.json();

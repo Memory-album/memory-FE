@@ -23,15 +23,12 @@ const useUserStore = create(
       userInfo: null,
       fetchUserInfo: async () => {
         try {
-          const userResponse = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/my-page`,
-            {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-              },
+          const userResponse = await axios.get(`/api/user/my-page`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
+          });
           //userInfo 구조를 평탄화해서 저장
           const { user } = userResponse.data;
           set({
