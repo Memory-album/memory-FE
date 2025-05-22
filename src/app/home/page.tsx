@@ -11,7 +11,9 @@ import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowDataTransferHorizontalIcon } from 'hugeicons-react';
 import { MdLogout } from 'react-icons/md';
+import { EmblaOptionsType } from 'embla-carousel';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 import {
   Select,
   SelectContent,
@@ -52,7 +54,7 @@ interface Album {
 
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
-  const { userInfo } = useUserStore();
+  const { userInfo, fetchUserInfo } = useUserStore();
   const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -62,6 +64,16 @@ const home = () => {
   const logoutRef = useRef<HTMLDivElement>(null);
   const [isLogoutVisible, setIsLogoutVisible] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [fetchUserInfo]);
+
+  useEffect(() => {
+    if (groupId) {
+      fetchGroup(groupId);
+    }
+  }, [groupId, fetchGroup]);
 
   const toggleVisibillity = () => {
     setIsLogoutVisible(!isLogoutVisible);
@@ -83,7 +95,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `/backend/api/v1/albums/group/${groupId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -105,7 +117,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `/backend/api/v1/albums/group/${groupId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -138,7 +150,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `/backend/api/v1/albums/group/${groupId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',

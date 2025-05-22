@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
+import { getUserGroups } from '@/features/group/api/getUserGroups';
 
 interface User {
   email: string;
@@ -16,45 +16,45 @@ interface UserStore {
   setCurrentGroupId: (groupId: number) => void;
 }
 
-const useUserStore = create(
-  //persist로 새로고침해도 상태 유지
-  persist<UserStore>(
-    (set) => ({
-      userInfo: null,
-      fetchUserInfo: async () => {
-        try {
-          const userResponse = await axios.get(`/backend/user/my-page`, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          //userInfo 구조를 평탄화해서 저장
-          const { user } = userResponse.data;
-          set({
-            userInfo: {
-              email: user.email,
-              name: user.name,
-              profileImgUrl: user.profileImgUrl,
-              currentGroupId: 1,
-            },
-          });
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      },
-      clearUserInfo: () => set({ userInfo: null }),
-      setCurrentGroupId: (groupId: number) =>
-        set((state) => ({
-          userInfo: state.userInfo
-            ? { ...state.userInfo, currentGroupId: groupId }
-            : null,
-        })),
-    }),
-    {
-      name: 'user-storage',
-    },
-  ),
-);
+const useUserStore = create<UserStore>((set) => ({
+  userInfo: null,
+  fetchUserInfo: async () => {
+    try {
+      const userResponse = await axios.get(
+        'http://localhost:8080/user/my-page',
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      // Get user's groups and set currentGroupId
+      const groups = await getUserGroups();
+      const currentGroupId = groups && groups.length > 0 ? groups[0].id : 1;
+      console.log(groups[0].id);
+
+      const { user } = userResponse.data;
+      set({
+        userInfo: {
+          email: user.email,
+          name: user.name,
+          profileImgUrl: user.profileImgUrl,
+          currentGroupId,
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  },
+  clearUserInfo: () => set({ userInfo: null }),
+  setCurrentGroupId: (groupId: number) =>
+    set((state) => ({
+      userInfo: state.userInfo
+        ? { ...state.userInfo, currentGroupId: groupId }
+        : null,
+    })),
+}));
 
 export default useUserStore;
