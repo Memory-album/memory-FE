@@ -13,6 +13,8 @@ interface Props {
 export const UserInfo = ({ user }: Props) => {
   const router = useRouter();
 
+  console.log('USER!!!!', user);
+
   return (
     <div>
       <div className="flex items-center mb-4">
