@@ -67,9 +67,9 @@ const home = () => {
 
   useEffect(() => {
     const initializeData = async () => {
-      await fetchUserInfo();
-      if (userInfo?.currentGroupId) {
-        await fetchGroup(userInfo.currentGroupId);
+      const fetchedUserInfo = await fetchUserInfo();
+      if (fetchedUserInfo?.currentGroupId) {
+        await fetchGroup(fetchedUserInfo.currentGroupId);
       }
     };
     initializeData();

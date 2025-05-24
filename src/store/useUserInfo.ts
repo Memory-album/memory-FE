@@ -11,14 +11,14 @@ interface User {
 
 interface UserStore {
   userInfo: User | null;
-  fetchUserInfo: () => Promise<void>;
+  fetchUserInfo: () => Promise<User | null>;
   clearUserInfo: () => void;
   setCurrentGroupId: (groupId: number) => void;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
   userInfo: null,
-  fetchUserInfo: async () => {
+  fetchUserInfo: async (): Promise<User | null> => {
     try {
       const userResponse = await axios.get('/backend/user/my-page', {
         withCredentials: true,
@@ -27,25 +27,26 @@ const useUserStore = create<UserStore>((set, get) => ({
         },
       });
 
-      // Get user's groups and set currentGroupId
       const groups = await getUserGroups();
       const currentGroupId =
         groups && groups.length > 0
           ? get().userInfo?.currentGroupId || groups[0].id
           : 1;
-      console.log(groups[0].id);
 
       const { user } = userResponse.data;
+      const newUserInfo: User = {
+        email: user.email,
+        name: user.name,
+        profileImgUrl: user.profileImgUrl,
+        currentGroupId,
+      };
       set({
-        userInfo: {
-          email: user.email,
-          name: user.name,
-          profileImgUrl: user.profileImgUrl,
-          currentGroupId,
-        },
+        userInfo: newUserInfo,
       });
+      return newUserInfo;
     } catch (error) {
       console.error('Error fetching user data:', error);
+      return null;
     }
   },
   clearUserInfo: () => set({ userInfo: null }),
