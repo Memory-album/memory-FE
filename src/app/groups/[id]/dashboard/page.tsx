@@ -12,7 +12,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const user: UserType = await getCurrentUser();
 
   if (!user) {
-    redirect('/login');
+    // redirect('/login');
+    console.log(user);
   }
 
   return (
