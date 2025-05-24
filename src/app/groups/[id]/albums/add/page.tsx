@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 const AddAlbum = () => {
   const router = useRouter();
   const { userInfo } = useUserStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     theme: '',
@@ -27,6 +28,7 @@ const AddAlbum = () => {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
       const albumData = {
         title: formData.title,
         theme: formData.theme,
@@ -42,6 +44,8 @@ const AddAlbum = () => {
     } catch (error) {
       alert('앨범 추가에 실패했습니다.');
       console.error('Error adding album:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -101,8 +105,8 @@ const AddAlbum = () => {
           />
         </div>
         <div>
-          <Button variant="default" onClick={handleSubmit}>
-            추가
+          <Button variant="default" onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? '추가 중...' : '추가'}
           </Button>
         </div>
       </div>
