@@ -36,6 +36,7 @@ const useGroupStore = create<GroupStore>((set) => ({
       set({ group: response.data.data });
     } catch (error) {
       console.error('Error fetching group:', error);
+      set({ group: null });
     }
   },
   clearGroup: () => set({ group: null }),
