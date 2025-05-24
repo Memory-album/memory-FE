@@ -16,7 +16,7 @@ interface UserStore {
   setCurrentGroupId: (groupId: number) => void;
 }
 
-const useUserStore = create<UserStore>((set) => ({
+const useUserStore = create<UserStore>((set, get) => ({
   userInfo: null,
   fetchUserInfo: async () => {
     try {
@@ -29,7 +29,10 @@ const useUserStore = create<UserStore>((set) => ({
 
       // Get user's groups and set currentGroupId
       const groups = await getUserGroups();
-      const currentGroupId = groups && groups.length > 0 ? groups[0].id : 1;
+      const currentGroupId =
+        groups && groups.length > 0
+          ? get().userInfo?.currentGroupId || groups[0].id
+          : 1;
       console.log(groups[0].id);
 
       const { user } = userResponse.data;
