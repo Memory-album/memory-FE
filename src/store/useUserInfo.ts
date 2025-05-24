@@ -28,7 +28,14 @@ const useUserStore = create<UserStore>((set, get) => ({
       });
 
       const groups = await getUserGroups();
-      const currentGroupId = groups && groups.length > 0 ? groups[0].id : 1;
+      const currentUserInfo = get().userInfo;
+      const currentGroupId =
+        currentUserInfo?.currentGroupId &&
+        groups.some((group: any) => group.id === currentUserInfo.currentGroupId)
+          ? currentUserInfo.currentGroupId
+          : groups && groups.length > 0
+            ? groups[0].id
+            : 1;
 
       const { user } = userResponse.data;
       const newUserInfo: User = {
