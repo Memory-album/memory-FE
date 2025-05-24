@@ -20,15 +20,12 @@ const useUserStore = create<UserStore>((set) => ({
   userInfo: null,
   fetchUserInfo: async () => {
     try {
-      const userResponse = await axios.get(
-        'http://localhost:8080/user/my-page',
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const userResponse = await axios.get('/backend/user/my-page', {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       // Get user's groups and set currentGroupId
       const groups = await getUserGroups();

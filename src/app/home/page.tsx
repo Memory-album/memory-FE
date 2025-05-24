@@ -95,7 +95,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -117,7 +117,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -150,7 +150,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `$/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
