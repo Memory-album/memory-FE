@@ -51,9 +51,7 @@ const login = () => {
         rememberMe: rememberMe,
       };
 
-      console.log('Login request data:', userData);
       const result = await userLogin(userData);
-      console.log('Login success:', result);
 
       if (result.status === 'warning') {
         alert(result.message); // 계정 비활성화 등의 경고 메시지
@@ -70,7 +68,6 @@ const login = () => {
           });
 
           if (homeResponse.status === 200) {
-            console.log('Home response:', homeResponse.data);
             router.push('/home');
           }
         } catch (homeError: any) {

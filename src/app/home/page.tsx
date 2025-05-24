@@ -66,14 +66,41 @@ const home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [fetchUserInfo]);
+    const initializeData = async () => {
+      await fetchUserInfo();
+      if (userInfo?.currentGroupId) {
+        await fetchGroup(userInfo.currentGroupId);
+      }
+    };
+    initializeData();
+  }, []);
 
+  // groupId가 변경될 때만 실행
   useEffect(() => {
     if (groupId) {
-      fetchGroup(groupId);
+      const fetchGroupData = async () => {
+        try {
+          const [groupResponse, albumsResponse] = await Promise.all([
+            fetchGroup(groupId),
+            fetch(`/backend/api/v1/albums/group/${groupId}`, {
+              method: 'get',
+              credentials: 'include',
+            }),
+          ]);
+
+          const albumsData = await albumsResponse.json();
+          if (albumsData.result === 'SUCCESS') {
+            setAlbums(albumsData.data);
+            setHasAlbums(albumsData.data.length > 0);
+          }
+        } catch (error) {
+          console.error('Error fetching group data:', error);
+        }
+      };
+
+      fetchGroupData();
     }
-  }, [groupId, fetchGroup]);
+  }, [groupId]);
 
   const toggleVisibillity = () => {
     setIsLogoutVisible(!isLogoutVisible);
