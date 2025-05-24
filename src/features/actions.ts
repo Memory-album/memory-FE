@@ -9,27 +9,24 @@ export const getCurrentUser = async () => {
     if (!token) return null;
 
     const response = await fetch(`/backend/user/my-page`, {
-      method: 'GET',
       next: {
         tags: ['user'],
+      },
+      headers: {
+        Cookie: `jwtToken=${token.value}`, // 쿠키 명시적 전달
       },
       credentials: 'include',
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('API Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText,
-      });
+      console.log('Error response:', errorText);
       return null;
     }
 
     const { user } = await response.json();
     return user;
-  } catch (error) {
-    console.error('getCurrentUser error:', error);
+  } catch {
     return null;
   }
 };
