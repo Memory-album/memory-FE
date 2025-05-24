@@ -27,6 +27,8 @@ const AddAlbum = () => {
   };
 
   const handleSubmit = async () => {
+    if (isLoading) return;
+
     try {
       setIsLoading(true);
       const albumData = {
