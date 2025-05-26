@@ -41,16 +41,27 @@ const Fnb = () => {
   const { hasAlbums, fetchAlbums } = useAlbumStore();
 
   useEffect(() => {
-    if (groupId) {
-      fetchAlbums();
-    }
-  }, [groupId, fetchAlbums]);
+    const loadAlbums = async () => {
+      if (!userInfo?.currentGroupId) {
+        console.log('userInfo가 로드되지 않았습니다.');
+        return;
+      }
+      await fetchAlbums();
+    };
+    loadAlbums();
+  }, [userInfo, fetchAlbums]);
 
   const handleUploadClick = (e: React.MouseEvent) => {
+    if (!userInfo?.currentGroupId) {
+      e.preventDefault();
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     if (!hasAlbums) {
       e.preventDefault();
       alert('앨범을 먼저 추가해주세요');
-      window.location.href = `/groups/${groupId}/albums`;
+      window.location.href = `/groups/${userInfo.currentGroupId}/albums`;
     }
   };
 
