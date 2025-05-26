@@ -5,13 +5,25 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 import { User as UserType } from '@/model/user';
+import { useQuery } from '@tanstack/react-query';
+import { getUser } from '@/features/auth/api/getUser';
 
 interface Props {
-  user: UserType;
+  initialData: UserType;
 }
 
-export const UserInfo = ({ user }: Props) => {
+export const UserInfo = ({ initialData }: Props) => {
   const router = useRouter();
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+    initialData, // 서버에서 받은 초기 데이터 사용
+  });
+
+  if (!user) {
+    router.replace('/login');
+  }
 
   return (
     <div>

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -44,6 +44,8 @@ export const EditProfile = ({ user }: Props) => {
     url: user.profileImgUrl,
   });
 
+  const queryClient = useQueryClient();
+
   // 폼 설정
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,6 +83,7 @@ export const EditProfile = ({ user }: Props) => {
     },
     onSuccess: async (response) => {
       alert('프로필이 수정되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       router.replace('/profile');
     },
     onError: (error) => {

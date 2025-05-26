@@ -14,9 +14,5 @@ export async function getUser() {
 
   const { user } = await response.json();
 
-  if (!user) {
-    return null;
-  }
-
   return user;
 }
