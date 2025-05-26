@@ -177,7 +177,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `$/backend/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
