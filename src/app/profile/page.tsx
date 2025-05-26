@@ -8,7 +8,7 @@ import { UserInfo } from './_components/user-info';
 import { User as UserType } from '@/model/user';
 
 const Page = async () => {
-  const user: UserType = await getCurrentUser();
+  // const user: UserType = await getCurrentUser();
 
   // if (!user) {
   //   redirect('/login');
@@ -16,7 +16,7 @@ const Page = async () => {
 
   return (
     <div className="px-[30px] sm:mx-auto w-full sm:w-[500px]">
-      <UserInfo user={user} />
+      <UserInfo />
       <UserGroups />
     </div>
   );

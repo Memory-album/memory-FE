@@ -5,13 +5,20 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 import { User as UserType } from '@/model/user';
+import { useQuery } from '@tanstack/react-query';
+import { getUser } from '@/features/auth/api/getUser';
 
 interface Props {
-  user: UserType;
+  user?: UserType;
 }
 
-export const UserInfo = ({ user }: Props) => {
+export const UserInfo = () => {
   const router = useRouter();
+
+  const { data: user } = useQuery({
+    queryKey: ['user', 'groups'],
+    queryFn: getUser,
+  });
 
   console.log('USER!!!!', user);
 
