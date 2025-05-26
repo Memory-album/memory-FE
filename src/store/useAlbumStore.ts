@@ -31,8 +31,12 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       if (!group) {
         throw new Error('No group available');
       }
-      const { userInfo } = useUserStore();
+      const { userInfo } = useUserStore.getState();
       const groupId = userInfo?.currentGroupId;
+
+      if (!groupId) {
+        throw new Error('No group ID available');
+      }
 
       const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
         method: 'get',
@@ -56,8 +60,13 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       if (!group) {
         throw new Error('No group available');
       }
-      const { userInfo } = useUserStore();
+      const { userInfo } = useUserStore.getState();
       const groupId = userInfo?.currentGroupId;
+
+      if (!groupId) {
+        throw new Error('No group ID available');
+      }
+
       const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
         method: 'get',
         credentials: 'include',
