@@ -7,7 +7,7 @@ export const getCurrentUser = async () => {
     // 토큰이 없으면 null 반환
     if (!token) return null;
 
-    const response = await fetch('http://54.180.249.142/user/my-page', {
+    const response = await fetch('http://3.34.51.218//user/my-page', {
       headers: {
         Cookie: `jwtToken=${token.value}`,
         'Content-Type': 'application/json',
