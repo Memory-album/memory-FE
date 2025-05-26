@@ -1,6 +1,4 @@
 import { cookies } from 'next/headers';
-import axios from 'axios';
-
 // 현재 로그인된 사용자 정보 가져오기
 export const getCurrentUser = async () => {
   try {
@@ -9,31 +7,21 @@ export const getCurrentUser = async () => {
     // 토큰이 없으면 null 반환
     if (!token) return null;
 
-    const response = await axios.get('/backend/user/my-page', {
-      withCredentials: true,
+    const response = await fetch(`/backend/user/my-page`, {
       headers: {
-        'Content-Type': 'application/json',
         Cookie: `jwtToken=${token.value}`,
+        'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
-    // const response = await fetch(`/backend/user/my-page`, {
-    //   next: {
-    //     tags: ['user'],
-    //   },
-    //   headers: {
-    //     Cookie: `jwtToken=${token.value}`, // 쿠키 명시적 전달
-    //   },
-    //   credentials: 'include',
-    // });
 
-    // if (!response.ok) {
-    //   const errorText = await response.text();
-    //   console.log('Error response:', errorText);
-    //   return null;
-    // }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Error response:', errorText);
+      return null;
+    }
 
-    // const { user } = await response.json();
-    const { user } = response.data;
+    const user = await response.json();
     return user;
   } catch {
     return null;

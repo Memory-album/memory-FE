@@ -8,15 +8,15 @@ import { UserInfo } from './_components/user-info';
 import { User as UserType } from '@/model/user';
 
 const Page = async () => {
-  // const user: UserType = await getCurrentUser();
+  const user: UserType = await getCurrentUser();
 
-  // if (!user) {
-  //   redirect('/login');
-  // }
+  if (!user) {
+    redirect('/login');
+  }
 
   return (
     <div className="px-[30px] sm:mx-auto w-full sm:w-[500px]">
-      <UserInfo />
+      <UserInfo user={user} />
       <UserGroups />
     </div>
   );
