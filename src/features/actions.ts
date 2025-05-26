@@ -13,6 +13,7 @@ export const getCurrentUser = async () => {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
+        Cookie: `jwtToken=${token.value}`,
       },
     });
     // const response = await fetch(`/backend/user/my-page`, {
