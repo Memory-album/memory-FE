@@ -19,7 +19,11 @@ type GroupInfoProps = {
 export const UserGroups = () => {
   const router = useRouter();
 
-  const { data: groups, isLoading } = useQuery({
+  const {
+    data: groups,
+    isLoading,
+    isSuccess,
+  } = useQuery({
     queryKey: ['user', 'groups'],
     queryFn: getUserGroups,
   });
@@ -31,6 +35,19 @@ export const UserGroups = () => {
           참여 그룹
         </div>
         <GroupActionDrawer />
+      </div>
+      <div aria-live="assertive" aria-atomic="true">
+        {isLoading && (
+          <span className="sr-only">
+            참여 중인 그룹 정보를 불러오는 중입니다
+          </span>
+        )}
+
+        {isSuccess && groups && (
+          <span className="sr-only">
+            참여 중인 그룹 정보를 성공적으로 불러왔습니다
+          </span>
+        )}
       </div>
       {isLoading && (
         <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">

@@ -52,7 +52,11 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { data: responseData, isLoading: isQuestionLoading } = useQuery({
+  const {
+    data: responseData,
+    isLoading: isQuestionLoading,
+    isSuccess: isQuestionSuccess,
+  } = useQuery({
     queryKey: [
       'groups',
       groupId,
@@ -226,11 +230,17 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
 
   if (isQuestionLoading) {
     return (
-      <div className="flex flex-col justify-start items-center text-slate-300">
-        <p>
-          <AiOutlineLoading3Quarters className="text-[30px] animate-spin" />
-        </p>
-      </div>
+      <>
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">질문 정보를 불러오는 중입니다</span>
+        </div>
+
+        <div className="flex flex-col justify-start items-center text-slate-300">
+          <p>
+            <AiOutlineLoading3Quarters className="text-[30px] animate-spin" />
+          </p>
+        </div>
+      </>
     );
   }
 
@@ -270,6 +280,11 @@ export const AnswerView = ({ albumId, groupId, mediaId, user }: Props) => {
 
   return (
     <div className="w-full sm:w-[500px] bg-[#FAFCFF] sm:mx-auto">
+      {isQuestionSuccess && (
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">질문 정보를 성공적으로 불러왔습니다</span>
+        </div>
+      )}
       {renderContent()}
     </div>
   );

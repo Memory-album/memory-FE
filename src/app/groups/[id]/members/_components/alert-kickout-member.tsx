@@ -88,18 +88,31 @@ export const AlertKickoutMember = ({
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <button
+            aria-haspopup="dialog"
+            aria-label={`${memberName}님을 그룹에서 내보내기`}
             onClick={(e) => {
               e.stopPropagation();
             }}
             className="delete-btn absolute -top-1 z-10 -right-1 inline-flex items-center justify-center bg-red-500 hover:bg-red-600 rounded-full size-8"
           >
-            <FiMinus className="text-[28px] text-white" />
+            <FiMinus className="text-[28px] text-white" aria-hidden="true" />
           </button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="py-[18px] w-[330px] h-[150px] rounded-[10px]">
+        <AlertDialogContent
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="alertdialog-title"
+          aria-describedby="alertdialog-description"
+          className="py-[18px] w-[330px] h-[150px] rounded-[10px]"
+        >
           <AlertDialogHeader>
-            <AlertDialogTitle className="mb-0">{groupname}</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600">
+            <AlertDialogTitle id="alertdialog-title" className="mb-0">
+              {groupname}
+            </AlertDialogTitle>
+            <AlertDialogDescription
+              id="alertdialog-description"
+              className="text-gray-600"
+            >
               그룹에서 <strong>{memberName}</strong>님을 내보내시겠어요?
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -25,7 +25,11 @@ type MemberProps = {
 export const MemberList = ({ id }: MemberListProps) => {
   const [isActive, setIsActive] = useState(false);
 
-  const { data: members, isLoading: memberLoading } = useQuery({
+  const {
+    data: members,
+    isLoading: memberLoading,
+    isSuccess,
+  } = useQuery({
     queryKey: ['groups', id, 'members'],
     queryFn: getMembersByGroupId,
   });
@@ -53,6 +57,23 @@ export const MemberList = ({ id }: MemberListProps) => {
           <AiOutlineLoading3Quarters className="size-8 animate-spin" />
         </p>
       )}
+
+      <div aria-live="assertive" aria-atomic="true">
+        {memberLoading && (
+          <>
+            <span className="sr-only">멤버 정보를 불러오는 중입니다</span>
+          </>
+        )}
+
+        {isSuccess && members && (
+          <>
+            <span className="sr-only">
+              멤버 정보 {members.length}명을 성공적으로 불러왔습니다
+            </span>
+          </>
+        )}
+      </div>
+
       {members && (
         <div className="grid grid-cols-2 gap-3 items-start justify-items-center">
           {members.map((member: MemberProps) => (

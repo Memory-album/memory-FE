@@ -15,6 +15,7 @@ export const GroupInfo = ({ id }: GroupInfoProps) => {
   const {
     data: group,
     isLoading,
+    isSuccess,
     isError,
   } = useQuery({
     queryKey: ['groups', id],
@@ -30,14 +31,24 @@ export const GroupInfo = ({ id }: GroupInfoProps) => {
 
   if (isLoading) {
     return (
-      <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
-        <AiOutlineLoading3Quarters className="size-8 animate-spin" />
-      </p>
+      <>
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">그룹 정보를 불러오는 중입니다</span>
+        </div>
+        <p className="w-full h-[200px] text-[#c6c7cb] flex items-center justify-center text-center">
+          <AiOutlineLoading3Quarters className="size-8 animate-spin" />
+        </p>
+      </>
     );
   }
 
   return (
     <div>
+      {isSuccess && group && (
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">그룹 정보를 성공적으로 불러왔습니다</span>
+        </div>
+      )}
       <div className="flex items-center mb-2">
         <div className="relative mr-[15px] size-[68px] rounded-full overflow-hidden">
           <Image src={group?.groupImageUrl} alt="그룹 이미지" fill />

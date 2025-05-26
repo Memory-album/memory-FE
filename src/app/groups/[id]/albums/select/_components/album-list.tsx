@@ -29,16 +29,25 @@ interface RecentMediaType {
 export const AlbumList = ({ groupId }: Props) => {
   const router = useRouter();
 
-  const { data: albums, isLoading } = useQuery({
+  const {
+    data: albums,
+    isLoading,
+    isSuccess,
+  } = useQuery({
     queryKey: ['groupAlbums', groupId],
     queryFn: getAlbumsByGroupId,
   });
 
   if (isLoading) {
     return (
-      <div className="w-full h-[400px] flex items-center justify-center">
-        <AiOutlineLoading3Quarters className="size-8 animate-spin text-gray-400" />
-      </div>
+      <>
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">앨범 목록을 불러오는 중입니다</span>
+        </div>
+        <div className="w-full h-[400px] flex items-center justify-center">
+          <AiOutlineLoading3Quarters className="size-8 animate-spin text-gray-400" />
+        </div>
+      </>
     );
   }
 
@@ -48,6 +57,11 @@ export const AlbumList = ({ groupId }: Props) => {
         질문할 앨범을 선택해주세요
       </h2>
 
+      {isSuccess && albums && (
+        <div aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">앨범 목록을 성공적으로 불러왔습니다</span>
+        </div>
+      )}
       <div className="grid grid-cols-2">
         {albums.map((album: AlbumType) => (
           <div

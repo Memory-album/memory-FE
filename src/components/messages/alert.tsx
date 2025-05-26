@@ -53,6 +53,7 @@ export const Alert = ({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>
         <Button
+          aria-haspopup="dialog"
           className={cn(
             'relative overflow-hidden transition-all duration-300',
             isLoading && 'cursor-not-allowed',
@@ -61,19 +62,20 @@ export const Alert = ({
           onClick={onClick}
           disabled={disabled || isLoading}
         >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              처리 중
-            </span>
-          ) : (
-            buttonValue
-          )}
+          {buttonValue}
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="w-[350px] rounded-[16px] sm:rounded-[16px] bg-white shadow-lg border-blue-100 overflow-hidden">
+      <AlertDialogContent
+        role="alertdialog"
+        aria-labelledby="alertdialog-title"
+        aria-describedby="alertdialog-description"
+        className="w-[350px] rounded-[16px] sm:rounded-[16px] bg-white shadow-lg border-blue-100 overflow-hidden"
+      >
         <AlertDialogHeader className="pt-6">
-          <AlertDialogTitle className="mb-6 text-xl text-center font-bold text-[#4848F9]">
+          <AlertDialogTitle
+            id="alertdialog-title"
+            className="mb-6 text-xl text-center font-bold text-[#4848F9]"
+          >
             분석 중이에요.
           </AlertDialogTitle>
           {isLoading && (
@@ -96,7 +98,10 @@ export const Alert = ({
             />
           </div>
 
-          <p className="text-gray-500 text-center text-base mt-4">
+          <p
+            className="text-gray-500 text-center text-base mt-4"
+            id="alertdialog-description"
+          >
             {line1}
             <span className="inline-block w-8 text-left ml-1">
               {'.'.repeat(loadingDots)}

@@ -13,9 +13,9 @@ export const getCurrentUser = async () => {
         tags: ['user'],
       },
       headers: {
+        'Content-Type': 'application/json',
         Cookie: `jwtToken=${token.value}`, // 쿠키 명시적 전달
       },
-      credentials: 'include',
     });
 
     if (!response.ok) {

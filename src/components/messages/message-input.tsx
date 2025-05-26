@@ -48,6 +48,7 @@ export const MessageInput = ({ roomId }: Props) => {
           className="size-9 mr-[14px] bg-[#699BF7] text-white rounded-full [&_svg]:size-6"
           onClick={() => setView('recording')}
           type="button"
+          aria-label="음성 녹음"
         >
           <MdKeyboardVoice />
         </Button>
@@ -65,6 +66,7 @@ export const MessageInput = ({ roomId }: Props) => {
           onClick={handleSubmit}
           className="absolute bottom-[10px] right-2 w-11 h-8 rounded-[20px] bg-[#4848F9] text-white [&_svg]:size-5 cursor-pointer"
           disabled={isContentEmpty}
+          aria-label="답장 보내기"
         >
           <IoIosSend />
         </Button>
