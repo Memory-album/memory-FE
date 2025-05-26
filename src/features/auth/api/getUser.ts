@@ -9,9 +9,10 @@ export async function getUser() {
   if (!response.ok) {
     const errorData = await response.json();
     console.error('Error details:', errorData);
-    throw new Error('Failed to fetch user data');
+    return null;
   }
 
   const { user } = await response.json();
+
   return user;
 }

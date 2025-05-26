@@ -11,7 +11,9 @@ import '../../components/embla/embla.css';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowDataTransferHorizontalIcon } from 'hugeicons-react';
 import { MdLogout } from 'react-icons/md';
+import { EmblaOptionsType } from 'embla-carousel';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 import {
   Select,
   SelectContent,
@@ -52,7 +54,7 @@ interface Album {
 
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
-  const { userInfo } = useUserStore();
+  const { userInfo, fetchUserInfo } = useUserStore();
   const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -62,6 +64,43 @@ const home = () => {
   const logoutRef = useRef<HTMLDivElement>(null);
   const [isLogoutVisible, setIsLogoutVisible] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const initializeData = async () => {
+      const fetchedUserInfo = await fetchUserInfo();
+      if (fetchedUserInfo?.currentGroupId) {
+        await fetchGroup(fetchedUserInfo.currentGroupId);
+      }
+    };
+    initializeData();
+  }, []);
+
+  // groupId가 변경될 때만 실행
+  useEffect(() => {
+    if (groupId) {
+      const fetchGroupData = async () => {
+        try {
+          const [groupResponse, albumsResponse] = await Promise.all([
+            fetchGroup(groupId),
+            fetch(`/backend/api/v1/albums/group/${groupId}`, {
+              method: 'get',
+              credentials: 'include',
+            }),
+          ]);
+
+          const albumsData = await albumsResponse.json();
+          if (albumsData.result === 'SUCCESS') {
+            setAlbums(albumsData.data);
+            setHasAlbums(albumsData.data.length > 0);
+          }
+        } catch (error) {
+          console.error('Error fetching group data:', error);
+        }
+      };
+
+      fetchGroupData();
+    }
+  }, [groupId]);
 
   const toggleVisibillity = () => {
     setIsLogoutVisible(!isLogoutVisible);
@@ -138,7 +177,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `/backend/api/v1/albums/group/${groupId}`,
+          `$/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',

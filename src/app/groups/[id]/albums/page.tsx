@@ -10,6 +10,7 @@ import useUserStore from '@/store/useUserInfo';
 const Collection = () => {
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchGroupAlmubs = async () => {
@@ -67,6 +68,7 @@ const Collection = () => {
   };
 
   const handleAddAlbum = async () => {
+    setIsLoading(true);
     if (!newAlbum.title || !newAlbum.theme || !newAlbum.description) {
       alert('모든 필드를 입력해주세요.');
       return;
@@ -118,6 +120,8 @@ const Collection = () => {
     } catch (error) {
       console.error('앨범 추가 실패:', error);
       alert('앨범 추가에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -186,8 +190,9 @@ const Collection = () => {
           <button
             className="mx-auto mt-[40px] bg-[#4970ff] text-white px-4 py-2 rounded-[17px] w-[200px] h-[78px] text-[23px] font-semibold"
             onClick={handleAddAlbum}
+            disabled={isLoading}
           >
-            추가
+            {isLoading ? '추가 중...' : '추가'}
           </button>
         </div>
       </div>
