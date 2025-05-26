@@ -6,11 +6,13 @@ import PhotoArrangement from './_components/PhotoArrangement';
 import { useRouter } from 'next/navigation';
 import { addNewAlbum } from '@/lib/albums/addNewAlbum';
 import useUserStore from '@/store/useUserInfo';
+import useAlbumStore from '@/store/useAlbumStore';
 
 const Collection = () => {
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const [isLoading, setIsLoading] = useState(false);
+  const { refreshAlbums } = useAlbumStore();
 
   useEffect(() => {
     const fetchGroupAlmubs = async () => {
@@ -82,6 +84,9 @@ const Collection = () => {
         description: newAlbum.description,
         groupId: groupId ? groupId : 1,
       });
+
+      // 앨범 목록 새로고침
+      await refreshAlbums();
 
       const response = await fetch(
         `/backend/api/v1/albums/group/${groupId}?thumbnailCount=5`,
@@ -197,7 +202,7 @@ const Collection = () => {
         </div>
       </div>
       {localAlbums.map((album) => (
-        <Link key={album.id} href={`/groups/1/albums/${album.id}`}>
+        <Link key={album.id} href={`/groups/${groupId}/albums/${album.id}`}>
           <PhotoArrangement
             id={album.id}
             title={album.title}

@@ -4,12 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import useUserStore from '@/store/useUserInfo';
+import useAlbumStore from '@/store/useAlbumStore';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { Album02Icon } from 'hugeicons-react';
 import { Home11Icon } from 'hugeicons-react';
 import { FavouriteIcon } from 'hugeicons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const Fnb = () => {
   const pathname = usePathname();
@@ -37,30 +38,13 @@ const Fnb = () => {
   }
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
-  const albumId = 1;
-  const [hasAlbums, setHasAlbums] = useState<boolean>(true);
+  const { hasAlbums, fetchAlbums } = useAlbumStore();
 
   useEffect(() => {
-    const checkAlbums = async () => {
-      if (!groupId) return;
-
-      try {
-        const response = await fetch(
-          `/backend/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
-        const data = await response.json();
-        setHasAlbums(data.data.length > 0);
-      } catch (error) {
-        console.error('Error checking albums:', error);
-      }
-    };
-
-    checkAlbums();
-  }, [groupId]);
+    if (groupId) {
+      fetchAlbums();
+    }
+  }, [groupId, fetchAlbums]);
 
   const handleUploadClick = (e: React.MouseEvent) => {
     if (!hasAlbums) {
