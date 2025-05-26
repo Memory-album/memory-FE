@@ -11,9 +11,9 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
   const user: UserType = await getCurrentUser();
 
-  if (!user) {
-    redirect('/login');
-  }
+  // if (!user) {
+  //   redirect('/login');
+  // }
 
   return (
     <div className="sm:mx-auto w-full sm:w-[500px] px-[30px]">
