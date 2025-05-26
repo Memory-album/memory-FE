@@ -13,7 +13,7 @@ interface Props {
 export const UserInfo = ({ user }: Props) => {
   const router = useRouter();
 
-  console.log('USER!!!!', user);
+  console.log('USER...........', user);
 
   return (
     <div>
