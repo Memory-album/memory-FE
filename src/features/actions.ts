@@ -14,11 +14,11 @@ export const getCurrentUser = async () => {
       },
     });
 
-    // if (!response.ok) {
-    //   const errorText = await response.text();
-    //   console.log('Error response:', errorText);
-    //   return null;
-    // }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Error response:', errorText);
+      return null;
+    }
 
     const { user } = await response.json();
     return user;
