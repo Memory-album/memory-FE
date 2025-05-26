@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import useGroupStore from './useGroupStore';
+import useUserStore from '@/store/useUserInfo';
 
 interface CreatedBy {
   name: string;
@@ -30,7 +31,9 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       if (!group) {
         throw new Error('No group available');
       }
-      const groupId = group.id;
+      const { userInfo } = useUserStore();
+      const groupId = userInfo?.currentGroupId;
+
       const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
         method: 'get',
         credentials: 'include',
@@ -53,7 +56,8 @@ const useAlbumStore = create<AlbumStore>((set) => ({
       if (!group) {
         throw new Error('No group available');
       }
-      const groupId = group.id;
+      const { userInfo } = useUserStore();
+      const groupId = userInfo?.currentGroupId;
       const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
         method: 'get',
         credentials: 'include',
