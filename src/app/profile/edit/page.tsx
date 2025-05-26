@@ -14,7 +14,7 @@ const Page = async () => {
 
   return (
     <div className="px-[30px] sm:mx-auto w-full sm:w-[500px]">
-      <EditProfile user={user} />
+      <EditProfile initialData={user} />
     </div>
   );
 };
