@@ -50,11 +50,12 @@ interface ApiResponse {
 }
 
 const PhotoDetail = ({ params }: PropType) => {
-  const albumId = params.id;
   const currentPhotoId = params.photoId;
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
+  const urlParts = pathname.split('/');
+  const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
   const currentId = Number(pathname.slice(-1)) - 1;
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
