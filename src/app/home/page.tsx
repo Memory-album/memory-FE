@@ -338,7 +338,7 @@ const home = () => {
             </Link>
           </article>
         </article>
-        <section className="mt-[45px]">
+        <section className="mt-[45px] w-[calc(100vw-28px)]">
           <div className="w-[92%] flex flex-row justify-between items-end mb-5">
             <p className="font-bold text-[16px]">최근 추가된 콘텐츠</p>
           </div>
