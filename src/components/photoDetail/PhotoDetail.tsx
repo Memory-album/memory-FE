@@ -56,7 +56,7 @@ const PhotoDetail = ({ params }: PropType) => {
   const pathname = usePathname();
   const urlParts = pathname.split('/');
   const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
-  const currentId = Number(pathname.split('/').pop());
+  const currentId = Number(urlParts[6]);
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,6 +68,8 @@ const PhotoDetail = ({ params }: PropType) => {
   const [currentIndex, setCurrentIndex] = useState(() =>
     images.findIndex((photo) => photo.id.toString() === currentPhotoId),
   );
+
+  const currentIdLog = console.log(currentId);
 
   useEffect(() => {
     setCurrentIndex(
@@ -100,6 +102,7 @@ const PhotoDetail = ({ params }: PropType) => {
   ) => {
     if (ref.current) {
       ref.current.style.display = isVisible ? 'block' : 'none';
+      currentIdLog;
     }
   };
 
