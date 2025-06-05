@@ -36,20 +36,21 @@ const Fnb = () => {
   ) {
     return null;
   }
-  const { userInfo } = useUserStore();
+  const { userInfo, fetchUserInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const { hasAlbums, fetchAlbums } = useAlbumStore();
 
   useEffect(() => {
-    const loadAlbums = async () => {
-      if (!userInfo?.currentGroupId) {
-        console.log('userInfo가 로드되지 않았습니다.');
-        return;
+    const loadData = async () => {
+      if (!userInfo) {
+        await fetchUserInfo();
       }
-      await fetchAlbums();
+      if (userInfo?.currentGroupId) {
+        await fetchAlbums();
+      }
     };
-    loadAlbums();
-  }, [userInfo, fetchAlbums]);
+    loadData();
+  }, [userInfo, fetchAlbums, fetchUserInfo]);
 
   const handleUploadClick = (e: React.MouseEvent) => {
     if (!userInfo?.currentGroupId) {
