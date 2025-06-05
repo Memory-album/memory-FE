@@ -83,7 +83,8 @@ const PhotoDetail = ({ params }: PropType) => {
   const updateURL = useCallback(
     (index: number) => {
       if (!images[index]) return;
-      const newPath = `/groups/${groupId}/albums/${albumId}/photo/${index}`;
+      const newPhotoId = images[index].id.toString();
+      const newPath = `/groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
       window.history.replaceState(null, '', newPath);
     },
     [albumId, groupId, images],
@@ -154,7 +155,6 @@ const PhotoDetail = ({ params }: PropType) => {
 
         if (data.result === 'SUCCESS') {
           setImages(data.data.content);
-          console.log(data.data.content);
           setTotalPages(data.data.totalPages);
         } else {
           setError('이미지를 불러오는데 실패했습니다.');
@@ -235,7 +235,7 @@ const PhotoDetail = ({ params }: PropType) => {
           {images.length > 0 && (
             <div className="relative w-full h-full">
               <Image
-                src={images[currentIndex]?.fileUrl || ''}
+                src={images[currentId]?.fileUrl || ''}
                 alt="사진"
                 fill
                 style={{ objectFit: 'contain' }}
@@ -273,8 +273,7 @@ const PhotoDetail = ({ params }: PropType) => {
           <div className="mt-5 h-[498px] overflow-y-scroll">
             <div className="flex justify-start items-end mb-[25px] pl-[30px] pr-[20px]">
               {images.length > 0
-                ? images[currentIndex]?.story ||
-                  '이미지에 대한 설명이 없습니다.'
+                ? images[currentId]?.story || '이미지에 대한 설명이 없습니다.'
                 : '이미지에 대한 설명이 없습니다.'}
             </div>
           </div>

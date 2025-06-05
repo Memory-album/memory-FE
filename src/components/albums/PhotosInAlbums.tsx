@@ -126,12 +126,12 @@ const PhotosInAlbum = () => {
           ))} */}
           {images.map((image, i) => (
             <div className="relative" key={image.id}>
-              <Link href={`${pathname}/photo/${i}`}>
+              <Link href={`${pathname}/photo/${image.id}`}>
                 <img
                   src={image.fileUrl}
                   style={{ width: '100%', display: 'block' }}
                   className="rounded-[10px] cursor-pointer"
-                  alt={`Photo ${i}`}
+                  alt={`Photo ${image.id}`}
                 />
               </Link>
               <div className="absolute bottom-[7px] left-[7px] flex items-end">

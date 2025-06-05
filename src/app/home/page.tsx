@@ -352,8 +352,7 @@ const home = () => {
                       key={media.id}
                     >
                       <Link
-                        key={media.id}
-                        href={`/groups/${groupId}/albums/${media.albumId}/photo/${recentMedia.findIndex((m) => m.id === media.id)}`}
+                        href={`/groups/${groupId}/albums/${media.albumId}/photo/${media.id}`}
                       >
                         <div
                           className="w-[168px] h-[141px] bg-cover cursor-pointer rounded-[21px]"
