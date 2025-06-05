@@ -69,8 +69,6 @@ const PhotoDetail = ({ params }: PropType) => {
     images.findIndex((photo) => photo.id.toString() === currentPhotoId),
   );
 
-  const currentIdLog = console.log(currentId);
-
   useEffect(() => {
     setCurrentIndex(
       images.findIndex((photo) => photo.id.toString() === currentPhotoId),
@@ -102,7 +100,6 @@ const PhotoDetail = ({ params }: PropType) => {
   ) => {
     if (ref.current) {
       ref.current.style.display = isVisible ? 'block' : 'none';
-      currentIdLog;
     }
   };
 
@@ -158,6 +155,7 @@ const PhotoDetail = ({ params }: PropType) => {
 
         if (data.result === 'SUCCESS') {
           setImages(data.data.content);
+          console.log(data.data.content);
           setTotalPages(data.data.totalPages);
         } else {
           setError('이미지를 불러오는데 실패했습니다.');
