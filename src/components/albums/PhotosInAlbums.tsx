@@ -28,9 +28,12 @@ const PhotosInAlbum = () => {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
+        if (!userInfo?.currentGroupId) {
+          return;
+        }
         //url에서 albumId 추출
         const urlParts = pathname.split('/');
-        const groupId = userInfo?.currentGroupId;
+        const groupId = userInfo.currentGroupId;
         const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
@@ -62,7 +65,7 @@ const PhotosInAlbum = () => {
     };
 
     fetchPhotos();
-  }, [pathname]);
+  }, [pathname, userInfo]);
 
   // const [dummyImages, setDummyImages] = useState([
   //   { id: '0', src: '/images/example.png', isLiked: true },
