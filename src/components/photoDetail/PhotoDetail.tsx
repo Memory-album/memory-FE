@@ -268,27 +268,17 @@ const PhotoDetail = ({ params }: PropType) => {
           className="absolute bottom-[10%]"
           style={{ left: 'calc(50% - 44px)' }}
         >
-          <button>
-            <a
-              href={encodeURI(
-                images.find((img) => img.id === currentId)?.fileUrl || '',
-              )}
-              download={
-                images.find((img) => img.id === currentId)?.originalFilename ||
-                'photo'
-              }
-              style={{ display: 'inline-block' }}
-            >
-              <DownloadSquare02Icon size={88} color="#428EFF" />
-            </a>
+          <button onClick={handleDownload}>
+            <DownloadSquare02Icon size={88} color="#428EFF" />
           </button>
         </div>
       </div>
-
-      {/* 대화창 */}
+      ,{/* 대화창 */}
       <div
         ref={conversationRef}
-        className="w-full h-full absolute top-0 z-50"
+        className="w-full h-full abs
+             olute to
+            p-0 z-50"
         style={{ display: 'none' }}
       >
         <div
@@ -309,7 +299,6 @@ const PhotoDetail = ({ params }: PropType) => {
           </div>
         </div>
       </div>
-
       {/* 이미지 슬라이더 */}
       <div ref={emblaRef} className="overflow-hidden h-full">
         <div className="flex h-full">
