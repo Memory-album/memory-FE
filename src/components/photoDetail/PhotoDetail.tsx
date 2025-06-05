@@ -83,8 +83,7 @@ const PhotoDetail = ({ params }: PropType) => {
   const updateURL = useCallback(
     (index: number) => {
       if (!images[index]) return;
-      const newPhotoId = images[index].id.toString();
-      const newPath = `/groups/${groupId}/albums/${albumId}/photo/${newPhotoId}`;
+      const newPath = `/groups/${groupId}/albums/${albumId}/photo/${index}`;
       window.history.replaceState(null, '', newPath);
     },
     [albumId, groupId, images],
@@ -236,7 +235,7 @@ const PhotoDetail = ({ params }: PropType) => {
           {images.length > 0 && (
             <div className="relative w-full h-full">
               <Image
-                src={images[currentId]?.fileUrl || ''}
+                src={images[currentIndex]?.fileUrl || ''}
                 alt="사진"
                 fill
                 style={{ objectFit: 'contain' }}
@@ -274,7 +273,8 @@ const PhotoDetail = ({ params }: PropType) => {
           <div className="mt-5 h-[498px] overflow-y-scroll">
             <div className="flex justify-start items-end mb-[25px] pl-[30px] pr-[20px]">
               {images.length > 0
-                ? images[currentId]?.story || '이미지에 대한 설명이 없습니다.'
+                ? images[currentIndex]?.story ||
+                  '이미지에 대한 설명이 없습니다.'
                 : '이미지에 대한 설명이 없습니다.'}
             </div>
           </div>
