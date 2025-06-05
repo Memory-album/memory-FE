@@ -203,6 +203,7 @@ const home = () => {
             .slice(0, 5);
 
           setRecentMedia(sortedMedia);
+          console.log(sortedMedia);
         }
       } catch (error) {
         console.error('최근 미디어 가져오기 실패:', error);
