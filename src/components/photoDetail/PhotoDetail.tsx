@@ -250,10 +250,12 @@ const PhotoDetail = ({ params }: PropType) => {
         >
           <button>
             <a
-              href={images.find((img) => img.id === currentId)?.fileUrl || ''}
+              href={encodeURI(
+                images.find((img) => img.id === currentId)?.fileUrl || '',
+              )}
               download={
                 images.find((img) => img.id === currentId)?.originalFilename ||
-                ''
+                'photo'
               }
               role="button"
             >
