@@ -170,6 +170,26 @@ const PhotoDetail = ({ params }: PropType) => {
     fetchImages();
   }, [groupId, albumId, currentPage]);
 
+  const handleDownload = async () => {
+    const image = images.find((img) => img.id === currentId);
+    if (!image) return;
+
+    try {
+      const response = await fetch(image.fileUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = image.originalFilename || 'photo';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
   return (
     <main className="">
       {/* 다운로드 */}
@@ -257,7 +277,7 @@ const PhotoDetail = ({ params }: PropType) => {
                 images.find((img) => img.id === currentId)?.originalFilename ||
                 'photo'
               }
-              role="button"
+              style={{ display: 'inline-block' }}
             >
               <DownloadSquare02Icon size={88} color="#428EFF" />
             </a>
