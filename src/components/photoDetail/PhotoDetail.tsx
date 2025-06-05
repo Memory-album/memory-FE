@@ -56,7 +56,7 @@ const PhotoDetail = ({ params }: PropType) => {
   const pathname = usePathname();
   const urlParts = pathname.split('/');
   const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
-  const currentId = Number(pathname.split('/').pop()) - 1;
+  const currentId = Number(pathname.split('/').pop());
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
