@@ -36,19 +36,19 @@ const Fnb = () => {
   ) {
     return null;
   }
-  const { userInfo, isLoading } = useUserStore();
+  const { userInfo, isLoading: userLoading } = useUserStore();
   const groupId = userInfo?.currentGroupId;
-  const { hasAlbums, fetchAlbums } = useAlbumStore();
+  const { hasAlbums, fetchAlbums, isLoading: albumLoading } = useAlbumStore();
 
   useEffect(() => {
     const loadAlbums = async () => {
-      if (isLoading || !userInfo?.currentGroupId) {
+      if (userLoading || albumLoading || !userInfo?.currentGroupId) {
         return;
       }
       await fetchAlbums();
     };
     loadAlbums();
-  }, [userInfo, isLoading, fetchAlbums]);
+  }, [userInfo, userLoading, albumLoading, fetchAlbums]);
 
   const handleUploadClick = (e: React.MouseEvent) => {
     if (!userInfo?.currentGroupId) {
