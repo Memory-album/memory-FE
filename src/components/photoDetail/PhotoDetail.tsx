@@ -55,7 +55,8 @@ const PhotoDetail = ({ params }: PropType) => {
   const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
   const urlParts = pathname.split('/');
-  const albumId = Number(urlParts[4]); // URL 구조에 따라 조정 필요
+  const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
+  const currentId = Number(pathname.split('/').pop()) - 1;
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -234,7 +235,7 @@ const PhotoDetail = ({ params }: PropType) => {
           {images.length > 0 && (
             <div className="relative w-full h-full">
               <Image
-                src={images[albumId]?.fileUrl || ''}
+                src={images[currentId]?.fileUrl || ''}
                 alt="사진"
                 fill
                 style={{ objectFit: 'contain' }}
@@ -272,7 +273,7 @@ const PhotoDetail = ({ params }: PropType) => {
           <div className="mt-5 h-[498px] overflow-y-scroll">
             <div className="flex justify-start items-end mb-[25px] pl-[30px] pr-[20px]">
               {images.length > 0
-                ? images[albumId]?.story || '이미지에 대한 설명이 없습니다.'
+                ? images[currentId]?.story || '이미지에 대한 설명이 없습니다.'
                 : '이미지에 대한 설명이 없습니다.'}
             </div>
           </div>
