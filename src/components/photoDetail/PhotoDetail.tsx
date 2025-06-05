@@ -251,7 +251,10 @@ const PhotoDetail = ({ params }: PropType) => {
           <button>
             <a
               href={images.find((img) => img.id === currentId)?.fileUrl || ''}
-              download
+              download={
+                images.find((img) => img.id === currentId)?.originalFilename ||
+                ''
+              }
               role="button"
             >
               <DownloadSquare02Icon size={88} color="#428EFF" />
