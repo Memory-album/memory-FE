@@ -249,7 +249,11 @@ const PhotoDetail = ({ params }: PropType) => {
           style={{ left: 'calc(50% - 44px)' }}
         >
           <button>
-            <a href="/images/example2.png" download="예시사진2" role="button">
+            <a
+              href={images.find((img) => img.id === currentId)?.fileUrl || ''}
+              download
+              role="button"
+            >
               <DownloadSquare02Icon size={88} color="#428EFF" />
             </a>
           </button>
