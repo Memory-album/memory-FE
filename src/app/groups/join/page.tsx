@@ -22,17 +22,14 @@ const join = () => {
       inviteCode: string;
       groupNickname: string;
     }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/join`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json', // ✅ JSON 데이터임을 명시!
-          },
-          body: JSON.stringify({ inviteCode, groupNickname }),
+      const response = await fetch(`/backend/api/v1/groups/join`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json', // ✅ JSON 데이터임을 명시!
         },
-      );
+        body: JSON.stringify({ inviteCode, groupNickname }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

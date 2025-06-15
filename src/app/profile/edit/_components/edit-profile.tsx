@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import { User as UserType } from '@/model/user';
+import { getUser } from '@/features/auth/api/getUser';
 
 type ProfileImageState = {
   type: 'remote' | 'local';
@@ -34,15 +35,24 @@ const formSchema = z.object({
 });
 
 interface Props {
-  user: UserType;
+  initialData: UserType;
 }
 
-export const EditProfile = ({ user }: Props) => {
+export const EditProfile = ({ initialData }: Props) => {
   const router = useRouter();
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+    initialData, // 서버에서 받은 초기 데이터 사용
+  });
+
   const [profileImage, setProfileImage] = useState<ProfileImageState | null>({
     type: 'remote',
     url: user.profileImgUrl,
   });
+
+  const queryClient = useQueryClient();
 
   // 폼 설정
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,14 +77,11 @@ export const EditProfile = ({ user }: Props) => {
         formData.append('profileImage', profileImage.file);
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/update`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/backend/user/update`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error('프로필 수정에 실패했습니다.');
@@ -84,6 +91,7 @@ export const EditProfile = ({ user }: Props) => {
     },
     onSuccess: async (response) => {
       alert('프로필이 수정되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       router.replace('/profile');
     },
     onError: (error) => {

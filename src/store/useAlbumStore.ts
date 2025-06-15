@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import useGroupStore from './useGroupStore';
+import useUserStore from '@/store/useUserInfo';
 
 interface CreatedBy {
   name: string;
@@ -16,40 +17,70 @@ interface Album {
 
 interface AlbumStore {
   albums: Album[];
+  hasAlbums: boolean;
   fetchAlbums: () => Promise<void>;
+  refreshAlbums: () => Promise<void>;
 }
 
 const useAlbumStore = create<AlbumStore>((set) => ({
   albums: [],
+  hasAlbums: false,
   fetchAlbums: async () => {
     try {
-      const { groups } = useGroupStore.getState();
-      if (groups.length === 0) {
-        throw new Error('No groups available');
+      const { group } = useGroupStore.getState();
+      if (!group) {
+        throw new Error('No group available');
       }
-      const groupId = groups[0].id;
-      const albumId = 1;
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
-        {
-          method: 'get',
-          credentials: 'include',
-        },
-      );
+      const { userInfo } = useUserStore.getState();
+      const groupId = userInfo?.currentGroupId;
+
+      if (!groupId) {
+        throw new Error('No group ID available');
+      }
+
+      const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
+        method: 'get',
+        credentials: 'include',
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch albums');
       }
-      const data: Album[] = await response.json();
-      const minimalData = data.map((album) => ({
-        id: album.id,
-        title: album.title,
-        thumbnailUrl: album.thumbnailUrl,
-        likes: album.likes,
-        createdBy: album.createdBy,
-      }));
-      set({ albums: minimalData });
+      const data = await response.json();
+      set({
+        albums: data.data,
+        hasAlbums: data.data.length > 0,
+      });
     } catch (e) {
       console.error('Error fetching albums: ', e);
+    }
+  },
+  refreshAlbums: async () => {
+    try {
+      const { group } = useGroupStore.getState();
+      if (!group) {
+        throw new Error('No group available');
+      }
+      const { userInfo } = useUserStore.getState();
+      const groupId = userInfo?.currentGroupId;
+
+      if (!groupId) {
+        throw new Error('No group ID available');
+      }
+
+      const response = await fetch(`/backend/api/v1/albums/group/${groupId}`, {
+        method: 'get',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch albums');
+      }
+      const data = await response.json();
+      set({
+        albums: data.data,
+        hasAlbums: data.data.length > 0,
+      });
+    } catch (e) {
+      console.error('Error refreshing albums: ', e);
     }
   },
 }));

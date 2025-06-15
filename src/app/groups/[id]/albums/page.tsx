@@ -6,16 +6,19 @@ import PhotoArrangement from './_components/PhotoArrangement';
 import { useRouter } from 'next/navigation';
 import { addNewAlbum } from '@/lib/albums/addNewAlbum';
 import useUserStore from '@/store/useUserInfo';
+import useAlbumStore from '@/store/useAlbumStore';
 
 const Collection = () => {
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
+  const [isLoading, setIsLoading] = useState(false);
+  const { refreshAlbums } = useAlbumStore();
 
   useEffect(() => {
     const fetchGroupAlmubs = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
+          `/backend/api/v1/albums/group/${groupId}?thumbnailCount=5`,
           {
             method: 'get',
             credentials: 'include',
@@ -67,6 +70,7 @@ const Collection = () => {
   };
 
   const handleAddAlbum = async () => {
+    setIsLoading(true);
     if (!newAlbum.title || !newAlbum.theme || !newAlbum.description) {
       alert('모든 필드를 입력해주세요.');
       return;
@@ -81,8 +85,11 @@ const Collection = () => {
         groupId: groupId ? groupId : 1,
       });
 
+      // 앨범 목록 새로고침
+      await refreshAlbums();
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}?thumbnailCount=5`,
+        `/backend/api/v1/albums/group/${groupId}?thumbnailCount=5`,
         {
           method: 'get',
           credentials: 'include',
@@ -118,6 +125,8 @@ const Collection = () => {
     } catch (error) {
       console.error('앨범 추가 실패:', error);
       alert('앨범 추가에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -186,13 +195,14 @@ const Collection = () => {
           <button
             className="mx-auto mt-[40px] bg-[#4970ff] text-white px-4 py-2 rounded-[17px] w-[200px] h-[78px] text-[23px] font-semibold"
             onClick={handleAddAlbum}
+            disabled={isLoading}
           >
-            추가
+            {isLoading ? '추가 중...' : '추가'}
           </button>
         </div>
       </div>
       {localAlbums.map((album) => (
-        <Link key={album.id} href={`/groups/1/albums/${album.id}`}>
+        <Link key={album.id} href={`/groups/${groupId}/albums/${album.id}`}>
           <PhotoArrangement
             id={album.id}
             title={album.title}

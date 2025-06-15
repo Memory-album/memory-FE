@@ -30,12 +30,7 @@ import useUserStore from '@/store/useUserInfo';
 import { userLogin } from '@/services/auth';
 import axios from 'axios';
 
-type PropType = {
-  slides: number[];
-  options?: EmblaOptionsType;
-};
-
-const signup = ({ slides, options }: PropType) => {
+const SignupPage = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchDrag: false });
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -424,4 +419,4 @@ const signup = ({ slides, options }: PropType) => {
   );
 };
 
-export default signup;
+export default SignupPage;

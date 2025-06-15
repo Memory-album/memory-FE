@@ -8,6 +8,7 @@ import LoginHeader from '@/components/LoginHeader';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/FormInput';
 import useUserStore from '@/store/useUserInfo';
+import useGroupStore from '@/store/useGroupStore';
 
 import { userLogin } from '@/services/auth';
 import axios from 'axios';
@@ -39,6 +40,8 @@ const login = () => {
   }, []);
 
   const { fetchUserInfo } = useUserStore();
+  const { clearGroup } = useGroupStore();
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -48,28 +51,23 @@ const login = () => {
         rememberMe: rememberMe,
       };
 
-      console.log('Login request data:', userData);
       const result = await userLogin(userData);
-      fetchUserInfo();
-      console.log('Login success:', result);
 
       if (result.status === 'warning') {
         alert(result.message); // 계정 비활성화 등의 경고 메시지
       } else if (result.status === 'success') {
+        clearGroup();
+        await fetchUserInfo();
         try {
           // /user/home 엔드포인트 요청
-          const homeResponse = await axios.get(
-            'http://localhost:8080/user/home',
-            {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-              },
+          const homeResponse = await axios.get(`/backend/user/home`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
+          });
 
           if (homeResponse.status === 200) {
-            console.log('Home response:', homeResponse.data);
             router.push('/home');
           }
         } catch (homeError: any) {
@@ -122,7 +120,7 @@ const login = () => {
   };
 
   const LoginHandler = (select: string) => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth/login?provider=${select}`;
+    window.location.href = `/backend/oauth/login?provider=${select}`;
   };
 
   return (

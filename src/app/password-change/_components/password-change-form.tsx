@@ -69,17 +69,14 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 인증 코드 요청 API 호출
   const requestCodeMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/password/reset-request`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: user.email }),
+      const response = await fetch(`/backend/user/password/reset-request`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({ email: user.email }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -99,20 +96,17 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 인증 코드 확인 API 호출
   const verifyCodeMutation = useMutation({
     mutationFn: async (verificationCode: string) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/password/verify-code`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: user.email,
-            verificationCode,
-          }),
+      const response = await fetch(`/backend/user/password/verify-code`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          email: user.email,
+          verificationCode,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -133,21 +127,18 @@ export const PasswordChangeForm = ({ user }: Props) => {
   // 비밀번호 변경 API 호출
   const changePasswordMutation = useMutation({
     mutationFn: async (data: z.infer<typeof changePasswordSchema>) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/password/reset`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: user.email,
-            verificationCode,
-            newPassword: data.password,
-          }),
+      const response = await fetch(`/backend/user/password/reset`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          email: user.email,
+          verificationCode,
+          newPassword: data.password,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

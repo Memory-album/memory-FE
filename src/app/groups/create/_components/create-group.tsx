@@ -45,14 +45,11 @@ export const CreateGroup = () => {
       }
       formData.append('groupDescription', groupDescriptionValue);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups`,
-        {
-          method: 'post',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/backend/api/v1/groups`, {
+        method: 'post',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error('그룹 생성에 실패했습니다.');

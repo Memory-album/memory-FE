@@ -50,12 +50,13 @@ interface ApiResponse {
 }
 
 const PhotoDetail = ({ params }: PropType) => {
-  const albumId = params.id;
   const currentPhotoId = params.photoId;
   const { userInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
   const pathname = usePathname();
-  const currentId = Number(pathname.slice(-1)) - 1;
+  const urlParts = pathname.split('/');
+  const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
+  const currentId = Number(urlParts[6]);
 
   const [imagess, setImagess] = useState<MediaItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -123,7 +124,7 @@ const PhotoDetail = ({ params }: PropType) => {
         i === index ? { ...image, isLiked: !image.isLiked } : image,
       ),
     );
-    console.log(pathname.slice(-1));
+    console.log(currentId);
   };
 
   useEffect(() => {
@@ -144,7 +145,7 @@ const PhotoDetail = ({ params }: PropType) => {
         });
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
+          `/backend/api/v1/groups/${groupId}/albums/${albumId}/media?${queryParams}`,
           {
             method: 'get',
             credentials: 'include',
@@ -168,6 +169,26 @@ const PhotoDetail = ({ params }: PropType) => {
 
     fetchImages();
   }, [groupId, albumId, currentPage]);
+
+  const handleDownload = async () => {
+    const image = images.find((img) => img.id === currentId);
+    if (!image) return;
+
+    try {
+      const response = await fetch(image.fileUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = image.originalFilename || 'photo';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
 
   return (
     <main className="">
@@ -234,7 +255,7 @@ const PhotoDetail = ({ params }: PropType) => {
           {images.length > 0 && (
             <div className="relative w-full h-full">
               <Image
-                src={images[currentId]?.fileUrl || ''}
+                src={images.find((img) => img.id === currentId)?.fileUrl || ''}
                 alt="사진"
                 fill
                 style={{ objectFit: 'contain' }}
@@ -247,18 +268,17 @@ const PhotoDetail = ({ params }: PropType) => {
           className="absolute bottom-[10%]"
           style={{ left: 'calc(50% - 44px)' }}
         >
-          <button>
-            <a href="/images/example2.png" download="예시사진2" role="button">
-              <DownloadSquare02Icon size={88} color="#428EFF" />
-            </a>
+          <button onClick={handleDownload}>
+            <DownloadSquare02Icon size={88} color="#428EFF" />
           </button>
         </div>
       </div>
-
-      {/* 대화창 */}
+      ,{/* 대화창 */}
       <div
         ref={conversationRef}
-        className="w-full h-full absolute top-0 z-50"
+        className="w-full h-full abs
+             olute to
+            p-0 z-50"
         style={{ display: 'none' }}
       >
         <div
@@ -272,13 +292,13 @@ const PhotoDetail = ({ params }: PropType) => {
           <div className="mt-5 h-[498px] overflow-y-scroll">
             <div className="flex justify-start items-end mb-[25px] pl-[30px] pr-[20px]">
               {images.length > 0
-                ? images[currentId]?.story || '이미지에 대한 설명이 없습니다.'
+                ? images.find((img) => img.id === currentId)?.story ||
+                  '이미지에 대한 설명이 없습니다.'
                 : '이미지에 대한 설명이 없습니다.'}
             </div>
           </div>
         </div>
       </div>
-
       {/* 이미지 슬라이더 */}
       <div ref={emblaRef} className="overflow-hidden h-full">
         <div className="flex h-full">

@@ -23,18 +23,24 @@ interface Media {
 const PhotosInAlbum = () => {
   const pathname = usePathname();
   const [images, setImages] = useState<Array<Media & { isLiked: boolean }>>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { userInfo } = useUserStore();
 
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
+        if (!userInfo?.currentGroupId) {
+          setIsLoading(true);
+          return;
+        }
+        setIsLoading(true);
         //url에서 albumId 추출
         const urlParts = pathname.split('/');
-        const groupId = userInfo?.currentGroupId;
+        const groupId = userInfo.currentGroupId;
         const albumId = urlParts[4]; // URL 구조에 따라 조정 필요
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/albums/${albumId}/media`,
+          `/backend/api/v1/groups/${groupId}/albums/${albumId}/media`,
           {
             method: 'get',
             credentials: 'include',
@@ -58,11 +64,13 @@ const PhotosInAlbum = () => {
         }
       } catch (error) {
         console.error('Failed to fetch photos:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchPhotos();
-  }, [pathname]);
+  }, [pathname, userInfo]);
 
   // const [dummyImages, setDummyImages] = useState([
   //   { id: '0', src: '/images/example.png', isLiked: true },
@@ -83,6 +91,22 @@ const PhotosInAlbum = () => {
     );
     console.log(images);
   };
+
+  if (isLoading) {
+    return (
+      <div className="ForFnbmarginBottom mx-4 mx-auto w-full sm:w-[500px] flex justify-center items-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!userInfo?.currentGroupId) {
+    return (
+      <div className="ForFnbmarginBottom mx-4 mx-auto w-full sm:w-[500px] flex justify-center items-center min-h-[200px]">
+        <p>그룹 정보를 불러오는 중입니다...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="ForFnbmarginBottom mx-4 mx-auto w-full sm:w-[500px]">

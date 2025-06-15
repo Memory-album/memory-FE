@@ -4,15 +4,12 @@ export async function getMembersByGroupId({
   queryKey: [string, string, string];
 }) {
   const [_1, id] = queryKey;
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}/members`,
-    {
-      next: {
-        tags: ['groups', id, 'members'],
-      },
-      credentials: 'include',
+  const response = await fetch(`/backend/api/v1/groups/${id}/members`, {
+    next: {
+      tags: ['groups', id, 'members'],
     },
-  );
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     throw new Error('Failed to fetch group data');

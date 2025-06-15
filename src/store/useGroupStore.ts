@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import axios from 'axios';
 
 interface Group {
@@ -24,32 +23,23 @@ interface GroupStore {
   clearGroup: () => void;
 }
 
-const useGroupStore = create(
-  persist<GroupStore>(
-    (set) => ({
-      group: null,
-      fetchGroup: async (groupId: number) => {
-        try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}`,
-            {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-          set({ group: response.data.data });
-        } catch (error) {
-          console.error('Error fetching group:', error);
-        }
-      },
-      clearGroup: () => set({ group: null }),
-    }),
-    {
-      name: 'group-store',
-    },
-  ),
-);
+const useGroupStore = create<GroupStore>((set) => ({
+  group: null,
+  fetchGroup: async (groupId: number) => {
+    try {
+      const response = await axios.get(`/backend/api/v1/groups/${groupId}`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      set({ group: response.data.data });
+    } catch (error) {
+      console.error('Error fetching group:', error);
+      set({ group: null });
+    }
+  },
+  clearGroup: () => set({ group: null }),
+}));
 
 export default useGroupStore;

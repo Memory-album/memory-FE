@@ -52,14 +52,11 @@ export const EditGroup = ({ id }: Props) => {
       }
       formData.append('groupDescription', groupDescriptionValue);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${id}`,
-        {
-          method: 'put',
-          credentials: 'include',
-          body: formData,
-        },
-      );
+      const response = await fetch(`/backend/api/v1/groups/${id}`, {
+        method: 'put',
+        credentials: 'include',
+        body: formData,
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

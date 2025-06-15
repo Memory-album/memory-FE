@@ -4,12 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import useUserStore from '@/store/useUserInfo';
+import useAlbumStore from '@/store/useAlbumStore';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import { Album02Icon } from 'hugeicons-react';
 import { Home11Icon } from 'hugeicons-react';
 import { FavouriteIcon } from 'hugeicons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const Fnb = () => {
   const pathname = usePathname();
@@ -35,38 +36,33 @@ const Fnb = () => {
   ) {
     return null;
   }
-  const { userInfo } = useUserStore();
+  const { userInfo, fetchUserInfo } = useUserStore();
   const groupId = userInfo?.currentGroupId;
-  const albumId = 1;
-  const [hasAlbums, setHasAlbums] = useState<boolean>(true);
+  const { hasAlbums, fetchAlbums } = useAlbumStore();
 
   useEffect(() => {
-    const checkAlbums = async () => {
-      if (!groupId) return;
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
-          {
-            method: 'get',
-            credentials: 'include',
-          },
-        );
-        const data = await response.json();
-        setHasAlbums(data.data.length > 0);
-      } catch (error) {
-        console.error('Error checking albums:', error);
+    const loadData = async () => {
+      if (!userInfo) {
+        await fetchUserInfo();
+      }
+      if (userInfo?.currentGroupId) {
+        await fetchAlbums();
       }
     };
-
-    checkAlbums();
-  }, [groupId]);
+    loadData();
+  }, [userInfo, fetchAlbums, fetchUserInfo]);
 
   const handleUploadClick = (e: React.MouseEvent) => {
+    if (!userInfo?.currentGroupId) {
+      e.preventDefault();
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     if (!hasAlbums) {
       e.preventDefault();
       alert('앨범을 먼저 추가해주세요');
-      window.location.href = `/groups/${groupId}/albums`;
+      window.location.href = `/groups/${userInfo.currentGroupId}/albums`;
     }
   };
 

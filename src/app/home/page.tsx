@@ -54,7 +54,7 @@ interface Album {
 
 const home = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start' });
-  const { userInfo } = useUserStore();
+  const { userInfo, fetchUserInfo } = useUserStore();
   const { group, fetchGroup } = useGroupStore();
   const [recentMedia, setRecentMedia] = useState<MediaItem[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -64,6 +64,43 @@ const home = () => {
   const logoutRef = useRef<HTMLDivElement>(null);
   const [isLogoutVisible, setIsLogoutVisible] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const initializeData = async () => {
+      const fetchedUserInfo = await fetchUserInfo();
+      if (fetchedUserInfo?.currentGroupId) {
+        await fetchGroup(fetchedUserInfo.currentGroupId);
+      }
+    };
+    initializeData();
+  }, []);
+
+  // groupId가 변경될 때만 실행
+  useEffect(() => {
+    if (groupId) {
+      const fetchGroupData = async () => {
+        try {
+          const [groupResponse, albumsResponse] = await Promise.all([
+            fetchGroup(groupId),
+            fetch(`/backend/api/v1/albums/group/${groupId}`, {
+              method: 'get',
+              credentials: 'include',
+            }),
+          ]);
+
+          const albumsData = await albumsResponse.json();
+          if (albumsData.result === 'SUCCESS') {
+            setAlbums(albumsData.data);
+            setHasAlbums(albumsData.data.length > 0);
+          }
+        } catch (error) {
+          console.error('Error fetching group data:', error);
+        }
+      };
+
+      fetchGroupData();
+    }
+  }, [groupId]);
 
   const toggleVisibillity = () => {
     setIsLogoutVisible(!isLogoutVisible);
@@ -85,7 +122,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -107,7 +144,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -140,7 +177,7 @@ const home = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/albums/group/${groupId}`,
+          `/backend/api/v1/albums/group/${groupId}`,
           {
             method: 'get',
             credentials: 'include',
@@ -166,6 +203,7 @@ const home = () => {
             .slice(0, 5);
 
           setRecentMedia(sortedMedia);
+          console.log(sortedMedia);
         }
       } catch (error) {
         console.error('최근 미디어 가져오기 실패:', error);
@@ -301,7 +339,7 @@ const home = () => {
             </Link>
           </article>
         </article>
-        <section className="mt-[45px]">
+        <section className="mt-[45px] w-[calc(100vw-28px)]">
           <div className="w-[92%] flex flex-row justify-between items-end mb-5">
             <p className="font-bold text-[16px]">최근 추가된 콘텐츠</p>
           </div>

@@ -37,13 +37,10 @@ export const DashboardMenu = ({ groupId }: DashboardMenuProps) => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/groups/${groupId}/leave`,
-        {
-          method: 'delete',
-          credentials: 'include',
-        },
-      );
+      const response = await fetch(`/backend/api/v1/groups/${groupId}/leave`, {
+        method: 'delete',
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
