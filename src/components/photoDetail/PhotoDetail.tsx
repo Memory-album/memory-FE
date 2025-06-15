@@ -282,11 +282,11 @@ const PhotoDetail = ({ params }: PropType) => {
         style={{ display: 'none' }}
       >
         <div
-          className="absolute top-0 bg-[#cbcbcbd6] w-full h-full z-1"
+          className="absolute top-0 bg-[#cbcbcbd6] w-full h-full z-10"
           onClick={() => toggleVisibillity(conversationRef, false)}
         ></div>
         <div
-          className="absolute top-[16%] w-[362px] h-[518px] rounded-[10px] bg-[#eef6fff5] z-1"
+          className="absolute top-[16%] w-[362px] h-[518px] rounded-[10px] bg-[#eef6fff5] z-10"
           style={{ left: 'calc(50% - 181px' }}
         >
           <div className="mt-5 h-[498px] overflow-y-scroll">
